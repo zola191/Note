@@ -1,0 +1,29 @@
+<div class="container-sm">
+  <form #form="ngForm" (ngSubmit)="onFormSubmit()">
+    <div class="form-group mb-3 mt-3">
+      <label for="Email">Email address</label>
+      <input
+        type="email"
+        class="form-control"
+        id="Email"
+        name="email"
+        placeholder="Введите почту"
+        [(ngModel)]="model.email"
+      />
+    </div>
+    <div class="form-group mb-3">
+      <label for="Password">Password</label>
+      <input
+        type="password"
+        class="form-control"
+        id="Password"
+        name="Password"
+        placeholder="Введите пароль"
+        [(ngModel)]="model.password"
+      />
+    </div>
+    <button type="submit" class="btn btn-primary me-3">
+      Регистрация нового пользователя
+    </button>
+  </form>
+</div>

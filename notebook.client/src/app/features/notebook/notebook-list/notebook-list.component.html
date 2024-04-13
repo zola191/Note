@@ -1,0 +1,48 @@
+<div class="container">
+  <h1>Notebook List</h1>
+  <div class="d-flex justify-content-start mt-3">
+    <a [routerLink]="['/notebook/add-notebook']" class="btn btn-primary"
+      >Add Note</a
+    >
+  </div>
+  <ng-container *ngIf="notebooks$ | async as notes">
+    <table class="table table-bordered mt-3">
+      <thead>
+        <tr>
+          <th>Id</th>
+          <th>FirstName</th>
+          <th>MiddleName</th>
+          <th>LastName</th>
+          <th>PhoneNumber</th>
+          <th>Country</th>
+          <th>BirthDay</th>
+          <th>Organization</th>
+          <th>Position</th>
+          <th>Other</th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let note of notes">
+          <td>{{ note.id }}</td>
+          <td>{{ note.firstName }}</td>
+          <td>{{ note.middleName }}</td>
+          <td>{{ note.lastName }}</td>
+          <td>{{ note.phoneNumber }}</td>
+          <td>{{ note.country }}</td>
+          <td>{{ note.birthDay }}</td>
+          <td>{{ note.organization }}</td>
+          <td>{{ note.position }}</td>
+          <td>{{ note.other }}</td>
+          <td>
+            <a
+              class="btn btn-primary"
+              [routerLink]="['/notebook/edit-notebook', note.id]"
+              >Edit</a
+            >
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </ng-container>
+</div>
