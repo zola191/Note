@@ -1,7 +1,11 @@
 ﻿using Microsoft.AspNetCore.Identity.Data;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.IdentityModel.Tokens;
 using Notebook.Server.Dto;
 using Notebook.Server.Services;
+using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
+using System.Text;
 
 namespace Notebook.Server.Controllers
 {
@@ -11,32 +15,62 @@ namespace Notebook.Server.Controllers
     {
 
         private readonly IAccountService accountService;
+        private IConfiguration _config;
 
-        public AccountController(IAccountService accountService)
+        public AccountController(IAccountService accountService, IConfiguration config)
         {
             this.accountService = accountService;
+            _config = config;
         }
 
         [HttpPost("create")]
         public async Task<IActionResult> Create([FromBody] AccountRequest accountRequest)
         {
-            var response = await accountService.CreateAsync(accountRequest);
-            if (response != null)
+            var existingAccount = await accountService.FindByEmail(accountRequest.Email);
+            if (existingAccount != null)
             {
-                return BadRequest();
+                throw new Exception("Account is already exist");
             }
-            return Ok();
+            var response = await accountService.CreateAsync(accountRequest);
+            return Ok(response);
         }
 
         [HttpPost("login")]
         public async Task<IActionResult> Login([FromBody] LoginRequest loginRequest)
         {
-            var existingAccount = await accountService.GetByEmail(loginRequest.Email);
+            var existingAccount = await accountService.FindByEmail(loginRequest.Email);
+
             if (existingAccount == null)
             {
-                return BadRequest();
+                throw new Exception("Bad login or password");
             }
-            return Ok();
+
+            if (existingAccount.Password != loginRequest.Password)
+            {
+                throw new Exception("Bad password");
+            }
+
+            var token = Generate(existingAccount);
+            existingAccount.Token = token;
+            return Ok(existingAccount);
+        }
+
+        private string Generate(AccountModel account)
+        {
+            var secutiryKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_config["Jwt:Key"]));
+            var credentials = new SigningCredentials(secutiryKey, SecurityAlgorithms.HmacSha256);
+            var claims = new[]
+            {
+                new Claim(ClaimTypes.Email,account.Email)
+            };
+
+            var token = new JwtSecurityToken(_config["Jwt:Issuer"],
+                _config["Jwt:Audience"],
+                claims,
+                expires: DateTime.UtcNow.AddHours(12),
+                signingCredentials: credentials);
+
+            return new JwtSecurityTokenHandler().WriteToken(token);
         }
 
     }

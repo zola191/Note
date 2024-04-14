@@ -11,6 +11,8 @@ import { NotebookListComponent } from './features/notebook/notebook-list/noteboo
 import { FormsModule } from '@angular/forms';
 import { CreateAccountComponent } from './features/account/create-account/create-account.component';
 import { LoginAccountComponent } from './features/account/login-account/login-account.component';
+import { MatSnackBarModule } from '@angular/material/snack-bar';
+import { provideAnimations } from '@angular/platform-browser/animations';
 
 @NgModule({
   declarations: [
@@ -22,8 +24,14 @@ import { LoginAccountComponent } from './features/account/login-account/login-ac
     CreateAccountComponent,
     LoginAccountComponent,
   ],
-  imports: [BrowserModule, HttpClientModule, AppRoutingModule, FormsModule],
-  providers: [],
+  imports: [
+    BrowserModule,
+    HttpClientModule,
+    AppRoutingModule,
+    FormsModule,
+    MatSnackBarModule,
+  ],
+  providers: [provideAnimations()],
   bootstrap: [AppComponent],
 })
 export class AppModule {}

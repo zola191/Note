@@ -24,8 +24,8 @@
     </div>
     <button type="submit" class="btn btn-primary me-3">Авторизоваться</button>
     <a class="btn btn-primary me-3"> Восстановить пароль </a>
-    <a class="btn btn-primary me-3" [routerLink]="['register']">
+    <button class="btn btn-primary me-3" (click)="redirectToRegisterPage()">
       Регистрация нового пользователя
-    </a>
+    </button>
   </form>
 </div>

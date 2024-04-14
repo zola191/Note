@@ -3,7 +3,12 @@ import { Router } from '@angular/router';
 import { AuthService } from '../services/auth.service';
 import { AccountRequest } from '../models/account-request.model';
 import { Subscription } from 'rxjs';
-import { MatSnackBar } from '@angular/material/snack-bar';
+import {
+  MatSnackBar,
+  MatSnackBarHorizontalPosition,
+  MatSnackBarModule,
+  MatSnackBarVerticalPosition,
+} from '@angular/material/snack-bar';
 
 @Component({
   selector: 'app-login-account',
@@ -36,6 +41,10 @@ export class LoginAccountComponent {
         });
       },
     });
+  }
+
+  redirectToRegisterPage() {
+    this.router.navigateByUrl('/account/register');
   }
 
   ngOnDestroy(): void {

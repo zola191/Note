@@ -30,6 +30,10 @@ export class CreateAccountComponent implements OnDestroy {
       });
   }
 
+  redirectToLoginPage() {
+    this.router.navigateByUrl('/account/login');
+  }
+
   ngOnDestroy(): void {
     this.addAccountSubscription?.unsubscribe();
   }

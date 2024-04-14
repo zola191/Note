@@ -20,7 +20,7 @@ const routes: Routes = [
     component: EditNotebookComponent,
   },
   {
-    path: 'account',
+    path: 'account/login',
     component: LoginAccountComponent,
   },
   {

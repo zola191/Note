@@ -21,13 +21,6 @@ namespace Notebook.Server.Services
         {
             var account = mapper.Map<Account>(request);
 
-            var existingAccount = await dbContext.Accounts.FirstOrDefaultAsync(f => f.Email == account.Email);
-
-            if (existingAccount != null)
-            {
-                return null;
-            }
-
             await dbContext.AddAsync(account);
             await dbContext.SaveChangesAsync();
 
@@ -35,12 +28,14 @@ namespace Notebook.Server.Services
             return response;
         }
 
-        public async Task<AccountModel> GetByEmail(string email)
+        public async Task<AccountModel> FindByEmail(string email)
         {
             var existingAccount = await dbContext.Accounts.FirstOrDefaultAsync(f => f.Email == email);
 
             var response = mapper.Map<AccountModel>(existingAccount);
             return response;
         }
+
+
     }
 }

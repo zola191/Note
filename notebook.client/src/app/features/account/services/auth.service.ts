@@ -18,8 +18,8 @@ export class AuthService {
     );
   }
 
-  createAccount(request: AccountRequest): Observable<void> {
-    return this.http.post<void>(
+  createAccount(request: AccountRequest): Observable<AccountResponse> {
+    return this.http.post<AccountResponse>(
       `${environment.apiBaseUrl}/api/account/create`,
       request
     );
