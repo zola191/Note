@@ -3,4 +3,5 @@ export interface AccountResponse {
   firstName: string;
   lastName: string;
   email: string;
+  token: string;
 }

@@ -1,4 +1,4 @@
-import { HttpClientModule } from '@angular/common/http';
+import { HTTP_INTERCEPTORS, HttpClientModule } from '@angular/common/http';
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 
@@ -13,6 +13,7 @@ import { CreateAccountComponent } from './features/account/create-account/create
 import { LoginAccountComponent } from './features/account/login-account/login-account.component';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { provideAnimations } from '@angular/platform-browser/animations';
+import { AuthInterceptor } from './core/interceptors/auth.interceptor';
 
 @NgModule({
   declarations: [
@@ -31,7 +32,10 @@ import { provideAnimations } from '@angular/platform-browser/animations';
     FormsModule,
     MatSnackBarModule,
   ],
-  providers: [provideAnimations()],
+  providers: [
+    provideAnimations(),
+    { provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true },
+  ],
   bootstrap: [AppComponent],
 })
 export class AppModule {}

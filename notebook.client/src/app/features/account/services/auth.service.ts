@@ -9,6 +9,11 @@ import { AccountResponse } from '../models/account-response.model';
   providedIn: 'root',
 })
 export class AuthService {
+  private readonly TOKEN_NAME = 'tasty-cookies';
+  get token() {
+    return localStorage.getItem(this.TOKEN_NAME);
+  }
+
   constructor(private http: HttpClient) {}
 
   login(request: AccountRequest): Observable<AccountResponse> {

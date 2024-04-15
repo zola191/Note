@@ -9,6 +9,7 @@ import {
   MatSnackBarModule,
   MatSnackBarVerticalPosition,
 } from '@angular/material/snack-bar';
+import { CookieService } from 'ngx-cookie-service';
 
 @Component({
   selector: 'app-login-account',
@@ -21,7 +22,8 @@ export class LoginAccountComponent {
   constructor(
     private authService: AuthService,
     private router: Router,
-    private snackBar: MatSnackBar
+    private snackBar: MatSnackBar,
+    private cookie: CookieService
   ) {
     this.model = {
       email: '',
@@ -32,6 +34,8 @@ export class LoginAccountComponent {
   onFormSubmit() {
     this.addAccountSubscription = this.authService.login(this.model).subscribe({
       next: (response) => {
+        localStorage.setItem('token', response.token);
+        this.cookie.set('token', response.token);
         this.router.navigateByUrl('/notebook/notebook-list');
       },
       error: (response) => {
@@ -44,7 +48,7 @@ export class LoginAccountComponent {
   }
 
   redirectToRegisterPage() {
-    this.router.navigateByUrl('/account/register');
+    this.router.navigateByUrl('/account/create');
   }
 
   ngOnDestroy(): void {

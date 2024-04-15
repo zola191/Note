@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Identity.Data;
+﻿using Microsoft.AspNetCore.Components.Server.ProtectedBrowserStorage;
+using Microsoft.AspNetCore.Identity.Data;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
 using Notebook.Server.Dto;
@@ -52,6 +53,14 @@ namespace Notebook.Server.Controllers
 
             var token = Generate(existingAccount);
             existingAccount.Token = token;
+
+            var cookieOptions = new CookieOptions();
+            cookieOptions.Expires = DateTime.Now.AddDays(1);
+            cookieOptions.Path = "/";
+            
+            //Не получилось сразу отправить в cookie 
+            Response.Cookies.Append("tasty-cookies", token, cookieOptions);
+
             return Ok(existingAccount);
         }
 
@@ -61,10 +70,11 @@ namespace Notebook.Server.Controllers
             var credentials = new SigningCredentials(secutiryKey, SecurityAlgorithms.HmacSha256);
             var claims = new[]
             {
-                new Claim(ClaimTypes.Email,account.Email)
+                new Claim(ClaimTypes.Email,account.Email),
             };
 
-            var token = new JwtSecurityToken(_config["Jwt:Issuer"],
+            var token = new JwtSecurityToken(
+                _config["Jwt:Issuer"],
                 _config["Jwt:Audience"],
                 claims,
                 expires: DateTime.UtcNow.AddHours(12),

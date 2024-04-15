@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Notebook.Server.Dto;
 using Notebook.Server.Services;
 
@@ -59,6 +60,7 @@ namespace Notebook.Server.Controllers
         }
 
         [HttpGet]
+        [Authorize]
         public async Task<IActionResult> GetNotebooks()
         {
             var notebooks = await notebookService.GetAllAsync();
