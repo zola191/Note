@@ -4,6 +4,7 @@ import {
   HttpInterceptor,
   HttpHandler,
   HttpRequest,
+  HTTP_INTERCEPTORS,
 } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { CookieService } from 'ngx-cookie-service';
@@ -23,3 +24,9 @@ export class AuthInterceptor implements HttpInterceptor {
     return next.handle(modifiedReq);
   }
 }
+
+// export const AuthInterceptorProvider = {
+//   provide: HTTP_INTERCEPTORS,
+//   userClass: AuthInterceptor,
+//   multi: true,
+// };

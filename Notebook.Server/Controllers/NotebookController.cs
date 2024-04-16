@@ -60,7 +60,6 @@ namespace Notebook.Server.Controllers
         }
 
         [HttpGet]
-        [Authorize]
         public async Task<IActionResult> GetNotebooks()
         {
             var notebooks = await notebookService.GetAllAsync();

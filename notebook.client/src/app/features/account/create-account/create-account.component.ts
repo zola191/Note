@@ -3,6 +3,7 @@ import { AccountRequest } from '../models/account-request.model';
 import { Router } from '@angular/router';
 import { Subscription } from 'rxjs';
 import { AuthService } from '../services/auth.service';
+import { MatSnackBar } from '@angular/material/snack-bar';
 
 @Component({
   selector: 'app-create-account',
@@ -13,7 +14,11 @@ export class CreateAccountComponent implements OnDestroy {
   model: AccountRequest;
   private addAccountSubscription?: Subscription;
 
-  constructor(private authService: AuthService, private router: Router) {
+  constructor(
+    private authService: AuthService,
+    private router: Router,
+    private snackBar: MatSnackBar
+  ) {
     this.model = {
       email: '',
       password: '',
@@ -26,6 +31,16 @@ export class CreateAccountComponent implements OnDestroy {
       .subscribe({
         next: (response) => {
           this.router.navigateByUrl('/account/login');
+        },
+        error: (response) => {
+          this.snackBar.open(
+            'Пользователь с таким логином уже существует',
+            'close',
+            {
+              duration: 3000,
+              panelClass: ['snackbar-1'],
+            }
+          );
         },
       });
   }
