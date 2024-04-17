@@ -1,13 +1,8 @@
-﻿using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Components.Server.ProtectedBrowserStorage;
-using Microsoft.AspNetCore.Identity.Data;
+﻿using Microsoft.AspNetCore.Identity.Data;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.IdentityModel.Tokens;
+using Notebook.Server.Authentication;
 using Notebook.Server.Dto;
 using Notebook.Server.Services;
-using System.IdentityModel.Tokens.Jwt;
-using System.Security.Claims;
-using System.Text;
 
 namespace Notebook.Server.Controllers
 {
@@ -17,12 +12,13 @@ namespace Notebook.Server.Controllers
     {
 
         private readonly IAccountService accountService;
-        private IConfiguration _config;
+        private readonly IJwtProvider jwtProvider;
+        
 
-        public AccountController(IAccountService accountService, IConfiguration config)
+        public AccountController(IAccountService accountService,IJwtProvider jwtProvider)
         {
             this.accountService = accountService;
-            _config = config;
+            this.jwtProvider = jwtProvider;
         }
 
         [HttpPost("create")]
@@ -52,36 +48,17 @@ namespace Notebook.Server.Controllers
                 throw new Exception("Bad password");
             }
 
-            var token = Generate(existingAccount);
+            var token =jwtProvider.Generate(existingAccount);
             existingAccount.Token = token;
 
             var cookieOptions = new CookieOptions();
-            cookieOptions.Expires = DateTime.Now.AddDays(1);
+            cookieOptions.Expires = DateTime.Now.AddSeconds(10);
             cookieOptions.Path = "/";
             
             //Не получилось сразу отправить в cookie 
             Response.Cookies.Append("tasty-cookies", token, cookieOptions);
 
             return Ok(existingAccount);
-        }
-
-        private string Generate(AccountModel account)
-        {
-            var secutiryKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_config["Jwt:Key"]));
-            var credentials = new SigningCredentials(secutiryKey, SecurityAlgorithms.HmacSha256);
-            var claims = new[]
-            {
-                new Claim(ClaimTypes.Email,account.Email),
-            };
-
-            var token = new JwtSecurityToken(
-                _config["Jwt:Issuer"],
-                _config["Jwt:Audience"],
-                claims,
-                expires: DateTime.UtcNow.AddHours(12),
-                signingCredentials: credentials);
-
-            return new JwtSecurityTokenHandler().WriteToken(token);
         }
 
     }

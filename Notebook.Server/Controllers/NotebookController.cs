@@ -7,6 +7,7 @@ namespace Notebook.Server.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize]
     public class NotebookController : ControllerBase
     {
         private readonly INotebookService notebookService;
@@ -57,6 +58,7 @@ namespace Notebook.Server.Controllers
         {
             await notebookService.DeleteAsync(id);
             return Ok();
+
         }
 
         [HttpGet]
