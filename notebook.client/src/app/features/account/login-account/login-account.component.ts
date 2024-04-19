@@ -34,7 +34,7 @@ export class LoginAccountComponent {
   onFormSubmit() {
     this.addAccountSubscription = this.authService.login(this.model).subscribe({
       next: (response) => {
-        localStorage.setItem('token', response.token);
+        console.log(response.token);
         this.cookie.set('token', response.token);
         this.router.navigateByUrl('/notebook/notebook-list');
       },
@@ -55,3 +55,5 @@ export class LoginAccountComponent {
     this.addAccountSubscription?.unsubscribe();
   }
 }
+
+// Добавить выйти и очистить cookie

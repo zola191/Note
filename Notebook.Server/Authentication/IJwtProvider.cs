@@ -1,5 +1,4 @@
-﻿using Notebook.Server.Domain;
-using Notebook.Server.Dto;
+﻿using Notebook.Server.Dto;
 
 namespace Notebook.Server.Authentication
 {

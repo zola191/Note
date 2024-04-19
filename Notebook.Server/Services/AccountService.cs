@@ -10,7 +10,6 @@ namespace Notebook.Server.Services
     {
         private readonly ApplicationDbContext dbContext;
         private readonly IMapper mapper;
-
         public AccountService(ApplicationDbContext dbContext, IMapper mapper)
         {
             this.dbContext = dbContext;
@@ -21,10 +20,24 @@ namespace Notebook.Server.Services
         {
             var account = mapper.Map<Account>(request);
 
-            await dbContext.AddAsync(account);
-            await dbContext.SaveChangesAsync();
+            if (account.User == null)
+            {
+                var user = account.User = new User()
+                {
+                    Email = account.Email,
+                    Account = account,
+                    AccountId = account.Email,
+                };
+                await dbContext.AddAsync(user);
+                await dbContext.SaveChangesAsync();
+            }
+
+            //await dbContext.AddAsync(account);
+            //await dbContext.SaveChangesAsync();
 
             var response = mapper.Map<AccountModel>(account);
+            //var userModel = await userService.CreateAsync(accountModel);
+
             return response;
         }
 
@@ -36,6 +49,10 @@ namespace Notebook.Server.Services
             return response;
         }
 
-
+        public string GetUserEmail(HttpRequest request)
+        {
+            //выполнить реализацию метода;
+            return "admin@notebook";
+        }
     }
 }

@@ -5,16 +5,19 @@ using Notebook.Server.Services;
 
 namespace Notebook.Server.Controllers
 {
-    [Route("api/[controller]")]
-    [ApiController]
     [Authorize]
+    [ApiController]
+    [Route("api/[controller]")]
+        
     public class NotebookController : ControllerBase
     {
         private readonly INotebookService notebookService;
+        private readonly IAccountService accountService;
 
-        public NotebookController(INotebookService notebookService)
+        public NotebookController(INotebookService notebookService, IAccountService accountService)
         {
             this.notebookService = notebookService;
+            this.accountService = accountService;
         }
 
         [HttpPost]
@@ -28,8 +31,8 @@ namespace Notebook.Server.Controllers
             return Ok();
         }
 
-        [HttpGet]
-        [Route("{id:int}")]
+        [HttpGet("{id:int}")]
+        // обезопасить получение данных
         public async Task<IActionResult> GetNotebookById([FromRoute] int id)
         {
             var response = await notebookService.GetById(id);
@@ -40,8 +43,7 @@ namespace Notebook.Server.Controllers
             return Ok(response);
         }
 
-        [HttpPut]
-        [Route("{id:int}")]
+        [HttpPut("{id:int}")]
         public async Task<IActionResult> UpdateNotebook([FromRoute] int id, NoteRequest requestDto)
         {
             var response = await notebookService.UpdateAsync(id, requestDto);
@@ -52,19 +54,20 @@ namespace Notebook.Server.Controllers
             return Ok(response);
         }
 
-        [HttpDelete]
-        [Route("{id:int}")]
-        public async Task<IActionResult> DeleteNotebook([FromRoute] int id)
+        [HttpDelete("{id:int}")]
+        public async Task<IActionResult> DeleteNotebook(int id) // проверить [fromRoute]
         {
             await notebookService.DeleteAsync(id);
             return Ok();
 
         }
 
-        [HttpGet]
+        [HttpGet("all")]
         public async Task<IActionResult> GetNotebooks()
         {
-            var notebooks = await notebookService.GetAllAsync();
+            var email = accountService.GetUserEmail(Request);
+
+            var notebooks = await notebookService.GetAllAsync(email);
             return Ok(notebooks);
         }
 

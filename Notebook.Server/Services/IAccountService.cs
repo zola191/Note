@@ -6,5 +6,6 @@ namespace Notebook.Server.Services
     {
         Task<AccountModel> CreateAsync(AccountRequest request);
         Task<AccountModel> FindByEmail(string email);
+        string GetUserEmail(HttpRequest request);
     }
 }

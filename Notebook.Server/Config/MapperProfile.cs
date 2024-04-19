@@ -12,6 +12,7 @@ namespace Notebook.Server.Config
             CreateMap<Note, NoteModel>();
             CreateMap<AccountRequest, Account>();
             CreateMap<Account, AccountModel>();
+            CreateMap<User, UserModel>();
         }
     }
 }

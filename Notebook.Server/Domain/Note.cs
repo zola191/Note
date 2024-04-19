@@ -1,7 +1,10 @@
-﻿namespace Notebook.Server.Domain
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace Notebook.Server.Domain
 {
     public class Note
     {
+        //[Key]
         public int Id { get; set; }
         public string FirstName { get; set; }
         public string? MiddleName { get; set; }
@@ -12,5 +15,9 @@
         public string? Organization { get; set; }
         public string? Position { get; set; }
         public string? Other { get; set; }
+
+        //one to many relationship with User
+        public string? UserId { get; set; } //Foreign Key Property
+        public User User { get; set; } // Navigation Property to represent the User
     }
 }

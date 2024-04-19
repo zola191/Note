@@ -28,7 +28,7 @@ namespace Notebook.Server.Services
             return response;
         }
 
-        public async Task<IEnumerable<NoteModel>> GetAllAsync()
+        public async Task<IEnumerable<NoteModel>> GetAllAsync(string email)
         {
             var notebooks = await dbContext.Notebooks.ToListAsync();
             var response = new List<NoteModel>();

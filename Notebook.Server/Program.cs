@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
+using Notebook.Server.Authentication;
 using Notebook.Server.Data;
 using Notebook.Server.Services;
 using System.Text;
@@ -16,6 +17,8 @@ builder.Services.AddSwaggerGen();
 builder.Services.AddAutoMapper(typeof(Program).Assembly);
 builder.Services.AddScoped<INotebookService, NotebookService>();
 builder.Services.AddScoped<IAccountService, AccountService>();
+builder.Services.AddScoped<IUserService, UserService>();
+builder.Services.AddScoped<IJwtProvider, JwtProvider>();
 
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
 {

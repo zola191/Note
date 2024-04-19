@@ -13,23 +13,28 @@ namespace Notebook.Server.Controllers
 
         private readonly IAccountService accountService;
         private readonly IJwtProvider jwtProvider;
-        
+        private readonly IUserService userService;
 
-        public AccountController(IAccountService accountService,IJwtProvider jwtProvider)
+
+        public AccountController(IAccountService accountService, IJwtProvider jwtProvider, IUserService userService)
         {
             this.accountService = accountService;
             this.jwtProvider = jwtProvider;
+            this.userService = userService;
         }
 
         [HttpPost("create")]
         public async Task<IActionResult> Create([FromBody] AccountRequest accountRequest)
         {
             var existingAccount = await accountService.FindByEmail(accountRequest.Email);
+
             if (existingAccount != null)
             {
                 throw new Exception("Account is already exist");
             }
+
             var response = await accountService.CreateAsync(accountRequest);
+
             return Ok(response);
         }
 
@@ -48,15 +53,16 @@ namespace Notebook.Server.Controllers
                 throw new Exception("Bad password");
             }
 
-            var token =jwtProvider.Generate(existingAccount);
+            var token = jwtProvider.Generate(existingAccount);
             existingAccount.Token = token;
 
-            var cookieOptions = new CookieOptions();
-            cookieOptions.Expires = DateTime.Now.AddSeconds(10);
-            cookieOptions.Path = "/";
-            
+            //var cookieOptions = new CookieOptions();
+            //cookieOptions.Expires = DateTime.Now.AddSeconds(10);
+            //cookieOptions.Path = "/";
+
             //Не получилось сразу отправить в cookie 
-            Response.Cookies.Append("tasty-cookies", token, cookieOptions);
+            //Сделать cookie secured 
+            //Response.Cookies.Append("tasty-cookies", token, cookieOptions);
 
             return Ok(existingAccount);
         }
