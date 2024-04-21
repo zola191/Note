@@ -14,6 +14,10 @@ namespace Notebook.Server.Domain
 
         //one to many relationship with Notes
         public ICollection<Note> Notes { get; set; }
+        public User()
+        {
+            Notes = new List<Note>();
+        }
     }
 
     // Изменить класс Note таким образом чтобы в рамках в контекста базы данных получилась

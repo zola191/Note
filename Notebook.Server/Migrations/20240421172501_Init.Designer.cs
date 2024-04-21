@@ -12,7 +12,7 @@ using Notebook.Server.Data;
 namespace Notebook.Server.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20240419103502_Init")]
+    [Migration("20240421172501_Init")]
     partial class Init
     {
         /// <inheritdoc />

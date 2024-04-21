@@ -18,19 +18,18 @@ namespace Notebook.Server.Services
 
         public async Task<AccountModel> CreateAsync(AccountRequest request)
         {
-            var account = mapper.Map<Account>(request);
-
-            if (account.User == null)
+            var user = new User()
             {
-                var user = account.User = new User()
-                {
-                    Email = account.Email,
-                    Account = account,
-                    AccountId = account.Email,
-                };
-                await dbContext.AddAsync(user);
-                await dbContext.SaveChangesAsync();
-            }
+                Email = request.Email,
+                AccountId = request.Email,
+            };
+
+            var account = mapper.Map<Account>(request);
+            account.User = user;
+            account.UserId = user.Email;
+
+            await dbContext.AddAsync(user);
+            await dbContext.SaveChangesAsync();
 
             //await dbContext.AddAsync(account);
             //await dbContext.SaveChangesAsync();
