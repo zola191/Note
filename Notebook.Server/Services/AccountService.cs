@@ -28,6 +28,8 @@ namespace Notebook.Server.Services
             account.User = user;
             account.UserId = user.Email;
 
+            user.Account = account;
+
             await dbContext.AddAsync(user);
             await dbContext.SaveChangesAsync();
 
