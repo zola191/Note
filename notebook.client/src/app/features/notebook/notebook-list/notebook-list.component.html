@@ -1,7 +1,7 @@
 <div class="container">
   <h1>Notebook List</h1>
   <div class="d-flex justify-content-start mt-3">
-    <a [routerLink]="['/notebook/add-notebook']" class="btn btn-primary"
+    <a [routerLink]="['/notebook/add-notebook/']" class="btn btn-primary"
       >Add Note</a
     >
   </div>
@@ -37,7 +37,7 @@
           <td>
             <a
               class="btn btn-primary"
-              [routerLink]="['/notebook/edit-notebook', note.id]"
+              [routerLink]="['/notebook/edit-notebook/', note.id]"
               >Edit</a
             >
           </td>

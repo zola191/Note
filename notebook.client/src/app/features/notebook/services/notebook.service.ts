@@ -19,7 +19,9 @@ export class NotebookService {
   }
 
   getAllNotebooks(): Observable<Notebook[]> {
-    return this.http.get<Notebook[]>(`${environment.apiBaseUrl}/api/notebook`);
+    return this.http.get<Notebook[]>(
+      `${environment.apiBaseUrl}/api/notebook/all`
+    );
   }
 
   getNotebookById(id: string): Observable<Notebook> {

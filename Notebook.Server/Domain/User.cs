@@ -1,14 +1,10 @@
-﻿using System.ComponentModel.DataAnnotations;
-
-namespace Notebook.Server.Domain
+﻿namespace Notebook.Server.Domain
 {
     public class User
     {
-        //[Key]
         public string Email { get; set; }
-        public string FirstName { get; set; }
-        public string LastName { get; set; }
-
+        public string? FirstName { get; set; }
+        public string? LastName { get; set; }
         public string AccountId { get; set; }
         public Account Account { get; set; }
 
@@ -28,6 +24,6 @@ namespace Notebook.Server.Domain
     // 2. Если пользователя нет, то создать новый экземпляр класс user
     // 3. Ссылку аккаунта кладем в свойство класса user
     // 4. Получившейся объект user сохраняем в БД в рамках результа создается учетная запись user и account
-    // 5. notebookcontroller создать не просто запись, а связать запись с пользователем и его токеном 
+    // 5. В notebookcontroller создать не просто запись, а связать запись с пользователем и его токеном 
 
 }

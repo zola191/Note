@@ -7,6 +7,5 @@ namespace Notebook.Server.Dto
         public string Password { get; set; }
         public string Token { get; set; }
         public UserModel User { get; set; }
-        public IEnumerable<NoteModel> Notes { get; set; }
     }
 }

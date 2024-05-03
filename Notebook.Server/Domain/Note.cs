@@ -1,10 +1,7 @@
-﻿using System.ComponentModel.DataAnnotations;
-
-namespace Notebook.Server.Domain
+﻿namespace Notebook.Server.Domain
 {
     public class Note
     {
-        //[Key]
         public int Id { get; set; }
         public string FirstName { get; set; }
         public string? MiddleName { get; set; }

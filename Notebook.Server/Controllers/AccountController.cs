@@ -13,14 +13,11 @@ namespace Notebook.Server.Controllers
 
         private readonly IAccountService accountService;
         private readonly IJwtProvider jwtProvider;
-        private readonly IUserService userService;
 
-
-        public AccountController(IAccountService accountService, IJwtProvider jwtProvider, IUserService userService)
+        public AccountController(IAccountService accountService, IJwtProvider jwtProvider)
         {
             this.accountService = accountService;
             this.jwtProvider = jwtProvider;
-            this.userService = userService;
         }
 
         [HttpPost("create")]
@@ -55,14 +52,6 @@ namespace Notebook.Server.Controllers
 
             var token = jwtProvider.Generate(existingAccount);
             existingAccount.Token = token;
-
-            //var cookieOptions = new CookieOptions();
-            //cookieOptions.Expires = DateTime.Now.AddSeconds(10);
-            //cookieOptions.Path = "/";
-
-            //Не получилось сразу отправить в cookie 
-            //Сделать cookie secured 
-            //Response.Cookies.Append("tasty-cookies", token, cookieOptions);
 
             return Ok(existingAccount);
         }

@@ -1,4 +1,6 @@
-﻿namespace Notebook.Server.Dto
+﻿using Notebook.Server.Domain;
+
+namespace Notebook.Server.Dto
 {
     public class NoteRequest
     {
@@ -11,5 +13,6 @@
         public string? Organization { get; set; }
         public string? Position { get; set; }
         public string? Other { get; set; }
+
     }
 }

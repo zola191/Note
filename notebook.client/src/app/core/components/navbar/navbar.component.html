@@ -16,14 +16,24 @@
     <div class="collapse navbar-collapse" id="navbarSupportedContent">
       <ul class="navbar-nav mr-auto">
         <li class="nav-item active">
-          <a class="nav-link" [routerLink]="['notebook/notebook-list']"
+          <a class="nav-link" [routerLink]="['notebook/notebook-list/']"
             >Notebook List</a
           >
         </li>
       </ul>
     </div>
     <div class="me-2">
-      <a class="nav-link" [routerLink]="['account/login']">Войти</a>
+      <ng-container *ngIf="user === undefined; else showLogout">
+        <a class="nav-link" [routerLink]="['account/login']">Войти</a>
+      </ng-container>
+      <ng-template #showLogout>
+        <div class="d-flex align-items-center">
+          <span>{{ user?.email }}</span>
+          <button class="btn btn-primary ms-3" (click)="onLogout()">
+            Выйти
+          </button>
+        </div>
+      </ng-template>
     </div>
   </div>
 </nav>

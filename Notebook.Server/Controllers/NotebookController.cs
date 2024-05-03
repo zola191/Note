@@ -8,7 +8,7 @@ namespace Notebook.Server.Controllers
     [Authorize]
     [ApiController]
     [Route("api/[controller]")]
-        
+
     public class NotebookController : ControllerBase
     {
         private readonly INotebookService notebookService;
@@ -23,7 +23,8 @@ namespace Notebook.Server.Controllers
         [HttpPost]
         public async Task<IActionResult> CreateNotebook([FromBody] NoteRequest requestDto)
         {
-            var existingAccount = notebookService.CreateAsync(requestDto);
+            var email = accountService.GetUserEmail(Request);
+            var existingAccount = await notebookService.CreateAsync(requestDto,email);
             if (existingAccount == null)
             {
                 return BadRequest();
@@ -35,7 +36,9 @@ namespace Notebook.Server.Controllers
         // обезопасить получение данных
         public async Task<IActionResult> GetNotebookById([FromRoute] int id)
         {
-            var response = await notebookService.GetById(id);
+            var email = accountService.GetUserEmail(Request);
+
+            var response = await notebookService.GetById(id,email);
             if (response == null)
             {
                 return NotFound();
@@ -46,7 +49,8 @@ namespace Notebook.Server.Controllers
         [HttpPut("{id:int}")]
         public async Task<IActionResult> UpdateNotebook([FromRoute] int id, NoteRequest requestDto)
         {
-            var response = await notebookService.UpdateAsync(id, requestDto);
+            var email = accountService.GetUserEmail(Request);
+            var response = await notebookService.UpdateAsync(id, requestDto, email);
             if (response == null)
             {
                 return NotFound();
@@ -66,7 +70,6 @@ namespace Notebook.Server.Controllers
         public async Task<IActionResult> GetNotebooks()
         {
             var email = accountService.GetUserEmail(Request);
-
             var notebooks = await notebookService.GetAllAsync(email);
             return Ok(notebooks);
         }

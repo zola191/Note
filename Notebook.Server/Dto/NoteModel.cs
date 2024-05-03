@@ -1,4 +1,6 @@
-﻿namespace Notebook.Server.Dto
+﻿using Notebook.Server.Domain;
+
+namespace Notebook.Server.Dto
 {
     public class NoteModel
     {
@@ -12,5 +14,6 @@
         public string Organization { get; set; } //(поле не является обязательным);
         public string Position { get; set; } //(поле не является обязательным);
         public string Other { get; set; } //(поле не является обязательным);
+
     }
 }

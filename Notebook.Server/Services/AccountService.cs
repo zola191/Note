@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using Notebook.Server.Data;
 using Notebook.Server.Domain;
 using Notebook.Server.Dto;
+using System.IdentityModel.Tokens.Jwt;
 
 namespace Notebook.Server.Services
 {
@@ -25,19 +26,10 @@ namespace Notebook.Server.Services
             };
 
             var account = mapper.Map<Account>(request);
-            account.User = user;
-            account.UserId = user.Email;
-
             user.Account = account;
-
             await dbContext.AddAsync(user);
             await dbContext.SaveChangesAsync();
-
-            //await dbContext.AddAsync(account);
-            //await dbContext.SaveChangesAsync();
-
             var response = mapper.Map<AccountModel>(account);
-            //var userModel = await userService.CreateAsync(accountModel);
 
             return response;
         }
@@ -45,15 +37,18 @@ namespace Notebook.Server.Services
         public async Task<AccountModel> FindByEmail(string email)
         {
             var existingAccount = await dbContext.Accounts.FirstOrDefaultAsync(f => f.Email == email);
-
             var response = mapper.Map<AccountModel>(existingAccount);
             return response;
         }
 
         public string GetUserEmail(HttpRequest request)
         {
-            //выполнить реализацию метода;
-            return "admin@notebook";
+            var handler = new JwtSecurityTokenHandler();
+            var jwt = request.Headers.Authorization.ToString().Split().Last();
+            var token = handler.ReadJwtToken(jwt);
+            var email = token.Claims.Select(claim => claim.Value).First();
+
+            return email;
         }
     }
 }

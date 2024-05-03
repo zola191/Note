@@ -17,9 +17,11 @@ namespace Notebook.Server.Services
             this.mapper = mapper;
         }
 
-        public async Task<NoteModel> CreateAsync(NoteRequest request)
+        public async Task<NoteModel> CreateAsync(NoteRequest request, string email)
         {
             var notebook = mapper.Map<Note>(request);
+
+            notebook.UserId = email;
 
             await dbContext.AddAsync(notebook);
             await dbContext.SaveChangesAsync();
@@ -30,28 +32,28 @@ namespace Notebook.Server.Services
 
         public async Task<IEnumerable<NoteModel>> GetAllAsync(string email)
         {
-            var notebooks = await dbContext.Notebooks.ToListAsync();
-            var response = new List<NoteModel>();
-            notebooks.ForEach(f =>
-            {
-                var item = mapper.Map<NoteModel>(f);
-                response.Add(item);
-            });
+            var notebooks = await dbContext.Notebooks.Where(f => f.UserId == email).ToListAsync();
+            var response = mapper.Map<List<NoteModel>>(notebooks);
             return response;
         }
 
-        public async Task<NoteModel> GetById(int id)
+        public async Task<NoteModel> GetById(int id, string email)
         {
-            var existingNotebook = await dbContext.Notebooks.FirstOrDefaultAsync(f => f.Id == id);
-
+            var existingNotebook = await dbContext.Notebooks.Include(f=>f.User).FirstOrDefaultAsync(f => f.Id == id);
+            if (existingNotebook.User.Email != email)
+            {
+                return null;
+            }
             var response = mapper.Map<NoteModel>(existingNotebook);
             return response;
         }
 
-        public async Task<NoteModel> UpdateAsync(int id, NoteRequest request)
+        public async Task<NoteModel> UpdateAsync(int id, NoteRequest request, string email)
         {
             var notebook = mapper.Map<Note>(request);
+
             notebook.Id = id;
+            notebook.UserId = email;
 
             var existingNotebook = await dbContext.Notebooks.FirstOrDefaultAsync(f => f.Id == id);
             if (existingNotebook == null)
