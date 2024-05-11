@@ -28,6 +28,7 @@ export class LoginAccountComponent {
     this.model = {
       email: '',
       password: '',
+      confirmPassword: '',
     };
   }
 

@@ -26,9 +26,12 @@ namespace Notebook.Server.Services
             };
 
             var account = mapper.Map<Account>(request);
+            
             user.Account = account;
+
             await dbContext.AddAsync(user);
             await dbContext.SaveChangesAsync();
+
             var response = mapper.Map<AccountModel>(account);
 
             return response;

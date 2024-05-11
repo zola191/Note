@@ -1,5 +1,5 @@
-<div class="container-sm">
-  <form #form="ngForm" (ngSubmit)="onFormSubmit()">
+<!-- <div class="container">
+  <form class="form" [formGroup]="form">
     <div class="form-group mb-3 mt-3">
       <label for="Email">Email address</label>
       <input
@@ -8,9 +8,11 @@
         id="Email"
         name="email"
         placeholder="Введите почту"
+        formControlName="email"
         [(ngModel)]="model.email"
       />
     </div>
+
     <div class="form-group mb-3">
       <label for="Password">Password</label>
       <input
@@ -19,14 +21,103 @@
         id="Password"
         name="Password"
         placeholder="Введите пароль"
+        formControlName="password"
         [(ngModel)]="model.password"
       />
     </div>
-    <button type="submit" class="btn btn-primary me-3">
+
+    <div class="form-group mb-3">
+      <label for="confirmPassword">Confirm password</label>
+      <input
+        type="password"
+        class="form-control"
+        id="confirmPassword"
+        name="confirmPassword"
+        placeholder="Подтвердите пароль"
+        formControlName="confirmPassword"
+        [(ngModel)]="model.confirmPassword"
+      />
+      <span *ngIf="form.errors?.['mismatch'] && form.touched"
+        >Password must match</span
+      >
+    </div>
+
+    <button type="submit" class="btn btn-primary me-3" (click)="onFormSubmit()">
       Регистрация нового пользователя
     </button>
-    <button class="btn btn-primary me-3" (click)="redirectToLoginPage()">
+    <button
+      [disabled]="!form.valid"
+      class="btn btn-primary me-3"
+      (click)="redirectToLoginPage()"
+    >
       Войти с логином и паролем
     </button>
   </form>
+</div> -->
+
+<div class="container h-100 mt-5">
+  <div class="row d-flex justify-content-center align-items-center h-100">
+    <div class="col-12 col-md-9 col-lg-7 col-xl-6">
+      <div class="card" style="border-radius: 15px">
+        <div class="card-body p-5">
+          <h2 class="text-uppercase text-center mb-5">Создание аккаунта</h2>
+
+          <form class="form" [formGroup]="form">
+            <div data-mdb-input-init class="form-outline mb-4">
+              <input
+                type="email"
+                class="form-control"
+                id="Email"
+                name="email"
+                placeholder="Введите почту"
+                formControlName="email"
+                [(ngModel)]="model.email"
+              />
+            </div>
+
+            <div data-mdb-input-init class="form-outline mb-4">
+              <input
+                type="password"
+                class="form-control"
+                id="Password"
+                name="Password"
+                placeholder="Введите пароль"
+                formControlName="password"
+                [(ngModel)]="model.password"
+              />
+            </div>
+
+            <div data-mdb-input-init class="form-outline mb-4">
+              <input
+                type="password"
+                class="form-control"
+                id="confirmPassword"
+                name="confirmPassword"
+                placeholder="Повторите пароль"
+                formControlName="confirmPassword"
+                [(ngModel)]="model.confirmPassword"
+              />
+            </div>
+
+            <div class="d-flex justify-content-center">
+              <button
+                type="submit"
+                class="btn btn-primary me-3"
+                (click)="onFormSubmit()"
+              >
+                Создать
+              </button>
+            </div>
+
+            <p class="text-center text-muted mt-3 mb-0">
+              Уже есть акканут?
+              <a href="/account/login" class="fw-bold text-body">
+                <u>Войти с существующим акканутом</u>
+              </a>
+            </p>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
 </div>

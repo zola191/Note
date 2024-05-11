@@ -29,6 +29,14 @@ namespace Notebook.Server.Controllers
             {
                 throw new Exception("Account is already exist");
             }
+            // передать в cookie token
+            // внести правки в модели
+
+            // 1. Hash with salt password хранить в БД
+            // 2. Выполнить проверку подтверждения пароля во фронте перед отправкой в бэк
+            // 3. Выполнить процедуру восстановления пароля (ссылка для генерации нового пароля)
+            // 4. Регистрация в Azure
+            // 5. ChatGpt
 
             var response = await accountService.CreateAsync(accountRequest);
 
