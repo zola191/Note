@@ -4,6 +4,8 @@ import { Subscription } from 'rxjs';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { AccountRestoreRequest } from '../models/account-restore.model';
 import { DataService } from '../services/data.service.service';
+import { patchState, signalState } from '@ngrx/signals';
+
 @Component({
   selector: 'app-restore-account',
   templateUrl: './restore-account.component.html',
@@ -37,6 +39,7 @@ export class RestoreAccountComponent {
             }
           );
           this.dataService.push(response.accountModel);
+          this.dataService.saveEmail(response.accountModel.email);
         },
         error: (error) => {
           this.snackBar.open(

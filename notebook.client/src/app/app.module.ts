@@ -17,6 +17,7 @@ import { AuthInterceptor } from './core/interceptors/auth.interceptor';
 import { CommonModule } from '@angular/common';
 import { RestoreAccountComponent } from './features/account/restore-account/restore-account.component';
 import { ChangePasswordComponent } from './features/account/change-password/change-password.component';
+import { StoreModule } from '@ngrx/store';
 
 @NgModule({
   declarations: [
@@ -38,6 +39,7 @@ import { ChangePasswordComponent } from './features/account/change-password/chan
     MatSnackBarModule,
     FormsModule,
     ReactiveFormsModule,
+    StoreModule.forRoot({}, {}),
   ],
   providers: [
     provideAnimations(),
