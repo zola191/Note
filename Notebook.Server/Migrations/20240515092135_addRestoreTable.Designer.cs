@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Notebook.Server.Data;
 
@@ -11,9 +12,11 @@ using Notebook.Server.Data;
 namespace Notebook.Server.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240515092135_addRestoreTable")]
+    partial class addRestoreTable
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -29,6 +32,9 @@ namespace Notebook.Server.Migrations
 
                     b.Property<string>("Password")
                         .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("RestoreAccountUrl")
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Email");
@@ -85,7 +91,27 @@ namespace Notebook.Server.Migrations
                     b.ToTable("Notebooks");
                 });
 
-            modelBuilder.Entity("Notebook.Server.Domain.RestoreAccount", b =>
+            modelBuilder.Entity("Notebook.Server.Domain.User", b =>
+                {
+                    b.Property<string>("Email")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("AccountId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("FirstName")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("LastName")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Email");
+
+                    b.ToTable("Users");
+                });
+
+            modelBuilder.Entity("Notebook.Server.Dto.RestoreAccount", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -108,27 +134,7 @@ namespace Notebook.Server.Migrations
 
                     b.HasIndex("AccountEmail");
 
-                    b.ToTable("RestoreAccount");
-                });
-
-            modelBuilder.Entity("Notebook.Server.Domain.User", b =>
-                {
-                    b.Property<string>("Email")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<string>("AccountId")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("FirstName")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("LastName")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("Email");
-
-                    b.ToTable("Users");
+                    b.ToTable("RestorePasswords");
                 });
 
             modelBuilder.Entity("Notebook.Server.Domain.Note", b =>
@@ -141,22 +147,22 @@ namespace Notebook.Server.Migrations
                     b.Navigation("User");
                 });
 
-            modelBuilder.Entity("Notebook.Server.Domain.RestoreAccount", b =>
+            modelBuilder.Entity("Notebook.Server.Domain.User", b =>
                 {
                     b.HasOne("Notebook.Server.Domain.Account", "Account")
-                        .WithMany()
-                        .HasForeignKey("AccountEmail")
+                        .WithOne("User")
+                        .HasForeignKey("Notebook.Server.Domain.User", "Email")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("Account");
                 });
 
-            modelBuilder.Entity("Notebook.Server.Domain.User", b =>
+            modelBuilder.Entity("Notebook.Server.Dto.RestoreAccount", b =>
                 {
                     b.HasOne("Notebook.Server.Domain.Account", "Account")
-                        .WithOne("User")
-                        .HasForeignKey("Notebook.Server.Domain.User", "Email")
+                        .WithMany()
+                        .HasForeignKey("AccountEmail")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 

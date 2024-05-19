@@ -5,6 +5,8 @@ import { AddNotebookComponent } from './features/notebook/add-notebook/add-noteb
 import { EditNotebookComponent } from './features/notebook/edit-notebook/edit-notebook.component';
 import { CreateAccountComponent } from './features/account/create-account/create-account.component';
 import { LoginAccountComponent } from './features/account/login-account/login-account.component';
+import { RestoreAccountComponent } from './features/account/restore-account/restore-account.component';
+import { ChangePasswordComponent } from './features/account/change-password/change-password.component';
 
 const routes: Routes = [
   {
@@ -26,6 +28,14 @@ const routes: Routes = [
   {
     path: 'account/create',
     component: CreateAccountComponent,
+  },
+  {
+    path: 'account/restore',
+    component: RestoreAccountComponent,
+  },
+  {
+    path: 'account/restore/:id',
+    component: ChangePasswordComponent,
   },
 ];
 

@@ -13,7 +13,6 @@ namespace Notebook.Server.Controllers
 
         private readonly IAccountService accountService;
         private readonly IJwtProvider jwtProvider;
-
         public AccountController(IAccountService accountService, IJwtProvider jwtProvider)
         {
             this.accountService = accountService;
@@ -29,6 +28,7 @@ namespace Notebook.Server.Controllers
             {
                 throw new Exception("Account is already exist");
             }
+
             // передать в cookie token
             // внести правки в модели
 
@@ -43,19 +43,15 @@ namespace Notebook.Server.Controllers
             return Ok(response);
         }
 
+
         [HttpPost("login")]
-        public async Task<IActionResult> Login([FromBody] LoginRequest loginRequest)
+        public async Task<IActionResult> Login([FromBody] LoginRequest request)
         {
-            var existingAccount = await accountService.FindByEmail(loginRequest.Email);
+            var existingAccount = await accountService.CheckLogin(request);
 
             if (existingAccount == null)
             {
                 throw new Exception("Bad login or password");
-            }
-
-            if (existingAccount.Password != loginRequest.Password)
-            {
-                throw new Exception("Bad password");
             }
 
             var token = jwtProvider.Generate(existingAccount);
@@ -64,5 +60,28 @@ namespace Notebook.Server.Controllers
             return Ok(existingAccount);
         }
 
+        [HttpPost("restore")]
+        public async Task<IActionResult> RestorePassword([FromBody] AccountRestoreRequest request)
+        {
+            var existingAccount = await accountService.RestorePassword(request);
+            if (existingAccount == null)
+            {
+                throw new Exception("Bad login");
+            }
+            return Ok(existingAccount);
+        }
+
+        [HttpPost("changepassword")]
+        public async Task<IActionResult> ChangePassword([FromQuery] string token, [FromBody] AccountRequest request)
+        {
+            var existingAccount = await accountService.FindByEmail(request.Email);
+            var isExpiredToken = accountService.CheckToken(token);
+            if (isExpiredToken)
+            {
+                return BadRequest();
+            }
+            await accountService.ChangePassword(existingAccount,request.Password);
+            return Ok();
+        }
     }
 }

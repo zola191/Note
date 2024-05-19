@@ -1,4 +1,6 @@
-﻿using Notebook.Server.Dto;
+﻿using Microsoft.AspNetCore.Identity.Data;
+using Notebook.Server.Domain;
+using Notebook.Server.Dto;
 
 namespace Notebook.Server.Services
 {
@@ -7,5 +9,9 @@ namespace Notebook.Server.Services
         Task<AccountModel> CreateAsync(AccountRequest request);
         Task<AccountModel> FindByEmail(string email);
         string GetUserEmail(HttpRequest request);
+        Task<RestoreAccountModel> RestorePassword(AccountRestoreRequest request);
+        Task<AccountModel> CheckLogin(LoginRequest request);
+        bool CheckToken(string token);
+        Task ChangePassword(AccountModel account, string newPassword);
     }
 }

@@ -60,5 +60,3 @@ export class LoginAccountComponent {
     this.addAccountSubscription?.unsubscribe();
   }
 }
-
-// Добавить выйти и очистить cookie

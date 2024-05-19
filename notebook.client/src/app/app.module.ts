@@ -15,6 +15,8 @@ import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { provideAnimations } from '@angular/platform-browser/animations';
 import { AuthInterceptor } from './core/interceptors/auth.interceptor';
 import { CommonModule } from '@angular/common';
+import { RestoreAccountComponent } from './features/account/restore-account/restore-account.component';
+import { ChangePasswordComponent } from './features/account/change-password/change-password.component';
 
 @NgModule({
   declarations: [
@@ -25,6 +27,8 @@ import { CommonModule } from '@angular/common';
     NotebookListComponent,
     CreateAccountComponent,
     LoginAccountComponent,
+    RestoreAccountComponent,
+    ChangePasswordComponent,
   ],
   imports: [
     BrowserModule,

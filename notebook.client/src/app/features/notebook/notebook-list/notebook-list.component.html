@@ -1,8 +1,8 @@
 <div class="container">
-  <h1>Notebook List</h1>
+  <h1 class="mt-3">Список Note</h1>
   <div class="d-flex justify-content-start mt-3">
     <a [routerLink]="['/notebook/add-notebook/']" class="btn btn-primary"
-      >Add Note</a
+      >Добавить Note</a
     >
   </div>
   <ng-container *ngIf="notebooks$ | async as notes">
@@ -38,7 +38,7 @@
             <a
               class="btn btn-primary"
               [routerLink]="['/notebook/edit-notebook/', note.id]"
-              >Edit</a
+              >Изменить</a
             >
           </td>
         </tr>

@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Notebook.Server.Data;
 
@@ -11,9 +12,11 @@ using Notebook.Server.Data;
 namespace Notebook.Server.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240512155516_changeModels")]
+    partial class changeModels
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -29,6 +32,9 @@ namespace Notebook.Server.Migrations
 
                     b.Property<string>("Password")
                         .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("RestoreAccount")
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Email");
@@ -85,32 +91,6 @@ namespace Notebook.Server.Migrations
                     b.ToTable("Notebooks");
                 });
 
-            modelBuilder.Entity("Notebook.Server.Domain.RestoreAccount", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("AccountEmail")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<string>("Token")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime>("Validity")
-                        .HasColumnType("datetime2");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("AccountEmail");
-
-                    b.ToTable("RestoreAccount");
-                });
-
             modelBuilder.Entity("Notebook.Server.Domain.User", b =>
                 {
                     b.Property<string>("Email")
@@ -139,17 +119,6 @@ namespace Notebook.Server.Migrations
                         .OnDelete(DeleteBehavior.Cascade);
 
                     b.Navigation("User");
-                });
-
-            modelBuilder.Entity("Notebook.Server.Domain.RestoreAccount", b =>
-                {
-                    b.HasOne("Notebook.Server.Domain.Account", "Account")
-                        .WithMany()
-                        .HasForeignKey("AccountEmail")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Account");
                 });
 
             modelBuilder.Entity("Notebook.Server.Domain.User", b =>
