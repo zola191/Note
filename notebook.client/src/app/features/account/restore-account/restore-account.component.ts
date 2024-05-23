@@ -1,10 +1,14 @@
 import { Component, EventEmitter, Output } from '@angular/core';
 import { AuthService } from '../services/auth.service';
-import { Subscription } from 'rxjs';
+import { Observable, Subscription } from 'rxjs';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { AccountRestoreRequest } from '../models/account-restore.model';
 import { DataService } from '../services/data.service.service';
 import { patchState, signalState } from '@ngrx/signals';
+import { Store } from '@ngrx/store';
+import { AppState } from '../state/app.state';
+import { selectEmail } from '../state/selector';
+import { setEmail } from '../state/actions';
 
 @Component({
   selector: 'app-restore-account',
@@ -15,14 +19,21 @@ export class RestoreAccountComponent {
   @Output() sendData: EventEmitter<string> = new EventEmitter<string>();
   private restoreAccountSubscription?: Subscription;
   model: AccountRestoreRequest;
+  email$: Observable<string>;
   constructor(
     private authService: AuthService,
     private snackBar: MatSnackBar,
-    private dataService: DataService
+    private dataService: DataService,
+    private store: Store<AppState>
   ) {
     this.model = {
       email: '',
     };
+    this.email$ = this.store.select(selectEmail);
+  }
+
+  setEmail(email: string) {
+    this.store.dispatch(setEmail({ newEmail: email }));
   }
 
   onFormSubmit() {
@@ -39,7 +50,7 @@ export class RestoreAccountComponent {
             }
           );
           this.dataService.push(response.accountModel);
-          this.dataService.saveEmail(response.accountModel.email);
+          this.setEmail(response.accountModel.email);
         },
         error: (error) => {
           this.snackBar.open(

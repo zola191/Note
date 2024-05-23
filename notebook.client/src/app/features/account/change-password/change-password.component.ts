@@ -7,6 +7,9 @@ import {
 } from '@angular/forms';
 import { AccountRequest } from '../models/account-request.model';
 import { DataService } from '../services/data.service.service';
+import { getEmail } from '../state/actions';
+import { AppState } from '../state/app.state';
+import { Store } from '@ngrx/store';
 
 @Component({
   selector: 'app-change-password',
@@ -17,7 +20,10 @@ export class ChangePasswordComponent implements OnInit {
   @Input() email: string = '';
   form: FormGroup;
   model: AccountRequest;
-  constructor(private dataService: DataService) {
+  constructor(
+    private dataService: DataService,
+    private store: Store<AppState>
+  ) {
     this.model = {
       email: 'test',
       password: '',
@@ -33,6 +39,10 @@ export class ChangePasswordComponent implements OnInit {
         validators: this.passwordMatchValidator,
       }
     );
+  }
+
+  getEmail(): string {
+    return this.store.dispatch(getEmail());
   }
 
   ngOnInit(): void {

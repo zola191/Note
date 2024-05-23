@@ -17,8 +17,9 @@ import { AuthInterceptor } from './core/interceptors/auth.interceptor';
 import { CommonModule } from '@angular/common';
 import { RestoreAccountComponent } from './features/account/restore-account/restore-account.component';
 import { ChangePasswordComponent } from './features/account/change-password/change-password.component';
-import { StoreModule } from '@ngrx/store';
-
+import { StoreModule, createReducer, provideState } from '@ngrx/store';
+import { NgxsModule } from '@ngxs/store';
+import { emailReducer } from './features/account/state/reducer';
 @NgModule({
   declarations: [
     AppComponent,
@@ -39,11 +40,16 @@ import { StoreModule } from '@ngrx/store';
     MatSnackBarModule,
     FormsModule,
     ReactiveFormsModule,
-    StoreModule.forRoot({}, {}),
+    NgxsModule,
+    StoreModule.forRoot({ reducer: emailReducer }),
   ],
   providers: [
     provideAnimations(),
-    { provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true },
+    {
+      provide: HTTP_INTERCEPTORS,
+      useClass: AuthInterceptor,
+      multi: true,
+    },
   ],
   bootstrap: [AppComponent],
 })
