@@ -41,9 +41,9 @@ export class ChangePasswordComponent implements OnInit {
     );
   }
 
-  getEmail(): string {
-    return this.store.dispatch(getEmail());
-  }
+  // getEmail(): string {
+  //   return this.store.dispatch(getEmail());
+  // }
 
   ngOnInit(): void {
     this.dataService.dataTransferObservable.subscribe((str) => {
