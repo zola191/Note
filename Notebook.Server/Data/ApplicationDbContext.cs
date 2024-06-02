@@ -20,9 +20,14 @@ namespace Notebook.Server.Data
             modelBuilder.Entity<User>(option =>
             {
                 option.HasKey(f => f.Email);
-                option.HasMany(f => f.Notes).WithOne(f => f.User).HasForeignKey(f => f.UserId).OnDelete(DeleteBehavior.Cascade);
+                option.HasMany(f => f.Notes)
+                .WithOne(f => f.User)
+                .HasForeignKey(f => f.UserId)
+                .OnDelete(DeleteBehavior.Cascade);
 
-                option.HasOne(f => f.Account).WithOne(f => f.User).HasForeignKey<User>(f => f.Email);
+                option.HasOne(f => f.Account)
+                .WithOne(f => f.User)
+                .HasForeignKey<User>(f => f.Email);
             });
 
             modelBuilder.Entity<Note>(option =>

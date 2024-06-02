@@ -81,8 +81,6 @@ namespace Notebook.Server.Services
             };
             await dbContext.AddAsync(restoreAccount);
 
-            //existingAccount.RestoreAccount = restoreAccount;
-            //dbContext.Accounts.Entry(existingAccount).Property(f => f.RestoreAccount).IsModified = true;
             await dbContext.SaveChangesAsync();
 
             var email = new EmailModel()
@@ -156,13 +154,20 @@ namespace Notebook.Server.Services
             return true;
         }
 
-        public async Task ChangePassword(AccountModel account, string newPassword)
+        public async Task ChangePasswordAsync(Account account, string newPassword)
         {
-            //выполнить копию объекта без сохранения ссылки
-            var existringAccount = await dbContext.Accounts.FirstOrDefaultAsync(f=>f.Email == account.Email);
-            existringAccount.Password = newPassword;
-            dbContext.Accounts.Update(existringAccount);
+            ////выполнить копию объекта без сохранения ссылки
+            //var existringAccount = await dbContext.Accounts.FirstOrDefaultAsync(f => f.Email == account.Email);
+            account.Password = newPassword;
+            dbContext.Accounts.Update(account);
             await dbContext.SaveChangesAsync();
+        }
+
+        public async Task<Account> FindByToken(string token)
+        {
+            var existingRestoreAccount = await dbContext.RestoreAccount.Include(f=>f.Account).FirstOrDefaultAsync(f => f.Token == token);
+            var account = await dbContext.Accounts.FirstOrDefaultAsync(f => f.Email == existingRestoreAccount.Account.Email);
+            return account;
         }
     }
 }

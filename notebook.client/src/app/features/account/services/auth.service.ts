@@ -8,6 +8,7 @@ import { CookieService } from 'ngx-cookie-service';
 import { User } from '../models/user.model';
 import { AccountRestoreRequest } from '../models/account-restore.model';
 import { RestoreAccountResponse } from '../models/account-restore-response.model';
+import { AccountChangePassword } from '../models/account-change-password-request.model';
 
 @Injectable({
   providedIn: 'root',
@@ -64,6 +65,15 @@ export class AuthService {
   restore(request: AccountRestoreRequest): Observable<RestoreAccountResponse> {
     return this.http.post<RestoreAccountResponse>(
       `${environment.apiBaseUrl}/api/account/restore`,
+      request
+    );
+  }
+
+  changePassword(
+    request: AccountChangePassword
+  ): Observable<AccountChangePassword> {
+    return this.http.post<AccountChangePassword>(
+      `${environment.apiBaseUrl}/api/account/changepassword`,
       request
     );
   }

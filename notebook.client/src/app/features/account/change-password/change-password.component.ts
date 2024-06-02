@@ -6,10 +6,11 @@ import {
   Validators,
 } from '@angular/forms';
 import { AccountRequest } from '../models/account-request.model';
-import { DataService } from '../services/data.service.service';
-import { getEmail } from '../state/actions';
-import { AppState } from '../state/app.state';
-import { Store } from '@ngrx/store';
+import { AuthService } from '../services/auth.service';
+import { Subscription } from 'rxjs';
+import { ActivatedRoute, Router } from '@angular/router';
+import { MatSnackBar } from '@angular/material/snack-bar';
+import { AccountChangePassword } from '../models/account-change-password-request.model';
 
 @Component({
   selector: 'app-change-password',
@@ -17,15 +18,19 @@ import { Store } from '@ngrx/store';
   styleUrl: './change-password.component.css',
 })
 export class ChangePasswordComponent implements OnInit {
-  @Input() email: string = '';
   form: FormGroup;
-  model: AccountRequest;
+  model: AccountChangePassword;
+  private addAccountSubscription?: Subscription;
+
   constructor(
-    private dataService: DataService,
-    private store: Store<AppState>
+    private authService: AuthService,
+    private router: Router,
+    private snackBar: MatSnackBar,
+    private activatedRoute: ActivatedRoute,
+    private route: ActivatedRoute
   ) {
     this.model = {
-      email: 'test',
+      token: '',
       password: '',
       confirmPassword: '',
     };
@@ -41,15 +46,7 @@ export class ChangePasswordComponent implements OnInit {
     );
   }
 
-  getEmail(): string {
-    return this.store.dispatch(getEmail());
-  }
-
-  ngOnInit(): void {
-    this.dataService.dataTransferObservable.subscribe((str) => {
-      this.model.email = str.email;
-    });
-  }
+  ngOnInit(): void {}
 
   passwordMatchValidator(control: AbstractControl) {
     return control.get('password')?.value ===
@@ -58,9 +55,37 @@ export class ChangePasswordComponent implements OnInit {
       : { mismatch: true };
   }
 
-  receiveEmail($event: string) {
-    this.model.email = $event;
-  }
+  onFormSubmit() {
+    let url = this.route.snapshot.url;
+    let token = url[url.length - 1].path;
+    this.model.token = token;
 
-  onFormSubmit() {}
+    this.route.url.subscribe(([url]) => {
+      const { path, parameters } = url;
+      console.log(path);
+      console.log(parameters);
+    });
+
+    this.addAccountSubscription = this.authService
+      .changePassword(this.model)
+      .subscribe({
+        next: (response) => {
+          this.router.navigateByUrl('/account/login');
+          this.snackBar.open('Пароль успешно изменен', 'close', {
+            duration: 3000,
+            panelClass: ['snackbar-1'],
+          });
+        },
+        error: (error) => {
+          this.snackBar.open(
+            'Не удалось сменить пароль, направьте новый запрос',
+            'close',
+            {
+              duration: 3000,
+              panelClass: ['snackbar-1'],
+            }
+          );
+        },
+      });
+  }
 }

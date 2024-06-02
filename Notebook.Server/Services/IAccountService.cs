@@ -12,6 +12,7 @@ namespace Notebook.Server.Services
         Task<RestoreAccountModel> RestorePassword(AccountRestoreRequest request);
         Task<AccountModel> CheckLogin(LoginRequest request);
         bool CheckToken(string token);
-        Task ChangePassword(AccountModel account, string newPassword);
+        Task ChangePasswordAsync(Account account, string newPassword);
+        Task<Account> FindByToken(string token);
     }
 }

@@ -19,7 +19,6 @@ import { RestoreAccountComponent } from './features/account/restore-account/rest
 import { ChangePasswordComponent } from './features/account/change-password/change-password.component';
 import { StoreModule, createReducer, provideState } from '@ngrx/store';
 import { NgxsModule } from '@ngxs/store';
-import { emailReducer } from './features/account/state/reducer';
 @NgModule({
   declarations: [
     AppComponent,
@@ -41,7 +40,6 @@ import { emailReducer } from './features/account/state/reducer';
     FormsModule,
     ReactiveFormsModule,
     NgxsModule,
-    StoreModule.forRoot({ reducer: emailReducer }),
   ],
   providers: [
     provideAnimations(),

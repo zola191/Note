@@ -72,15 +72,21 @@ namespace Notebook.Server.Controllers
         }
 
         [HttpPost("changepassword")]
-        public async Task<IActionResult> ChangePassword([FromQuery] string token, [FromBody] AccountRequest request)
+        public async Task<IActionResult> ChangePassword([FromBody] ChangePasswordModel request)
         {
-            var existingAccount = await accountService.FindByEmail(request.Email);
-            var isExpiredToken = accountService.CheckToken(token);
-            if (isExpiredToken)
+            var existingAccount = await accountService.FindByToken(request.Token);
+            if (existingAccount == null)
             {
                 return BadRequest();
             }
-            await accountService.ChangePassword(existingAccount,request.Password);
+
+            //var isExpiredToken = accountService.CheckToken(request.Token);
+            //if (isExpiredToken)
+            //{
+            //    return BadRequest();
+            //}
+
+            await accountService.ChangePasswordAsync(existingAccount, request.Password);
             return Ok();
         }
     }
