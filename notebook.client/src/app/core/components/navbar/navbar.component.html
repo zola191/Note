@@ -16,9 +16,15 @@
     <div class="collapse navbar-collapse" id="navbarSupportedContent">
       <ul class="navbar-nav mr-auto">
         <li class="nav-item active">
-          <a class="nav-link" [routerLink]="['notebook/notebook-list/']"
-            >Notebook List</a
-          >
+          <ng-container *ngIf="user === undefined; else showNotebookList">
+          </ng-container>
+          <ng-template #showNotebookList>
+            <div class="d-flex align-items-center">
+              <a class="nav-link" [routerLink]="['notebook/notebook-list/']"
+                >Notebook List</a
+              >
+            </div>
+          </ng-template>
         </li>
       </ul>
     </div>

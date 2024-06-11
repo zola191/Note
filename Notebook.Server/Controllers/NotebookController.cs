@@ -21,10 +21,10 @@ namespace Notebook.Server.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> CreateNotebook([FromBody] NoteRequest requestDto)
+        public async Task<IActionResult> CreateNotebook([FromBody] NoteRequest request)
         {
             var email = accountService.GetUserEmail(Request);
-            var existingAccount = await notebookService.CreateAsync(requestDto,email);
+            var existingAccount = await notebookService.CreateAsync(request,email);
             if (existingAccount == null)
             {
                 return BadRequest();
@@ -59,7 +59,7 @@ namespace Notebook.Server.Controllers
         }
 
         [HttpDelete("{id:int}")]
-        public async Task<IActionResult> DeleteNotebook(int id) // проверить [fromRoute]
+        public async Task<IActionResult> DeleteNotebook(int id)
         {
             await notebookService.DeleteAsync(id);
             return Ok();

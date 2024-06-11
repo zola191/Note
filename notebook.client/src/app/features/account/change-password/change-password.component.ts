@@ -71,14 +71,14 @@ export class ChangePasswordComponent implements OnInit {
       .subscribe({
         next: (response) => {
           this.router.navigateByUrl('/account/login');
-          this.snackBar.open('������ ������� �������', 'close', {
+          this.snackBar.open('Пароль успешно заменен', 'close', {
             duration: 3000,
             panelClass: ['snackbar-1'],
           });
         },
         error: (error) => {
           this.snackBar.open(
-            '�� ������� ������� ������, ��������� ����� ������',
+            'Ошибка при смене пароля, повторите запрос по смене пароля',
             'close',
             {
               duration: 3000,

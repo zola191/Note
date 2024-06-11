@@ -19,6 +19,8 @@ import { RestoreAccountComponent } from './features/account/restore-account/rest
 import { ChangePasswordComponent } from './features/account/change-password/change-password.component';
 import { StoreModule, createReducer, provideState } from '@ngrx/store';
 import { NgxsModule } from '@ngxs/store';
+import { MatDialogModule } from '@angular/material/dialog';
+
 @NgModule({
   declarations: [
     AppComponent,
@@ -40,6 +42,7 @@ import { NgxsModule } from '@ngxs/store';
     FormsModule,
     ReactiveFormsModule,
     NgxsModule,
+    MatDialogModule,
   ],
   providers: [
     provideAnimations(),

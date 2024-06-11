@@ -10,9 +10,9 @@ namespace Notebook.Server.Services
         Task<AccountModel> FindByEmail(string email);
         string GetUserEmail(HttpRequest request);
         Task<RestoreAccountModel> RestorePassword(AccountRestoreRequest request);
-        Task<AccountModel> CheckLogin(LoginRequest request);
-        bool CheckToken(string token);
-        Task ChangePasswordAsync(Account account, string newPassword);
+        Task<AccountModel> CheckLogin(AccountRequest request);
+        bool IsExpired(string token);
+        Task ChangePasswordAsync(ChangePasswordModel model);
         Task<Account> FindByToken(string token);
     }
 }

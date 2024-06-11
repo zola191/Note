@@ -1,8 +1,16 @@
-﻿using Microsoft.AspNetCore.Identity.Data;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using Notebook.Server.Authentication;
 using Notebook.Server.Dto;
 using Notebook.Server.Services;
+
+// передать в cookie token
+// внести правки в модели
+
+// 1. Hash with salt password хранить в БД
+// 2. Выполнить проверку подтверждения пароля во фронте перед отправкой в бэк
+// 3. Выполнить процедуру восстановления пароля (ссылка для генерации нового пароля)
+// 4. Регистрация в Azure
+// 5. ChatGpt
 
 namespace Notebook.Server.Controllers
 {
@@ -22,72 +30,62 @@ namespace Notebook.Server.Controllers
         [HttpPost("create")]
         public async Task<IActionResult> Create([FromBody] AccountRequest accountRequest)
         {
-            var existingAccount = await accountService.FindByEmail(accountRequest.Email);
-
-            if (existingAccount != null)
+            try
             {
-                throw new Exception("Account is already exist");
+                var existingAccount = await accountService.FindByEmail(accountRequest.Email);
+                var response = await accountService.CreateAsync(accountRequest);
+                return Ok(response);
             }
 
-            // передать в cookie token
-            // внести правки в модели
-
-            // 1. Hash with salt password хранить в БД
-            // 2. Выполнить проверку подтверждения пароля во фронте перед отправкой в бэк
-            // 3. Выполнить процедуру восстановления пароля (ссылка для генерации нового пароля)
-            // 4. Регистрация в Azure
-            // 5. ChatGpt
-
-            var response = await accountService.CreateAsync(accountRequest);
-
-            return Ok(response);
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
 
 
         [HttpPost("login")]
-        public async Task<IActionResult> Login([FromBody] LoginRequest request)
+        public async Task<IActionResult> Login([FromBody] AccountRequest request)
         {
-            var existingAccount = await accountService.CheckLogin(request);
-
-            if (existingAccount == null)
+            try
             {
-                throw new Exception("Bad login or password");
+                var existingAccount = await accountService.CheckLogin(request);
+                return Ok(existingAccount);
             }
-
-            var token = jwtProvider.Generate(existingAccount);
-            existingAccount.Token = token;
-
-            return Ok(existingAccount);
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
 
         [HttpPost("restore")]
         public async Task<IActionResult> RestorePassword([FromBody] AccountRestoreRequest request)
         {
-            var existingAccount = await accountService.RestorePassword(request);
-            if (existingAccount == null)
+            try
             {
-                throw new Exception("Bad login");
+                var existingAccount = await accountService.RestorePassword(request);
+                return Ok(existingAccount);
             }
-            return Ok(existingAccount);
+
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
 
         [HttpPost("changepassword")]
         public async Task<IActionResult> ChangePassword([FromBody] ChangePasswordModel request)
         {
-            var existingAccount = await accountService.FindByToken(request.Token);
-            if (existingAccount == null)
+            try
             {
-                return BadRequest();
+                await accountService.ChangePasswordAsync(request);
+                return Ok();
             }
 
-            //var isExpiredToken = accountService.CheckToken(request.Token);
-            //if (isExpiredToken)
-            //{
-            //    return BadRequest();
-            //}
-
-            await accountService.ChangePasswordAsync(existingAccount, request.Password);
-            return Ok();
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
     }
 }

@@ -1,13 +1,10 @@
 ﻿using AutoMapper;
-using Microsoft.AspNetCore.Identity.Data;
 using Microsoft.EntityFrameworkCore;
 using Notebook.Server.Authentication;
 using Notebook.Server.Data;
 using Notebook.Server.Domain;
 using Notebook.Server.Dto;
 using System.IdentityModel.Tokens.Jwt;
-using System.Security.Cryptography;
-using System.Text;
 
 namespace Notebook.Server.Services
 {
@@ -17,12 +14,14 @@ namespace Notebook.Server.Services
         private readonly IMapper mapper;
         private readonly IJwtProvider jwtProvider;
         private readonly IEmailService emailService;
-        public AccountService(ApplicationDbContext dbContext, IMapper mapper, IJwtProvider jwtProvider, IEmailService emailService)
+        private readonly IPasswordHasher passwordHasher;
+        public AccountService(ApplicationDbContext dbContext, IMapper mapper, IJwtProvider jwtProvider, IEmailService emailService, IPasswordHasher passwordHasher)
         {
             this.dbContext = dbContext;
             this.mapper = mapper;
             this.jwtProvider = jwtProvider;
             this.emailService = emailService;
+            this.passwordHasher = passwordHasher;
         }
 
         public async Task<AccountModel> CreateAsync(AccountRequest request)
@@ -35,7 +34,8 @@ namespace Notebook.Server.Services
 
             var account = mapper.Map<Account>(request);
 
-            account.Password = HashPassword(account.Password, out byte[] salt);
+            account.PasswordHash = passwordHasher.HashPassword(account.PasswordHash);
+            account.Salt = passwordHasher.CreateSalt();
 
             user.Account = account;
 
@@ -50,6 +50,10 @@ namespace Notebook.Server.Services
         public async Task<AccountModel> FindByEmail(string email)
         {
             var existingAccount = await dbContext.Accounts.FirstOrDefaultAsync(f => f.Email == email);
+            if (existingAccount != null)
+            {
+                throw new Exception("Account is already exist");
+            }
             var response = mapper.Map<AccountModel>(existingAccount);
             return response;
         }
@@ -67,76 +71,60 @@ namespace Notebook.Server.Services
         public async Task<RestoreAccountModel> RestorePassword(AccountRestoreRequest request)
         {
             var existingAccount = await dbContext.Accounts.FirstOrDefaultAsync(f => f.Email == request.Email);
+
             if (existingAccount == null)
             {
-                return null;
+                throw new Exception("Account does not exist");
             }
 
             var token = jwtProvider.GenerateRestore(existingAccount);
+
             var restoreAccount = new RestoreAccount()
             {
                 Account = existingAccount,
                 Token = token,
                 Validity = DateTime.Now.AddHours(12),
             };
-            await dbContext.AddAsync(restoreAccount);
 
+            await dbContext.AddAsync(restoreAccount);
             await dbContext.SaveChangesAsync();
 
             var email = new EmailModel()
             {
-                To = "salma.kiehn5@ethereal.email",
+                To = "stefan.bergstrom76@ethereal.email",
                 Subject = $"Ссылка на восстановление доступа",
                 Body = $"http://localhost:4200/account/restore/{token}"
             };
+
             emailService.SendEmail(email);
 
             var response = mapper.Map<RestoreAccountModel>(restoreAccount);
             return response;
         }
 
-        private string HashPassword(string passowrd, out byte[] salt)
+        public async Task<AccountModel> CheckLogin(AccountRequest request)
         {
-            const int keySize = 64;
-            const int interations = 400000;
-            var hashAlgoritm = HashAlgorithmName.SHA256;
+            var existingAccount = await dbContext.Accounts.FirstOrDefaultAsync(f => f.Email == request.Email);
 
-            salt = RandomNumberGenerator.GetBytes(keySize);
-
-            var hash = Rfc2898DeriveBytes.Pbkdf2(Encoding.UTF8.GetBytes(passowrd),
-                salt, interations, hashAlgoritm, keySize);
-
-            return Convert.ToHexString(hash);
-        }
-
-        private bool VerifyPassword(string password, string hash, byte[] salt)
-        {
-            const int keySize = 64;
-            const int interations = 400000;
-            var hashAlgoritm = HashAlgorithmName.SHA256;
-
-            var hashToCompare = Rfc2898DeriveBytes.Pbkdf2(password, salt, interations, hashAlgoritm, keySize);
-            return CryptographicOperations.FixedTimeEquals(hashToCompare, Convert.FromHexString(hash));
-        }
-
-        public Task<AccountModel> CheckLogin(LoginRequest request)
-        {
-            var existingAccount = FindByEmail(request.Email);
             if (existingAccount == null)
             {
-                return null;
+                throw new Exception("Bad login or password");
             }
-            var hash = HashPassword(request.Password, out byte[] salt);
-            var checkPassword = VerifyPassword(request.Password, hash, salt);
-            if (!checkPassword)
+
+            var passwordHash = passwordHasher.HashPassword(request.Password);
+            var salt = passwordHasher.CreateSalt();
+
+            if (existingAccount.Salt != salt || existingAccount.PasswordHash != passwordHash)
             {
-                return null;
+                throw new Exception("Bad login or password");
             }
-            return existingAccount;
+
+            var result = mapper.Map<AccountModel>(existingAccount);
+            return result;
         }
 
-
-        public bool CheckToken(string token)
+        //Проверить!
+        public bool IsExpired(string token)
         {
             var handler = new JwtSecurityTokenHandler();
             var jwtSecurityToken = handler.ReadJwtToken(token);
@@ -144,9 +132,9 @@ namespace Notebook.Server.Services
             var ticks = long.Parse(tokenExp);
             var tokenDate = DateTimeOffset.FromUnixTimeSeconds(ticks).UtcDateTime;
             var now = DateTime.Now.ToUniversalTime();
-            var valid = tokenDate >= now;
+            var isExpired = tokenDate >= now;
 
-            if (!valid)
+            if (isExpired)
             {
                 return false;
             }
@@ -154,19 +142,37 @@ namespace Notebook.Server.Services
             return true;
         }
 
-        public async Task ChangePasswordAsync(Account account, string newPassword)
+        public async Task ChangePasswordAsync(ChangePasswordModel model)
         {
-            ////выполнить копию объекта без сохранения ссылки
-            //var existringAccount = await dbContext.Accounts.FirstOrDefaultAsync(f => f.Email == account.Email);
-            account.Password = newPassword;
-            dbContext.Accounts.Update(account);
+            var tokenIsExpired = IsExpired(model.Token);
+
+            if (!tokenIsExpired)
+            {
+                throw new Exception("Time to restore account expired");
+            }
+
+            var existingAccount = await FindByToken(model.Token);
+
+            if (existingAccount == null)
+            {
+                throw new Exception("Wrong Url to restore password");
+            }
+
+            existingAccount.PasswordHash = passwordHasher.HashPassword(model.Password);
+
+            dbContext.Accounts.Update(existingAccount);
             await dbContext.SaveChangesAsync();
         }
 
         public async Task<Account> FindByToken(string token)
         {
-            var existingRestoreAccount = await dbContext.RestoreAccount.Include(f=>f.Account).FirstOrDefaultAsync(f => f.Token == token);
-            var account = await dbContext.Accounts.FirstOrDefaultAsync(f => f.Email == existingRestoreAccount.Account.Email);
+            var existingRestoreAccount = await dbContext.RestoreAccount
+                .Include(f => f.Account)
+                .FirstOrDefaultAsync(f => f.Token == token);
+
+            var account = await dbContext.Accounts
+                .FirstOrDefaultAsync(f => f.Email == existingRestoreAccount.Account.Email);
+
             return account;
         }
     }

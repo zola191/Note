@@ -1,5 +1,4 @@
-﻿using Notebook.Server.Domain;
-
+﻿
 namespace Notebook.Server.Dto
 {
     public class NoteRequest
