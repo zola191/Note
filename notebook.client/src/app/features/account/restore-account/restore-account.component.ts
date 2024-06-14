@@ -1,10 +1,8 @@
 import { Component, EventEmitter, Output } from '@angular/core';
 import { AuthService } from '../services/auth.service';
-import { Observable, Subscription } from 'rxjs';
+import { Subscription } from 'rxjs';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { AccountRestoreRequest } from '../models/account-restore.model';
-import { patchState, signalState } from '@ngrx/signals';
-import { Store } from '@ngrx/store';
 
 @Component({
   selector: 'app-restore-account',

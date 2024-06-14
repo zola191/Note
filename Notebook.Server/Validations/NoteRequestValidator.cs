@@ -14,11 +14,16 @@ namespace Notebook.Server.Validations
                 .MinimumLength(4).WithMessage("minimum length limited to 4 symbols")
                 .MaximumLength(25).WithMessage("maximum length limited to 25 symbols");
 
+            RuleFor(f => f.MiddleName)
+                .MinimumLength(4)
+                .MaximumLength(25);
+
             RuleFor(f => f.LastName)
                 .NotNull()
                 .NotEmpty()
                 .MinimumLength(4)
                 .MaximumLength(25);
+
             RuleFor(f => f.PhoneNumber)
 
                 .NotNull()

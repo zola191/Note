@@ -1,27 +1,21 @@
-import { Component, ElementRef, Inject, ViewChild } from '@angular/core';
+import { Component } from '@angular/core';
 import { NotebookRequest } from '../models/notebook-request.model';
 import { Subscription } from 'rxjs';
-import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
+import { MatDialogRef } from '@angular/material/dialog';
 import { Router } from '@angular/router';
 import { NotebookService } from '../services/notebook.service';
-
-// @ts-ignore
-const $: any = window['$'];
+import { FormControl, FormGroup, Validators } from '@angular/forms';
 @Component({
   selector: 'app-add-notebook',
   templateUrl: './add-notebook.component.html',
   styleUrl: './add-notebook.component.css',
 })
 export class AddNotebookComponent {
-  @ViewChild('modal') modal?: ElementRef;
-
   model: NotebookRequest;
-
+  form: FormGroup;
   private addNotebookSubscription?: Subscription;
-
   constructor(
     public dialogRef: MatDialogRef<AddNotebookComponent>,
-
     private notebookService: NotebookService,
     private router: Router
   ) {
@@ -36,6 +30,21 @@ export class AddNotebookComponent {
       position: '',
       other: '',
     };
+
+    this.form = new FormGroup({
+      firstName: new FormControl('', [
+        Validators.required,
+        Validators.minLength(4),
+        Validators.maxLength(25),
+      ]),
+      middleName: new FormControl('', [
+        Validators.minLength(4),
+        Validators.maxLength(25),
+      ]),
+      email: new FormControl('', [Validators.required, Validators.email]),
+      password: new FormControl('', [Validators.required]),
+      confirmPassword: new FormControl('', [Validators.required]),
+    });
   }
 
   onFormSubmit() {

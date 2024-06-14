@@ -1,10 +1,9 @@
-import { Component, OnInit, TemplateRef, ViewChild } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { Observable } from 'rxjs';
 import { NotebookService } from '../services/notebook.service';
 import { Notebook } from '../models/notebook.model';
-import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
+import { MatDialog } from '@angular/material/dialog';
 import { AddNotebookComponent } from '../add-notebook/add-notebook.component';
-import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 
 @Component({
   selector: 'app-notebook-list',
@@ -16,8 +15,7 @@ export class NotebookListComponent implements OnInit {
 
   constructor(
     private notebookService: NotebookService,
-    public dialog: MatDialog,
-    private modalService: NgbModal
+    public dialog: MatDialog
   ) {}
 
   ngOnInit(): void {

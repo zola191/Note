@@ -1,4 +1,8 @@
-import { HTTP_INTERCEPTORS, HttpClientModule } from '@angular/common/http';
+import {
+  HTTP_INTERCEPTORS,
+  provideHttpClient,
+  withInterceptorsFromDi,
+} from '@angular/common/http';
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 
@@ -14,14 +18,14 @@ import { LoginAccountComponent } from './features/account/login-account/login-ac
 import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { provideAnimations } from '@angular/platform-browser/animations';
 import { AuthInterceptor } from './core/interceptors/auth.interceptor';
-import { CommonModule } from '@angular/common';
 import { RestoreAccountComponent } from './features/account/restore-account/restore-account.component';
 import { ChangePasswordComponent } from './features/account/change-password/change-password.component';
-import { StoreModule, createReducer, provideState } from '@ngrx/store';
 import { NgxsModule } from '@ngxs/store';
 import { MatDialogModule } from '@angular/material/dialog';
 import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
 import { MatButtonModule } from '@angular/material/button';
+import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
+import { CommonModule } from '@angular/common';
 
 @NgModule({
   declarations: [
@@ -35,9 +39,9 @@ import { MatButtonModule } from '@angular/material/button';
     RestoreAccountComponent,
     ChangePasswordComponent,
   ],
+  bootstrap: [AppComponent],
   imports: [
     BrowserModule,
-    HttpClientModule,
     AppRoutingModule,
     FormsModule,
     MatSnackBarModule,
@@ -48,6 +52,8 @@ import { MatButtonModule } from '@angular/material/button';
     BrowserModule,
     MatDialogModule,
     MatButtonModule,
+    NgbModule,
+    CommonModule,
   ],
   providers: [
     provideAnimations(),
@@ -57,7 +63,7 @@ import { MatButtonModule } from '@angular/material/button';
       multi: true,
     },
     provideAnimationsAsync(),
+    provideHttpClient(withInterceptorsFromDi()),
   ],
-  bootstrap: [AppComponent],
 })
 export class AppModule {}
