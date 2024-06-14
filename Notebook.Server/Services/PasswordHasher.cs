@@ -6,21 +6,29 @@ namespace Notebook.Server.Services
     public class PasswordHasher : IPasswordHasher
     {
         const int keySize = 64;
-        const int interations = 400000;
-        HashAlgorithmName hashAlgoritm = HashAlgorithmName.SHA256;
+        const int iterations = 350000;
+        HashAlgorithmName hashAlgorithm = HashAlgorithmName.SHA256;
 
         public string CreateSalt()
         {
             var salt = RandomNumberGenerator.GetBytes(keySize);
-            return Encoding.Default.GetString(salt);
+
+            return Convert.ToHexString(salt);
         }
 
-        public string HashPassword(string password)
+        public string HashPassword(string password, string salt)
         {
-            var salt = RandomNumberGenerator.GetBytes(keySize);
+            var saltBytes = Enumerable.Range(0, salt.Length)
+                     .Where(x => x % 2 == 0)
+                     .Select(x => Convert.ToByte(salt.Substring(x, 2), 16))
+                     .ToArray();
 
-            var hash = Rfc2898DeriveBytes.Pbkdf2(Encoding.UTF8.GetBytes(password),
-                                                salt, interations, hashAlgoritm, keySize);
+            var hash = Rfc2898DeriveBytes.Pbkdf2(
+                Encoding.UTF8.GetBytes(password),
+                saltBytes,
+                iterations,
+                hashAlgorithm,
+                keySize);
 
             return Convert.ToHexString(hash);
         }

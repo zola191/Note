@@ -24,7 +24,7 @@ namespace Notebook.Server.Services
             this.passwordHasher = passwordHasher;
         }
 
-        public async Task<AccountModel> CreateAsync(AccountRequest request)
+        public async Task<AccountModel> CreateAsync(CreateAccountRequest request)
         {
             var user = new User()
             {
@@ -33,9 +33,10 @@ namespace Notebook.Server.Services
             };
 
             var account = mapper.Map<Account>(request);
+            var salt = passwordHasher.CreateSalt();
 
-            account.PasswordHash = passwordHasher.HashPassword(account.PasswordHash);
-            account.Salt = passwordHasher.CreateSalt();
+            account.PasswordHash = passwordHasher.HashPassword(request.Password, salt);
+            account.Salt = salt;
 
             user.Account = account;
 
@@ -102,7 +103,7 @@ namespace Notebook.Server.Services
             return response;
         }
 
-        public async Task<AccountModel> CheckLogin(AccountRequest request)
+        public async Task<AccountModel> CheckLogin(LoginAccountRequest request)
         {
             var existingAccount = await dbContext.Accounts.FirstOrDefaultAsync(f => f.Email == request.Email);
 
@@ -111,10 +112,9 @@ namespace Notebook.Server.Services
                 throw new Exception("Bad login or password");
             }
 
-            var passwordHash = passwordHasher.HashPassword(request.Password);
-            var salt = passwordHasher.CreateSalt();
+            var passwordHash = passwordHasher.HashPassword(request.Password, existingAccount.Salt);
 
-            if (existingAccount.Salt != salt || existingAccount.PasswordHash != passwordHash)
+            if (existingAccount.PasswordHash != passwordHash)
             {
                 throw new Exception("Bad login or password");
             }
@@ -158,7 +158,7 @@ namespace Notebook.Server.Services
                 throw new Exception("Wrong Url to restore password");
             }
 
-            existingAccount.PasswordHash = passwordHasher.HashPassword(model.Password);
+            existingAccount.PasswordHash = passwordHasher.HashPassword(model.Password,existingAccount.Salt);
 
             dbContext.Accounts.Update(existingAccount);
             await dbContext.SaveChangesAsync();

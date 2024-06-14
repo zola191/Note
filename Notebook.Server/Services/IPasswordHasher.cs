@@ -3,6 +3,7 @@
     public interface IPasswordHasher
     {
         public string CreateSalt();
-        public string HashPassword(string password);
+        //public string HashPassword(string password, out string saltString);
+        string HashPassword(string password, string salt);
     }
 }

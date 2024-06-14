@@ -1,10 +1,10 @@
-import { Component, OnInit, TemplateRef } from '@angular/core';
+import { Component, OnInit, TemplateRef, ViewChild } from '@angular/core';
 import { Observable } from 'rxjs';
 import { NotebookService } from '../services/notebook.service';
 import { Notebook } from '../models/notebook.model';
-import { MatDialog } from '@angular/material/dialog';
+import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
 import { AddNotebookComponent } from '../add-notebook/add-notebook.component';
-import { ModalService } from '../services/modal.service';
+import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 
 @Component({
   selector: 'app-notebook-list',
@@ -16,19 +16,22 @@ export class NotebookListComponent implements OnInit {
 
   constructor(
     private notebookService: NotebookService,
-    private modal: MatDialog,
-    private modalService: ModalService
+    public dialog: MatDialog,
+    private modalService: NgbModal
   ) {}
 
   ngOnInit(): void {
     this.notebooks$ = this.notebookService.getAllNotebooks();
   }
 
-  openModal(modal: TemplateRef<any>) {
-    this.modalService
-      .open(modal, { size: 'lg', title: 'add notebook' })
-      .subscribe((action) => {
-        console.log('modalAction', action);
-      });
+  openDialog(): void {
+    const dialogRef = this.dialog.open(AddNotebookComponent, {
+      height: '800px',
+      width: '600px',
+    });
+
+    dialogRef.afterClosed().subscribe((result) => {
+      console.log('The dialog was closed');
+    });
   }
 }

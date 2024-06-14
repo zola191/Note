@@ -28,7 +28,7 @@ namespace Notebook.Server.Controllers
         }
 
         [HttpPost("create")]
-        public async Task<IActionResult> Create([FromBody] AccountRequest accountRequest)
+        public async Task<IActionResult> Create([FromBody] CreateAccountRequest accountRequest)
         {
             try
             {
@@ -45,7 +45,7 @@ namespace Notebook.Server.Controllers
 
 
         [HttpPost("login")]
-        public async Task<IActionResult> Login([FromBody] AccountRequest request)
+        public async Task<IActionResult> Login([FromBody] LoginAccountRequest request)
         {
             try
             {

@@ -1,7 +1,6 @@
 import { Component } from '@angular/core';
 import { Router } from '@angular/router';
 import { AuthService } from '../services/auth.service';
-import { AccountRequest } from '../models/account-request.model';
 import { Subscription } from 'rxjs';
 import {
   MatSnackBar,
@@ -10,6 +9,7 @@ import {
   MatSnackBarVerticalPosition,
 } from '@angular/material/snack-bar';
 import { CookieService } from 'ngx-cookie-service';
+import { loginRequest } from '../models/account-loginRequest.mode';
 
 @Component({
   selector: 'app-login-account',
@@ -17,7 +17,7 @@ import { CookieService } from 'ngx-cookie-service';
   styleUrl: './login-account.component.css',
 })
 export class LoginAccountComponent {
-  model: AccountRequest;
+  model: loginRequest;
   private addAccountSubscription?: Subscription;
   constructor(
     private authService: AuthService,
@@ -28,7 +28,6 @@ export class LoginAccountComponent {
     this.model = {
       email: '',
       password: '',
-      confirmPassword: '',
     };
   }
 

@@ -1,144 +1,106 @@
-<!-- <div class="container-sm">
-  <form #form="ngForm" (ngSubmit)="onFormSubmit()">
-    <div class="form-group mt-3 mb-3">
-      <label for="firstName">First name</label>
-      <input
-        type="text"
-        class="form-control"
-        id="firstName"
-        name="firstName"
-        placeholder="Enter first name"
-        [(ngModel)]="model.firstName"
-      />
-    </div>
-    <div class="form-group mt-3 mb-3">
-      <label for="middleName">Middle name</label>
-      <input
-        type="text"
-        class="form-control"
-        id="middleName"
-        name="middleName"
-        placeholder="Enter middle name"
-        [(ngModel)]="model.middleName"
-      />
-    </div>
-    <div class="form-group mt-3 mb-3">
-      <label for="lastName">Last name</label>
-      <input
-        type="text"
-        class="form-control"
-        id="lastName"
-        name="lastName"
-        placeholder="Enter last name"
-        [(ngModel)]="model.lastName"
-      />
-    </div>
-    <div class="form-group mt-3 mb-3">
-      <label for="phoneNumber">Phone number</label>
-      <input
-        type="text"
-        class="form-control"
-        id="phoneNumber"
-        name="phoneNumber"
-        placeholder="Enter phone number"
-        [(ngModel)]="model.phoneNumber"
-      />
-    </div>
-    <div class="form-group mt-3 mb-3">
-      <label for="country">Country</label>
-      <input
-        type="text"
-        class="form-control"
-        id="country"
-        name="country"
-        placeholder="Enter Country"
-      />
-    </div>
-    <div class="form-group mt-3 mb-3">
-      <label for="birthDay">Birthday</label>
-      <input
-        type="date"
-        class="form-control"
-        id="birthDay"
-        name="birthDay"
-        placeholder="Enter birthday"
-        value="{{ model.birthDay }}"
-        [ngModel]="model.birthDay | date : 'yyyy-MM-dd'"
-        (ngModelChange)="model.birthDay = $event"
-      />
-    </div>
-    <div class="form-group mt-3 mb-3">
-      <label for="organization">Organization</label>
-      <input
-        type="text"
-        class="form-control"
-        id="organization"
-        name="organization"
-        placeholder="Enter organization"
-      />
-    </div>
-    <div class="form-group mt-3 mb-3">
-      <label for="position">Position</label>
-      <input
-        type="text"
-        class="form-control"
-        id="position"
-        name="position"
-        placeholder="Enter position"
-      />
-    </div>
-    <div class="form-group mt-3 mb-3">
-      <label for="other">Other</label>
-      <textarea
-        type="text"
-        class="form-control"
-        id="other"
-        name="other"
-        [(ngModel)]="model.other"
-      ></textarea>
-    </div>
-    <button type="submit" class="btn btn-primary">Create</button>
-  </form>
-</div> -->
-
-<div class="container">
-  <div class="modal {{ size }}">
-    <div class="modal-header">
-      {{ title }}
-    </div>
-    <span class="modal-close" (click)="close()">X</span>
+<h2 mat-dialog-title>Добавление Notebook</h2>
+<mat-dialog-content>
+  <div class="form-group mt-3 mb-3">
+    <label for="firstName">First name</label>
+    <input
+      type="text"
+      class="form-control"
+      id="firstName"
+      name="firstName"
+      placeholder="Enter first name"
+      [(ngModel)]="model.firstName"
+    />
   </div>
-  <div class="modal-content">asdasd</div>
-  <div class="modal-footer">
-    <button (click)="submit()">Submit</button>
+  <div class="form-group mt-3 mb-3">
+    <label for="middleName">Middle name</label>
+    <input
+      type="text"
+      class="form-control"
+      id="middleName"
+      name="middleName"
+      placeholder="Enter middle name"
+      [(ngModel)]="model.middleName"
+    />
   </div>
-
-  <div class="modal-backfrop" (click)="close()"></div>
-</div>
-
-<!-- <div class="modal" tabindex="-1" role="dialog">
-  <div class="modal-dialog" role="document">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title">Modal title</h5>
-        <button
-          type="button"
-          class="close"
-          data-dismiss="modal"
-          aria-label="Close"
-        >
-          <span aria-hidden="true">&times;</span>
-        </button>
-      </div>
-      <div class="modal-body">
-        <p>Modal body text goes here.</p>
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-primary">Save changes</button>
-        <button type="button" class="btn btn-secondary" data-dismiss="modal">
-          Close
-        </button>
-      </div>
-    </div>
+  <div class="form-group mt-3 mb-3">
+    <label for="lastName">Last name</label>
+    <input
+      type="text"
+      class="form-control"
+      id="lastName"
+      name="lastName"
+      placeholder="Enter last name"
+      [(ngModel)]="model.lastName"
+    />
   </div>
-</div> -->
+  <div class="form-group mt-3 mb-3">
+    <label for="phoneNumber">Phone number</label>
+    <input
+      type="text"
+      class="form-control"
+      id="phoneNumber"
+      name="phoneNumber"
+      placeholder="Enter phone number"
+      [(ngModel)]="model.phoneNumber"
+    />
+  </div>
+  <div class="form-group mt-3 mb-3">
+    <label for="country">Country</label>
+    <input
+      type="text"
+      class="form-control"
+      id="country"
+      name="country"
+      placeholder="Enter Country"
+    />
+  </div>
+  <div class="form-group mt-3 mb-3">
+    <label for="birthDay">Birthday</label>
+    <input
+      type="date"
+      class="form-control"
+      id="birthDay"
+      name="birthDay"
+      placeholder="Enter birthday"
+      value="{{ model.birthDay }}"
+      [ngModel]="model.birthDay | date : 'yyyy-MM-dd'"
+      (ngModelChange)="model.birthDay = $event"
+    />
+  </div>
+  <div class="form-group mt-3 mb-3">
+    <label for="organization">Organization</label>
+    <input
+      type="text"
+      class="form-control"
+      id="organization"
+      name="organization"
+      placeholder="Enter organization"
+    />
+  </div>
+  <div class="form-group mt-3 mb-3">
+    <label for="position">Position</label>
+    <input
+      type="text"
+      class="form-control"
+      id="position"
+      name="position"
+      placeholder="Enter position"
+    />
+  </div>
+  <div class="form-group mt-3 mb-3">
+    <label for="other">Other</label>
+    <textarea
+      type="text"
+      class="form-control"
+      id="other"
+      name="other"
+      [(ngModel)]="model.other"
+    ></textarea>
+  </div>
+</mat-dialog-content>
+<mat-dialog-actions class="modal-actions">
+  <button mat-button mat-dialog-close>Отмена</button>
+  <button mat-button mat-dialog-close cdkFocusInitial submit>
+    Добавить запись
+  </button>
+</mat-dialog-actions>

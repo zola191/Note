@@ -20,6 +20,8 @@ import { ChangePasswordComponent } from './features/account/change-password/chan
 import { StoreModule, createReducer, provideState } from '@ngrx/store';
 import { NgxsModule } from '@ngxs/store';
 import { MatDialogModule } from '@angular/material/dialog';
+import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
+import { MatButtonModule } from '@angular/material/button';
 
 @NgModule({
   declarations: [
@@ -43,6 +45,9 @@ import { MatDialogModule } from '@angular/material/dialog';
     ReactiveFormsModule,
     NgxsModule,
     MatDialogModule,
+    BrowserModule,
+    MatDialogModule,
+    MatButtonModule,
   ],
   providers: [
     provideAnimations(),
@@ -51,6 +56,7 @@ import { MatDialogModule } from '@angular/material/dialog';
       useClass: AuthInterceptor,
       multi: true,
     },
+    provideAnimationsAsync(),
   ],
   bootstrap: [AppComponent],
 })

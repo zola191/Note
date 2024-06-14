@@ -22,6 +22,7 @@ builder.Services.AddScoped<IAccountService, AccountService>();
 builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<IJwtProvider, JwtProvider>();
 builder.Services.AddScoped<IEmailService, EmailService>();
+builder.Services.AddScoped<IPasswordHasher, PasswordHasher>();
 
 builder.Services.AddControllers().
     AddFluentValidation(f=>
@@ -56,6 +57,8 @@ builder.Services.AddAuthorization();
 
 var app = builder.Build();
 
+MigrateDb(app);
+
 app.UseDefaultFiles();
 app.UseStaticFiles();
 
@@ -83,3 +86,12 @@ app.MapControllers();
 app.MapFallbackToFile("/index.html");
 
 app.Run();
+
+void MigrateDb(WebApplication app)
+{
+    var scopeFactory = app.Services.GetRequiredService<IServiceScopeFactory>();
+
+    using var scope = scopeFactory.CreateScope();
+    var dbContext = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
+    dbContext.Database.Migrate();
+}

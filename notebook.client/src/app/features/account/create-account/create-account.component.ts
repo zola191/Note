@@ -1,5 +1,4 @@
 import { Component, OnDestroy } from '@angular/core';
-import { AccountRequest } from '../models/account-request.model';
 import { Router } from '@angular/router';
 import { Subscription } from 'rxjs';
 import { AuthService } from '../services/auth.service';
@@ -10,6 +9,7 @@ import {
   FormGroup,
   Validators,
 } from '@angular/forms';
+import { createRequest } from '../models/account-createRequest.model';
 
 @Component({
   selector: 'app-create-account',
@@ -18,7 +18,7 @@ import {
 })
 export class CreateAccountComponent implements OnDestroy {
   form: FormGroup;
-  model: AccountRequest;
+  model: createRequest;
   private addAccountSubscription?: Subscription;
 
   constructor(

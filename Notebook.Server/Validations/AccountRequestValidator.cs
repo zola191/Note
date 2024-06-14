@@ -4,7 +4,7 @@ using Notebook.Server.Validations.CustomValidators;
 
 namespace Notebook.Server.Validators
 {
-    public class AccountRequestValidator : AbstractValidator<AccountRequest>
+    public class AccountRequestValidator : AbstractValidator<CreateAccountRequest>
     {
         public AccountRequestValidator()
         {

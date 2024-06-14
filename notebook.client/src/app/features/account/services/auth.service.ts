@@ -1,7 +1,7 @@
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable } from 'rxjs';
-import { AccountRequest } from '../models/account-request.model';
+import { createRequest } from '../models/account-createRequest.model';
 import { environment } from '../../../../environments/environment.development';
 import { AccountResponse } from '../models/account-response.model';
 import { CookieService } from 'ngx-cookie-service';
@@ -9,6 +9,7 @@ import { User } from '../models/user.model';
 import { AccountRestoreRequest } from '../models/account-restore.model';
 import { RestoreAccountResponse } from '../models/account-restore-response.model';
 import { AccountChangePassword } from '../models/account-change-password-request.model';
+import { loginRequest } from '../models/account-loginRequest.mode';
 
 @Injectable({
   providedIn: 'root',
@@ -22,14 +23,14 @@ export class AuthService {
 
   constructor(private http: HttpClient, private cookie: CookieService) {}
 
-  createAccount(request: AccountRequest): Observable<AccountResponse> {
+  createAccount(request: createRequest): Observable<AccountResponse> {
     return this.http.post<AccountResponse>(
       `${environment.apiBaseUrl}/api/account/create`,
       request
     );
   }
 
-  login(request: AccountRequest): Observable<AccountResponse> {
+  login(request: loginRequest): Observable<AccountResponse> {
     return this.http.post<AccountResponse>(
       `${environment.apiBaseUrl}/api/account/login`,
       request

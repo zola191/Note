@@ -1,37 +1,29 @@
-import {
-  Component,
-  ElementRef,
-  EventEmitter,
-  Input,
-  OnDestroy,
-  Output,
-  input,
-  output,
-} from '@angular/core';
+import { Component, ElementRef, Inject, ViewChild } from '@angular/core';
 import { NotebookRequest } from '../models/notebook-request.model';
 import { Subscription } from 'rxjs';
+import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { Router } from '@angular/router';
 import { NotebookService } from '../services/notebook.service';
 
+// @ts-ignore
+const $: any = window['$'];
 @Component({
   selector: 'app-add-notebook',
   templateUrl: './add-notebook.component.html',
   styleUrl: './add-notebook.component.css',
 })
 export class AddNotebookComponent {
-  @Input() size? = 'md';
-  @Input() title? = 'modal title';
-
-  @Output() closeEvent = new EventEmitter();
-  @Output() submitEvent = new EventEmitter();
+  @ViewChild('modal') modal?: ElementRef;
 
   model: NotebookRequest;
+
   private addNotebookSubscription?: Subscription;
 
   constructor(
+    public dialogRef: MatDialogRef<AddNotebookComponent>,
+
     private notebookService: NotebookService,
-    private router: Router,
-    private elementRef: ElementRef
+    private router: Router
   ) {
     this.model = {
       firstName: '',
@@ -46,27 +38,17 @@ export class AddNotebookComponent {
     };
   }
 
-  close(): void {
-    this.elementRef.nativeElement.remove();
-    this.closeEvent.emit();
+  onFormSubmit() {
+    this.addNotebookSubscription = this.notebookService
+      .addNotebook(this.model)
+      .subscribe({
+        next: (response) => {
+          this.router.navigateByUrl('/notebook/notebook-list');
+        },
+      });
   }
 
-  submit(): void {
-    this.elementRef.nativeElement.remove();
-    this.submitEvent.emit();
+  ngOnDestroy(): void {
+    this.addNotebookSubscription?.unsubscribe;
   }
-
-  // onFormSubmit() {
-  //   this.addNotebookSubscription = this.notebookService
-  //     .addNotebook(this.model)
-  //     .subscribe({
-  //       next: (response) => {
-  //         this.router.navigateByUrl('/notebook/notebook-list');
-  //       },
-  //     });
-  // }
-
-  // ngOnDestroy(): void {
-  //   this.addNotebookSubscription?.unsubscribe;
-  // }
 }
