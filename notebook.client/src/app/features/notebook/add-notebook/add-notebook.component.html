@@ -39,7 +39,8 @@
         class="form-control"
         id="middleName"
         name="middleName"
-        placeholder="Enter middle name"
+        placeholder="Введите отчество"
+        formControlName="middleName"
         [(ngModel)]="model.middleName"
       />
       <div
@@ -50,6 +51,9 @@
             form.controls['middleName'].dirty)
         "
       >
+        <span *ngIf="form.controls['middleName'].errors?.['required']"
+          >Поле обязательно для заполнения</span
+        >
         <span *ngIf="form.controls['middleName'].errors?.['minlength']"
           >Минимальная длина 4 символа</span
         >
@@ -59,36 +63,87 @@
       </div>
     </div>
     <div class="form-group mt-3 mb-3">
-      <label for="lastName">Last name</label>
+      <label for="lastName">Фамилия</label>
       <input
         type="text"
         class="form-control"
         id="lastName"
         name="lastName"
-        placeholder="Enter last name"
+        placeholder="Введите Фамилию"
+        formControlName="lastName"
         [(ngModel)]="model.lastName"
       />
+      <div
+        class="text-start text-danger"
+        *ngIf="
+          form.controls['lastName'].invalid &&
+          (form.controls['lastName'].touched || form.controls['lastName'].dirty)
+        "
+      >
+        <span *ngIf="form.controls['lastName'].errors?.['required']"
+          >Поле обязательно для заполнения</span
+        >
+        <span *ngIf="form.controls['lastName'].errors?.['minlength']"
+          >Минимальная длина 4 символа</span
+        >
+        <span *ngIf="form.controls['lastName'].errors?.['maxlength']"
+          >Максимальная длина 25 символов
+        </span>
+      </div>
     </div>
     <div class="form-group mt-3 mb-3">
-      <label for="phoneNumber">Phone number</label>
+      <label for="phoneNumber">Номер телефона</label>
       <input
         type="text"
         class="form-control"
         id="phoneNumber"
         name="phoneNumber"
-        placeholder="Enter phone number"
+        placeholder="Введите номер телефона"
+        formControlName="phoneNumber"
         [(ngModel)]="model.phoneNumber"
       />
+      <div
+        class="text-start text-danger"
+        *ngIf="
+          form.controls['phoneNumber'].invalid &&
+          (form.controls['phoneNumber'].touched ||
+            form.controls['phoneNumber'].dirty)
+        "
+      >
+        <span *ngIf="form.controls['phoneNumber'].errors?.['pattern']"
+          >Введите номер телефона цифрами в формате 88005553535</span
+        >
+      </div>
     </div>
     <div class="form-group mt-3 mb-3">
-      <label for="country">Country</label>
+      <label for="country">Страна</label>
       <input
         type="text"
         class="form-control"
         id="country"
         name="country"
-        placeholder="Enter Country"
+        placeholder="Введите страну"
+        formControlName="country"
+        [(ngModel)]="model.country"
       />
+
+      <div
+        class="text-start text-danger"
+        *ngIf="
+          form.controls['country'].invalid &&
+          (form.controls['country'].touched || form.controls['country'].dirty)
+        "
+      >
+        <span *ngIf="form.controls['country'].errors?.['required']"
+          >Поле обязательно для заполнения</span
+        >
+        <span *ngIf="form.controls['country'].errors?.['minlength']"
+          >Минимальная длина 4 символа</span
+        >
+        <span *ngIf="form.controls['country'].errors?.['maxlength']"
+          >Максимальная длина 25 символов
+        </span>
+      </div>
     </div>
     <div class="form-group mt-3 mb-3">
       <label for="birthDay">Birthday</label>
@@ -100,37 +155,65 @@
         placeholder="Enter birthday"
         value="{{ model.birthDay }}"
         [ngModel]="model.birthDay | date : 'yyyy-MM-dd'"
+        formControlName="birthDay"
         (ngModelChange)="model.birthDay = $event"
       />
+
+      <div>
+        <span *ngIf="form.controls['country'].errors?.['dateValidator']"
+          >Дата не может быть позже сегодня</span
+        >
+      </div>
     </div>
     <div class="form-group mt-3 mb-3">
-      <label for="organization">Organization</label>
+      <label for="organization">Организация</label>
       <input
         type="text"
         class="form-control"
         id="organization"
         name="organization"
-        placeholder="Enter organization"
+        formControlName="organization"
+        placeholder="Введите организацию"
+        [(ngModel)]="model.organization"
       />
+      <div
+        class="text-start text-danger"
+        *ngIf="
+          form.controls['organization'].invalid &&
+          (form.controls['organization'].touched ||
+            form.controls['organization'].dirty)
+        "
+      >
+        <span *ngIf="form.controls['organization'].errors?.['minlength']"
+          >Минимальная длина 4 символа</span
+        >
+        <span *ngIf="form.controls['middleName'].errors?.['maxlength']"
+          >Максимальная длина 25 символов
+        </span>
+      </div>
     </div>
     <div class="form-group mt-3 mb-3">
-      <label for="position">Position</label>
+      <label for="position">Позиция</label>
       <input
         type="text"
         class="form-control"
         id="position"
         name="position"
-        placeholder="Enter position"
+        placeholder="Введите позицию"
+        formControlName="position"
+        [(ngModel)]="model.position"
       />
     </div>
+
     <div class="form-group mt-3 mb-3">
-      <label for="other">Other</label>
+      <label for="other">Прочее</label>
       <textarea
         type="text"
         class="form-control"
         id="other"
         name="other"
         [(ngModel)]="model.other"
+        [ngModelOptions]="{ standalone: true }"
       ></textarea>
     </div>
   </mat-dialog-content>
