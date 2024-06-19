@@ -15,11 +15,11 @@ import { loginRequest } from '../models/account-loginRequest.mode';
   providedIn: 'root',
 })
 export class AuthService {
-  private readonly TOKEN_NAME = 'tasty-cookies';
+  // private readonly TOKEN_NAME = 'tasty-cookies';
   $user = new BehaviorSubject<User | undefined>(undefined);
-  get token() {
-    return localStorage.getItem(this.TOKEN_NAME);
-  }
+  // get token() {
+  //   return localStorage.getItem(this.TOKEN_NAME);
+  // }
 
   constructor(private http: HttpClient, private cookie: CookieService) {}
 

@@ -26,6 +26,10 @@ import { provideAnimationsAsync } from '@angular/platform-browser/animations/asy
 import { MatButtonModule } from '@angular/material/button';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { CommonModule } from '@angular/common';
+import { MatDatepickerModule } from '@angular/material/datepicker';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatInputModule } from '@angular/material/input';
+import { provideNativeDateAdapter } from '@angular/material/core';
 
 @NgModule({
   declarations: [
@@ -54,6 +58,9 @@ import { CommonModule } from '@angular/common';
     MatButtonModule,
     NgbModule,
     CommonModule,
+    MatDatepickerModule,
+    MatInputModule,
+    MatFormFieldModule,
   ],
   providers: [
     provideAnimations(),
@@ -64,6 +71,7 @@ import { CommonModule } from '@angular/common';
     },
     provideAnimationsAsync(),
     provideHttpClient(withInterceptorsFromDi()),
+    provideNativeDateAdapter(),
   ],
 })
 export class AppModule {}

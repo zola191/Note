@@ -10,7 +10,6 @@
         name="firstName"
         placeholder="Введите имя"
         formControlName="firstName"
-        [(ngModel)]="model.firstName"
       />
 
       <div
@@ -41,7 +40,6 @@
         name="middleName"
         placeholder="Введите отчество"
         formControlName="middleName"
-        [(ngModel)]="model.middleName"
       />
       <div
         class="text-start text-danger"
@@ -71,7 +69,6 @@
         name="lastName"
         placeholder="Введите Фамилию"
         formControlName="lastName"
-        [(ngModel)]="model.lastName"
       />
       <div
         class="text-start text-danger"
@@ -100,7 +97,6 @@
         name="phoneNumber"
         placeholder="Введите номер телефона"
         formControlName="phoneNumber"
-        [(ngModel)]="model.phoneNumber"
       />
       <div
         class="text-start text-danger"
@@ -124,7 +120,6 @@
         name="country"
         placeholder="Введите страну"
         formControlName="country"
-        [(ngModel)]="model.country"
       />
 
       <div
@@ -145,26 +140,21 @@
         </span>
       </div>
     </div>
-    <div class="form-group mt-3 mb-3">
-      <label for="birthDay">Birthday</label>
+    <mat-form-field class="example-full-width">
+      <mat-label>Введите день рождения</mat-label>
       <input
-        type="date"
-        class="form-control"
-        id="birthDay"
-        name="birthDay"
-        placeholder="Enter birthday"
-        value="{{ model.birthDay }}"
-        [ngModel]="model.birthDay | date : 'yyyy-MM-dd'"
-        formControlName="birthDay"
-        (ngModelChange)="model.birthDay = $event"
+        matInput
+        [min]="minDate"
+        [max]="maxDate"
+        [matDatepicker]="picker"
       />
-
-      <div>
-        <span *ngIf="form.controls['country'].errors?.['dateValidator']"
-          >Дата не может быть позже сегодня</span
-        >
-      </div>
-    </div>
+      <mat-hint>MM/DD/YYYY</mat-hint>
+      <mat-datepicker-toggle
+        matIconSuffix
+        [for]="picker"
+      ></mat-datepicker-toggle>
+      <mat-datepicker #picker></mat-datepicker>
+    </mat-form-field>
     <div class="form-group mt-3 mb-3">
       <label for="organization">Организация</label>
       <input
@@ -174,7 +164,6 @@
         name="organization"
         formControlName="organization"
         placeholder="Введите организацию"
-        [(ngModel)]="model.organization"
       />
       <div
         class="text-start text-danger"
@@ -201,7 +190,6 @@
         name="position"
         placeholder="Введите позицию"
         formControlName="position"
-        [(ngModel)]="model.position"
       />
     </div>
 

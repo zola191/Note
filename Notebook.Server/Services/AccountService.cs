@@ -120,6 +120,8 @@ namespace Notebook.Server.Services
             }
 
             var result = mapper.Map<AccountModel>(existingAccount);
+            result.Token = jwtProvider.Generate(result);
+
             return result;
         }
 

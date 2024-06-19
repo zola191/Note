@@ -5,13 +5,19 @@ import { MatDialogRef } from '@angular/material/dialog';
 import { Router } from '@angular/router';
 import { NotebookService } from '../services/notebook.service';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
-import { dateValidator } from '../validators/dateValidator';
+
 @Component({
   selector: 'app-add-notebook',
   templateUrl: './add-notebook.component.html',
   styleUrl: './add-notebook.component.css',
 })
 export class AddNotebookComponent {
+  readonly _currentDate = new Date();
+  readonly minDate = new Date(1991, 0, 0);
+  readonly maxDate = new Date(
+    this._currentDate.setFullYear(this._currentDate.getFullYear() - 18)
+  );
+
   model: NotebookRequest;
   form: FormGroup;
   private addNotebookSubscription?: Subscription;
@@ -58,7 +64,6 @@ export class AddNotebookComponent {
         Validators.minLength(4),
         Validators.maxLength(25),
       ]),
-      birthDay: new FormControl('', [dateValidator()]),
       organization: new FormControl('', [
         Validators.minLength(4),
         Validators.maxLength(25),
@@ -71,8 +76,9 @@ export class AddNotebookComponent {
   }
 
   onFormSubmit() {
+    console.log(this.model.firstName);
     this.addNotebookSubscription = this.notebookService
-      .addNotebook(this.model)
+      .create(this.model)
       .subscribe({
         next: (response) => {
           this.router.navigateByUrl('/notebook/notebook-list');

@@ -11,26 +11,26 @@ import { Notebook } from '../models/notebook.model';
 export class NotebookService {
   constructor(private http: HttpClient) {}
 
-  addNotebook(model: NotebookRequest): Observable<void> {
+  create(model: NotebookRequest): Observable<void> {
     return this.http.post<void>(
-      `${environment.apiBaseUrl}/api/notebook`,
+      `${environment.apiBaseUrl}/api/notebook/create`,
       model
     );
   }
 
-  getAllNotebooks(): Observable<Notebook[]> {
+  getAll(): Observable<Notebook[]> {
     return this.http.get<Notebook[]>(
       `${environment.apiBaseUrl}/api/notebook/all`
     );
   }
 
-  getNotebookById(id: string): Observable<Notebook> {
+  getById(id: string): Observable<Notebook> {
     return this.http.get<Notebook>(
       `${environment.apiBaseUrl}/api/notebook/${id}`
     );
   }
 
-  updateNotebook(
+  update(
     id: string,
     updateNotebookRequest: NotebookRequest
   ): Observable<Notebook> {
@@ -40,7 +40,7 @@ export class NotebookService {
     );
   }
 
-  deleteNotebook(id: string): Observable<Notebook> {
+  delete(id: string): Observable<Notebook> {
     return this.http.delete<Notebook>(
       `${environment.apiBaseUrl}/api/notebook/${id}`
     );

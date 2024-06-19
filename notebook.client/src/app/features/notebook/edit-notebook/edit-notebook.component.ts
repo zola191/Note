@@ -29,7 +29,7 @@ export class EditNotebookComponent implements OnInit, OnDestroy {
 
         if (this.id) {
           //get the data from the API for this notebook Id
-          this.notebookService.getNotebookById(this.id).subscribe({
+          this.notebookService.getById(this.id).subscribe({
             next: (response) => {
               this.notebook = response;
             },
@@ -55,7 +55,7 @@ export class EditNotebookComponent implements OnInit, OnDestroy {
     //pass this object to service
     if (this.id) {
       this.updateNoteSubscription = this.notebookService
-        .updateNotebook(this.id, updateNoteRequest)
+        .update(this.id, updateNoteRequest)
         .subscribe({
           next: (response) => {
             this.router.navigateByUrl('/notebook/notebook-list');
@@ -70,7 +70,7 @@ export class EditNotebookComponent implements OnInit, OnDestroy {
 
   onDelete(): void {
     if (this.id) {
-      this.notebookService.deleteNotebook(this.id).subscribe({
+      this.notebookService.delete(this.id).subscribe({
         next: (response) => {
           this.router.navigateByUrl('/notebook/notebook-list');
         },

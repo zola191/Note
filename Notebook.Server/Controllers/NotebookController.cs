@@ -21,7 +21,7 @@ namespace Notebook.Server.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> CreateNotebook([FromBody] NoteRequest request)
+        public async Task<IActionResult> Create([FromBody] NoteRequest request)
         {
             var email = accountService.GetUserEmail(Request);
             var existingAccount = await notebookService.CreateAsync(request,email);
@@ -34,7 +34,7 @@ namespace Notebook.Server.Controllers
 
         [HttpGet("{id:int}")]
         // обезопасить получение данных
-        public async Task<IActionResult> GetNotebookById([FromRoute] int id)
+        public async Task<IActionResult> GetById([FromRoute] int id)
         {
             var email = accountService.GetUserEmail(Request);
 
@@ -47,7 +47,7 @@ namespace Notebook.Server.Controllers
         }
 
         [HttpPut("{id:int}")]
-        public async Task<IActionResult> UpdateNotebook([FromRoute] int id, NoteRequest requestDto)
+        public async Task<IActionResult> Update([FromRoute] int id, NoteRequest requestDto)
         {
             var email = accountService.GetUserEmail(Request);
             var response = await notebookService.UpdateAsync(id, requestDto, email);
@@ -59,7 +59,7 @@ namespace Notebook.Server.Controllers
         }
 
         [HttpDelete("{id:int}")]
-        public async Task<IActionResult> DeleteNotebook(int id)
+        public async Task<IActionResult> Delete(int id)
         {
             await notebookService.DeleteAsync(id);
             return Ok();
@@ -67,7 +67,7 @@ namespace Notebook.Server.Controllers
         }
 
         [HttpGet("all")]
-        public async Task<IActionResult> GetNotebooks()
+        public async Task<IActionResult> GetAll()
         {
             var email = accountService.GetUserEmail(Request);
             var notebooks = await notebookService.GetAllAsync(email);

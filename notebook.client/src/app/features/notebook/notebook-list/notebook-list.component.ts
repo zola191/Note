@@ -19,7 +19,7 @@ export class NotebookListComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    this.notebooks$ = this.notebookService.getAllNotebooks();
+    this.notebooks$ = this.notebookService.getAll();
   }
 
   openDialog(): void {
