@@ -72,11 +72,23 @@ export class AddNotebookComponent {
         Validators.minLength(4),
         Validators.maxLength(25),
       ]),
+      other: new FormControl(''),
     });
   }
 
   onFormSubmit() {
-    console.log(this.model.firstName);
+    this.model = {
+      firstName: this.form.value.firstName,
+      middleName: this.form.value.middleName,
+      lastName: this.form.value.lastName,
+      phoneNumber: this.form.value.phoneNumber,
+      country: this.form.value.country,
+      birthDay: this._currentDate,
+      organization: this.form.value.organization,
+      position: this.form.value.position,
+      other: this.form.value.other,
+    };
+    console.log(this.model.birthDay);
     this.addNotebookSubscription = this.notebookService
       .create(this.model)
       .subscribe({

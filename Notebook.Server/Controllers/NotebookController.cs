@@ -1,7 +1,10 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using FluentValidation;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Notebook.Server.Domain;
 using Notebook.Server.Dto;
 using Notebook.Server.Services;
+using Notebook.Server.Validations;
 
 namespace Notebook.Server.Controllers
 {
@@ -23,6 +26,14 @@ namespace Notebook.Server.Controllers
         [HttpPost]
         public async Task<IActionResult> Create([FromBody] NoteRequest request)
         {
+            var validator = new NoteRequestValidator();
+            var validationResult = validator.Validate(request);
+
+            if (!validationResult.IsValid)
+            {
+                return BadRequest(validationResult.Errors);
+            }
+
             var email = accountService.GetUserEmail(Request);
             var existingAccount = await notebookService.CreateAsync(request,email);
             if (existingAccount == null)

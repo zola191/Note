@@ -7,8 +7,13 @@ import { CreateAccountComponent } from './features/account/create-account/create
 import { LoginAccountComponent } from './features/account/login-account/login-account.component';
 import { RestoreAccountComponent } from './features/account/restore-account/restore-account.component';
 import { ChangePasswordComponent } from './features/account/change-password/change-password.component';
+import { WelcomeComponent } from './core/components/welcome/welcome.component';
 
 const routes: Routes = [
+  {
+    path: 'notebook/welcome',
+    component: WelcomeComponent,
+  },
   {
     path: 'notebook/notebook-list',
     component: NotebookListComponent,

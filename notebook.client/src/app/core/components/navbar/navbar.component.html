@@ -1,6 +1,6 @@
 <nav class="navbar navbar-expand-lg navbar-light bg-light">
   <div class="container">
-    <a class="navbar-brand" href="#">Navbar</a>
+    <a class="navbar-brand" href="notebook/welcome">Navbar</a>
     <button
       class="navbar-toggler"
       type="button"
@@ -16,8 +16,7 @@
     <div class="collapse navbar-collapse" id="navbarSupportedContent">
       <ul class="navbar-nav mr-auto">
         <li class="nav-item active">
-          <ng-container *ngIf="user === undefined; else showNotebookList">
-          </ng-container>
+          <div *ngIf="user === undefined; else showNotebookList"></div>
           <ng-template #showNotebookList>
             <div class="d-flex align-items-center">
               <a class="nav-link" [routerLink]="['notebook/notebook-list/']"

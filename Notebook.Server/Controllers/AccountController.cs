@@ -2,6 +2,7 @@
 using Notebook.Server.Authentication;
 using Notebook.Server.Dto;
 using Notebook.Server.Services;
+using Notebook.Server.Validators;
 
 // передать в cookie token
 // внести правки в модели
@@ -28,12 +29,20 @@ namespace Notebook.Server.Controllers
         }
 
         [HttpPost("create")]
-        public async Task<IActionResult> Create([FromBody] CreateAccountRequest accountRequest)
+        public async Task<IActionResult> Create([FromBody] CreateAccountRequest request)
         {
+            var validator = new AccountRequestValidator();
+            var validationResult = validator.Validate(request);
+
+            if (!validationResult.IsValid)
+            {
+                return BadRequest(validationResult.Errors);
+            }
+
             try
             {
-                var existingAccount = await accountService.FindByEmail(accountRequest.Email);
-                var response = await accountService.CreateAsync(accountRequest);
+                var existingAccount = await accountService.FindByEmail(request.Email);
+                var response = await accountService.CreateAsync(request);
                 return Ok(response);
             }
 

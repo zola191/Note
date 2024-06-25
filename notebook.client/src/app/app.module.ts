@@ -30,6 +30,8 @@ import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { provideNativeDateAdapter } from '@angular/material/core';
+import { WelcomeComponent } from './core/components/welcome/welcome.component';
+import { TokenInterceptor } from './core/interceptors/token.interceptor';
 
 @NgModule({
   declarations: [
@@ -42,6 +44,7 @@ import { provideNativeDateAdapter } from '@angular/material/core';
     LoginAccountComponent,
     RestoreAccountComponent,
     ChangePasswordComponent,
+    WelcomeComponent,
   ],
   bootstrap: [AppComponent],
   imports: [
@@ -67,6 +70,11 @@ import { provideNativeDateAdapter } from '@angular/material/core';
     {
       provide: HTTP_INTERCEPTORS,
       useClass: AuthInterceptor,
+      multi: true,
+    },
+    {
+      provide: HTTP_INTERCEPTORS,
+      useClass: TokenInterceptor,
       multi: true,
     },
     provideAnimationsAsync(),

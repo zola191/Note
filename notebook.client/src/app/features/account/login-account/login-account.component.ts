@@ -1,10 +1,11 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { AuthService } from '../services/auth.service';
 import { Subscription } from 'rxjs';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { CookieService } from 'ngx-cookie-service';
 import { loginRequest } from '../models/account-loginRequest.mode';
+import { jwtDecode } from 'jwt-decode';
 
 @Component({
   selector: 'app-login-account',
@@ -29,13 +30,9 @@ export class LoginAccountComponent {
   onFormSubmit() {
     this.addAccountSubscription = this.authService.login(this.model).subscribe({
       next: (response) => {
-        console.log(response.token);
+        this.cookie.set('email', response.email);
         this.cookie.set('token', response.token);
         this.router.navigateByUrl(`/notebook/notebook-list`);
-
-        this.authService.setUser({
-          email: response.email,
-        });
       },
       error: (response) => {
         this.snackBar.open('Неправильный логин или пароль', 'close', {

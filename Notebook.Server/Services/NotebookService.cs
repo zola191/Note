@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using FluentValidation;
 using Microsoft.EntityFrameworkCore;
 using Notebook.Server.Data;
 using Notebook.Server.Domain;
@@ -39,7 +40,7 @@ namespace Notebook.Server.Services
 
         public async Task<NoteModel> GetById(int id, string email)
         {
-            var existingNotebook = await dbContext.Notebooks.Include(f=>f.User).FirstOrDefaultAsync(f => f.Id == id);
+            var existingNotebook = await dbContext.Notebooks.Include(f => f.User).FirstOrDefaultAsync(f => f.Id == id);
             if (existingNotebook.User.Email != email)
             {
                 return null;

@@ -25,7 +25,6 @@ namespace Notebook.Server.Validations
                 .MaximumLength(25);
 
             RuleFor(f => f.PhoneNumber)
-
                 .NotNull()
                 .NotEmpty()
                 .Matches(@"^\+?[0-9]{3,13}$")
@@ -51,6 +50,7 @@ namespace Notebook.Server.Validations
             RuleFor(f => f.Other)
                 .MaximumLength(100)
                 .WithMessage("maximum length limited to 100 symbols");
+
         }
     }
 }

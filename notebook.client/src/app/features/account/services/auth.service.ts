@@ -10,6 +10,8 @@ import { AccountRestoreRequest } from '../models/account-restore.model';
 import { RestoreAccountResponse } from '../models/account-restore-response.model';
 import { AccountChangePassword } from '../models/account-change-password-request.model';
 import { loginRequest } from '../models/account-loginRequest.mode';
+import { JwtDecoderService } from '../../../core/jwt/jwt-decoder.service';
+import { jwtDecode } from 'jwt-decode';
 
 @Injectable({
   providedIn: 'root',
@@ -21,7 +23,11 @@ export class AuthService {
   //   return localStorage.getItem(this.TOKEN_NAME);
   // }
 
-  constructor(private http: HttpClient, private cookie: CookieService) {}
+  constructor(
+    private http: HttpClient,
+    private cookie: CookieService,
+    private jwtService: JwtDecoderService
+  ) {}
 
   createAccount(request: createRequest): Observable<AccountResponse> {
     return this.http.post<AccountResponse>(
@@ -37,16 +43,39 @@ export class AuthService {
     );
   }
 
-  setUser(user: User): void {
-    this.$user.next(user);
-    localStorage.setItem('user-email', user.email);
-  }
+  // setUser(user: User): void {
+  //   let jwt = jwtDecode(this.cookie.get('token'));
+  //   let aud = jwt.exp! * 1000;
+  //   let time = Date.now();
+
+  //   if (time > aud) {
+  //     return;
+  //   }
+
+  //   // this.$user.next(user);
+  //   this.cookie.set('token', user.token);
+  //   this.cookie.set('email', user.email);
+
+  //   // localStorage.setItem('user-email', user.email);
+  //   // localStorage.setItem(
+  //   //   'jwt1',
+  //   //   this.jwtService.decodeToken(this.cookie.get('token'))
+  //   // );
+  //   // let result = JSON.stringify(jwtDecode(this.cookie.get('token')));
+
+  //   // localStorage.setItem('jwt2', result);
+  //   // localStorage.setItem('time', time.toString());
+  //   // localStorage.setItem('aud', aud.toString());
+  // }
 
   getUser(): User | undefined {
-    const email = localStorage.getItem('user-email');
-    if (email) {
+    const token = this.cookie.get('token');
+    const email = this.cookie.get('email');
+
+    if (token) {
       const user: User = {
         email: email,
+        token: token,
       };
       return user;
     }
@@ -60,6 +89,7 @@ export class AuthService {
   logout(): void {
     localStorage.clear();
     this.cookie.delete('Authorization', '/');
+
     this.$user.next(undefined);
   }
 
@@ -77,5 +107,21 @@ export class AuthService {
       `${environment.apiBaseUrl}/api/account/changepassword`,
       request
     );
+  }
+
+  isExpiredToken(): boolean {
+    const user = this.getUser();
+    if (user) {
+      let jwt = jwtDecode(user.token);
+      let aud = jwt.exp! * 1000;
+      let time = Date.now();
+
+      if (time > aud) {
+        console.log('Токен просрочен');
+        return true;
+      }
+      return false;
+    }
+    return true;
   }
 }

@@ -30,7 +30,7 @@
           <td>{{ note.lastName }}</td>
           <td>{{ note.phoneNumber }}</td>
           <td>{{ note.country }}</td>
-          <td>{{ note.birthDay }}</td>
+          <td>{{ note.birthDay | date : "dd/MM/yyyy" }}</td>
           <td>{{ note.organization }}</td>
           <td>{{ note.position }}</td>
           <td>{{ note.other }}</td>
