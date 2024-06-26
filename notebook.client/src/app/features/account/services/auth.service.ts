@@ -87,8 +87,10 @@ export class AuthService {
   }
 
   logout(): void {
-    localStorage.clear();
-    this.cookie.delete('Authorization', '/');
+    // this.cookie.delete('Authorization', '/');
+
+    this.cookie.delete('email');
+    this.cookie.delete('token');
 
     this.$user.next(undefined);
   }

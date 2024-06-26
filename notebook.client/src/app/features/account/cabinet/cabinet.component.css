@@ -11,5 +11,9 @@
 
 .actions {
   display: flex;
-  justify-content: space-between;
+  justify-content: space-around;
+}
+
+.mat-danger {
+  background-color: orangered;
 }

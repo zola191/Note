@@ -8,6 +8,7 @@ import { LoginAccountComponent } from './features/account/login-account/login-ac
 import { RestoreAccountComponent } from './features/account/restore-account/restore-account.component';
 import { ChangePasswordComponent } from './features/account/change-password/change-password.component';
 import { WelcomeComponent } from './core/components/welcome/welcome.component';
+import { CabinetComponent } from './features/account/cabinet/cabinet.component';
 
 const routes: Routes = [
   {
@@ -41,6 +42,10 @@ const routes: Routes = [
   {
     path: 'account/restore/:id',
     component: ChangePasswordComponent,
+  },
+  {
+    path: 'account/cabinet',
+    component: CabinetComponent,
   },
 ];
 

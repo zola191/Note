@@ -36,8 +36,8 @@ namespace Notebook.Server.Validations
                 .MinimumLength(4).WithMessage("minimum length limited to 4 symbols")
                 .MaximumLength(50).WithMessage("maximum length limited to 25 symbols");
 
-            //как исправить без указания Value
-            RuleFor(f => f.BirthDay.Value).Adult().WithMessage("only adult");
+            ////как исправить без указания Value
+            //RuleFor(f => f.BirthDay.Value).Adult().WithMessage("only adult");
 
             RuleFor(f => f.Organization)
                 .MinimumLength(2).WithMessage("minimum length limited to 2 symbols")
