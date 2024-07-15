@@ -14,7 +14,7 @@
     </button>
 
     <div class="collapse navbar-collapse" id="navbarSupportedContent">
-      <div *ngIf="user === undefined; else showNotebookList"></div>
+      <div *ngIf="isAuth(); else showNotebookList"></div>
       <ng-template #showNotebookList>
         <div class="d-flex align-items-center">
           <a class="nav-link" [routerLink]="['notebook/notebook-list/']"
@@ -24,10 +24,7 @@
       </ng-template>
     </div>
     <div class="me-2">
-      <ng-container *ngIf="user === undefined; else showLogout">
-        <a class="nav-link" [routerLink]="['account/login']">Войти</a>
-      </ng-container>
-      <ng-template #showLogout>
+      <ng-container *ngIf="isAuth(); else showLogout">
         <div class="d-flex align-items-center">
           <a class="nav-link" [routerLink]="['account/cabinet']">{{
             user?.email
@@ -36,6 +33,9 @@
             Выйти
           </button>
         </div>
+      </ng-container>
+      <ng-template #showLogout>
+        <a class="nav-link" [routerLink]="['account/login']">Войти</a>
       </ng-template>
     </div>
   </div>

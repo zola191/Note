@@ -1,4 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Options;
+using Microsoft.Net.Http.Headers;
 using Notebook.Server.Authentication;
 using Notebook.Server.Dto;
 using Notebook.Server.Services;
@@ -59,12 +61,32 @@ namespace Notebook.Server.Controllers
             try
             {
                 var existingAccount = await accountService.CheckLogin(request);
+                //if (Request.Cookies.TryGetValue("token", out string err))
+                //{
+
+                //}
+                //var options = new CookieOptions();
+                //options.Secure = true;
+                ////options.Expires = DateTime.Now.AddDays(1);
+                //Response.Cookies.Append("token", existingAccount.Token);
+
+                var cookieOptions = new CookieOptions();
+                cookieOptions.Secure = true;
+
+                HttpContext.Response.Cookies.Append("token", existingAccount.Token, cookieOptions);
+
                 return Ok(existingAccount);
             }
             catch (Exception ex)
             {
                 return BadRequest(ex.Message);
             }
+        }
+
+        [HttpPost("loginWithGoogle")]
+        public async Task<IActionResult> LoginWithGoogle([FromBody] string credential)
+        {
+            return Ok();
         }
 
         [HttpPost("restore")]

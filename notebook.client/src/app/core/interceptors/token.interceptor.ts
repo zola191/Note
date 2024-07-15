@@ -25,11 +25,11 @@ export class TokenInterceptor implements HttpInterceptor {
     if (this.authService.isExpiredToken()) {
       console.log('я работаю');
 
-      this.cookie.delete('email');
-      this.cookie.delete('token');
+      // this.cookie.delete('email');
+      // this.cookie.delete('token');
 
-      this.authService.logout();
-      this.router.navigateByUrl('account/login');
+      // this.authService.logout();
+      // this.router.navigateByUrl('account/login');
 
       //   return throwError('Токен просрочен');
       // } else {

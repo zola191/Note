@@ -28,6 +28,7 @@
     "@ngrx/store": "^17.2.0",
     "@ngxs/store": "^3.8.2",
     "@popperjs/core": "^2.11.8",
+    "@types/google-one-tap": "^1.2.6",
     "bootstrap": "^5.3.3",
     "jest-editor-support": "*",
     "jwt-decode": "^4.0.0",

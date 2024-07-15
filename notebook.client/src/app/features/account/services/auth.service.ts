@@ -12,6 +12,7 @@ import { AccountChangePassword } from '../models/account-change-password-request
 import { loginRequest } from '../models/account-loginRequest.mode';
 import { JwtDecoderService } from '../../../core/jwt/jwt-decoder.service';
 import { jwtDecode } from 'jwt-decode';
+import { CredentialResponse } from 'google-one-tap';
 
 @Injectable({
   providedIn: 'root',
@@ -125,5 +126,12 @@ export class AuthService {
       return false;
     }
     return true;
+  }
+
+  loginWithGoogle(request: string): Observable<AccountResponse> {
+    return this.http.post<AccountResponse>(
+      `${environment.apiBaseUrl}/api/account/loginWithGoogle`,
+      request
+    );
   }
 }
