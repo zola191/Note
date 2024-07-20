@@ -37,7 +37,8 @@ export class LoginAccountComponent implements OnInit {
     window.onGoogleLibraryLoad = () => {
       //@ts-ignore
       google.accounts.id.initialize({
-        client_id: '',
+        client_id:
+          '394585500781-b061fjd4rb101nopvi5el26s8vf22s95.apps.googleusercontent.com',
         callback: this.handleCredentialsResponse.bind(this),
         auto_select: false,
         cancel_on_tap_outside: true,
