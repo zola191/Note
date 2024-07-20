@@ -31,7 +31,6 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { provideNativeDateAdapter } from '@angular/material/core';
 import { WelcomeComponent } from './core/components/welcome/welcome.component';
-import { TokenInterceptor } from './core/interceptors/token.interceptor';
 import { CabinetComponent } from './features/account/cabinet/cabinet.component';
 import { provideOAuthClient } from 'angular-oauth2-oidc';
 
@@ -75,11 +74,7 @@ import { provideOAuthClient } from 'angular-oauth2-oidc';
       useClass: AuthInterceptor,
       multi: true,
     },
-    {
-      provide: HTTP_INTERCEPTORS,
-      useClass: TokenInterceptor,
-      multi: true,
-    },
+
     provideAnimationsAsync(),
     provideHttpClient(withInterceptorsFromDi()),
     provideNativeDateAdapter(),

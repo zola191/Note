@@ -13,7 +13,7 @@ export class NotebookService {
 
   create(model: NotebookRequest): Observable<void> {
     return this.http.post<void>(
-      `${environment.apiBaseUrl}/api/notebook`,
+      `${environment.apiBaseUrl}/api/notebook/create`,
       model
     );
   }

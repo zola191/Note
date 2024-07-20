@@ -14,7 +14,7 @@
     </button>
 
     <div class="collapse navbar-collapse" id="navbarSupportedContent">
-      <div *ngIf="isAuth(); else showNotebookList"></div>
+      <div *ngIf="!isAuth(); else showNotebookList"></div>
       <ng-template #showNotebookList>
         <div class="d-flex align-items-center">
           <a class="nav-link" [routerLink]="['notebook/notebook-list/']"
@@ -26,7 +26,7 @@
     <div class="me-2">
       <ng-container *ngIf="isAuth(); else showLogout">
         <div class="d-flex align-items-center">
-          <a class="nav-link" [routerLink]="['account/cabinet']">{{
+          <a class="nav-link" [routerLink]="['user/cabinet']">{{
             user?.email
           }}</a>
           <button class="btn btn-primary ms-3" (click)="onLogout()">
@@ -35,7 +35,7 @@
         </div>
       </ng-container>
       <ng-template #showLogout>
-        <a class="nav-link" [routerLink]="['account/login']">Войти</a>
+        <a class="nav-link" [routerLink]="['user/login']">Войти</a>
       </ng-template>
     </div>
   </div>

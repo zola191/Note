@@ -28,23 +28,23 @@ const routes: Routes = [
     component: EditNotebookComponent,
   },
   {
-    path: 'account/login',
+    path: 'user/login',
     component: LoginAccountComponent,
   },
   {
-    path: 'account/create',
+    path: 'user/create',
     component: CreateAccountComponent,
   },
   {
-    path: 'account/restore',
+    path: 'user/restore',
     component: RestoreAccountComponent,
   },
   {
-    path: 'account/restore/:id',
+    path: 'user/restore/:id',
     component: ChangePasswordComponent,
   },
   {
-    path: 'account/cabinet',
+    path: 'user/cabinet',
     component: CabinetComponent,
   },
 ];

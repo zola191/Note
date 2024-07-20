@@ -4,10 +4,8 @@ import { AuthService } from '../services/auth.service';
 import { Subscription } from 'rxjs';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { CookieService } from 'ngx-cookie-service';
-import { loginRequest } from '../models/account-loginRequest.mode';
-import { jwtDecode } from 'jwt-decode';
+import { LoginAccountRequest } from '../models/loginRequest.model';
 import { CredentialResponse, PromptMomentNotification } from 'google-one-tap';
-import { AuthGoogleService } from '../services/auth-google.service';
 import { LoginWithGoogleRequest } from '../models/loginWithGoogleRequest';
 
 @Component({
@@ -17,10 +15,10 @@ import { LoginWithGoogleRequest } from '../models/loginWithGoogleRequest';
 })
 export class LoginAccountComponent implements OnInit {
   loginWithGoogleRequest: LoginWithGoogleRequest;
-  model: loginRequest;
+  model: LoginAccountRequest;
   private addAccountSubscription?: Subscription;
+
   constructor(
-    private AuthGoogleService: AuthGoogleService,
     private authService: AuthService,
     private router: Router,
     private snackBar: MatSnackBar,
@@ -64,6 +62,8 @@ export class LoginAccountComponent implements OnInit {
     this.loginWithGoogleRequest.credential = response.credential;
     this.authService.loginWithGoogle(this.loginWithGoogleRequest).subscribe({
       next: (res) => {
+        this.cookie.set('email', res.email);
+        this.cookie.set('token', res.token);
         this.router.navigateByUrl(`/notebook/notebook-list`);
       },
       error: (res) => {
@@ -74,10 +74,6 @@ export class LoginAccountComponent implements OnInit {
       },
     });
   }
-
-  // signInWithGoogle() {
-  //   this.AuthGoogleService.login();
-  // }
 
   onFormSubmit() {
     this.addAccountSubscription = this.authService.login(this.model).subscribe({

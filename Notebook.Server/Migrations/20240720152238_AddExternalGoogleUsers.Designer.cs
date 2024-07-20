@@ -12,8 +12,8 @@ using Notebook.Server.Data;
 namespace Notebook.Server.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20240617115342_init")]
-    partial class init
+    [Migration("20240720152238_AddExternalGoogleUsers")]
+    partial class AddExternalGoogleUsers
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -25,22 +25,20 @@ namespace Notebook.Server.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
-            modelBuilder.Entity("Notebook.Server.Domain.Account", b =>
+            modelBuilder.Entity("Notebook.Server.Domain.ExternalGoogleUser", b =>
                 {
                     b.Property<string>("Email")
                         .HasColumnType("nvarchar(450)");
 
-                    b.Property<string>("PasswordHash")
-                        .IsRequired()
+                    b.Property<string>("FirstName")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("Salt")
-                        .IsRequired()
+                    b.Property<string>("LastName")
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Email");
 
-                    b.ToTable("Accounts");
+                    b.ToTable("ExternalGoogleUsers");
                 });
 
             modelBuilder.Entity("Notebook.Server.Domain.Note", b =>
@@ -57,6 +55,9 @@ namespace Notebook.Server.Migrations
                     b.Property<string>("Country")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("ExternalGoogleUserId")
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("FirstName")
                         .IsRequired()
@@ -87,12 +88,14 @@ namespace Notebook.Server.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("ExternalGoogleUserId");
+
                     b.HasIndex("UserId");
 
                     b.ToTable("Notebooks");
                 });
 
-            modelBuilder.Entity("Notebook.Server.Domain.RestoreAccount", b =>
+            modelBuilder.Entity("Notebook.Server.Domain.RestoreUser", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -100,22 +103,22 @@ namespace Notebook.Server.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<string>("AccountEmail")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(450)");
-
                     b.Property<string>("Token")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("UserEmail")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<DateTime>("Validity")
                         .HasColumnType("datetime2");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("AccountEmail");
+                    b.HasIndex("UserEmail");
 
-                    b.ToTable("RestoreAccount");
+                    b.ToTable("RestoreUserAccount");
                 });
 
             modelBuilder.Entity("Notebook.Server.Domain.User", b =>
@@ -123,14 +126,18 @@ namespace Notebook.Server.Migrations
                     b.Property<string>("Email")
                         .HasColumnType("nvarchar(450)");
 
-                    b.Property<string>("AccountId")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<string>("FirstName")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("LastName")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("PasswordHash")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Salt")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Email");
@@ -140,40 +147,35 @@ namespace Notebook.Server.Migrations
 
             modelBuilder.Entity("Notebook.Server.Domain.Note", b =>
                 {
+                    b.HasOne("Notebook.Server.Domain.ExternalGoogleUser", "ExternalGoogleUser")
+                        .WithMany("Notes")
+                        .HasForeignKey("ExternalGoogleUserId")
+                        .OnDelete(DeleteBehavior.Cascade);
+
                     b.HasOne("Notebook.Server.Domain.User", "User")
                         .WithMany("Notes")
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade);
 
+                    b.Navigation("ExternalGoogleUser");
+
                     b.Navigation("User");
                 });
 
-            modelBuilder.Entity("Notebook.Server.Domain.RestoreAccount", b =>
+            modelBuilder.Entity("Notebook.Server.Domain.RestoreUser", b =>
                 {
-                    b.HasOne("Notebook.Server.Domain.Account", "Account")
+                    b.HasOne("Notebook.Server.Domain.User", "User")
                         .WithMany()
-                        .HasForeignKey("AccountEmail")
+                        .HasForeignKey("UserEmail")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("Account");
+                    b.Navigation("User");
                 });
 
-            modelBuilder.Entity("Notebook.Server.Domain.User", b =>
+            modelBuilder.Entity("Notebook.Server.Domain.ExternalGoogleUser", b =>
                 {
-                    b.HasOne("Notebook.Server.Domain.Account", "Account")
-                        .WithOne("User")
-                        .HasForeignKey("Notebook.Server.Domain.User", "Email")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Account");
-                });
-
-            modelBuilder.Entity("Notebook.Server.Domain.Account", b =>
-                {
-                    b.Navigation("User")
-                        .IsRequired();
+                    b.Navigation("Notes");
                 });
 
             modelBuilder.Entity("Notebook.Server.Domain.User", b =>

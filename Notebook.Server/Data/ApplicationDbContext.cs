@@ -7,7 +7,8 @@ namespace Notebook.Server.Data
     {
         public DbSet<Note> Notebooks { get; set; }
         public DbSet<User> Users { get; set; }
-        public DbSet<RestoreUser> RestoreAccount { get; set; }
+        public DbSet<RestoreUser> RestoreUserAccount { get; set; }
+        public DbSet<ExternalGoogleUser> ExternalGoogleUsers { get; set; }
         public ApplicationDbContext(DbContextOptions options) : base(options)
         {
 
@@ -24,11 +25,19 @@ namespace Notebook.Server.Data
                 .OnDelete(DeleteBehavior.Cascade);
             });
 
+            modelBuilder.Entity<ExternalGoogleUser>(option =>
+            {
+                option.HasKey(f => f.Email);
+                option.HasMany(f => f.Notes)
+                .WithOne(f => f.ExternalGoogleUser)
+                .HasForeignKey(f => f.ExternalGoogleUserId)
+                .OnDelete(DeleteBehavior.Cascade);
+            });
+
             modelBuilder.Entity<Note>(option =>
             {
                 option.HasKey(f => f.Id);
             });
-
         }
     }
 }

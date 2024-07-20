@@ -9,66 +9,31 @@ import { User } from '../models/user.model';
 import { AccountRestoreRequest } from '../models/account-restore.model';
 import { RestoreAccountResponse } from '../models/account-restore-response.model';
 import { AccountChangePassword } from '../models/account-change-password-request.model';
-import { loginRequest } from '../models/account-loginRequest.mode';
-import { JwtDecoderService } from '../../../core/jwt/jwt-decoder.service';
+import { LoginAccountRequest } from '../models/loginRequest.model';
 import { jwtDecode } from 'jwt-decode';
-import { CredentialResponse } from 'google-one-tap';
 import { LoginWithGoogleRequest } from '../models/loginWithGoogleRequest';
 
 @Injectable({
   providedIn: 'root',
 })
 export class AuthService {
-  // private readonly TOKEN_NAME = 'tasty-cookies';
   $user = new BehaviorSubject<User | undefined>(undefined);
-  // get token() {
-  //   return localStorage.getItem(this.TOKEN_NAME);
-  // }
 
-  constructor(
-    private http: HttpClient,
-    private cookie: CookieService,
-    private jwtService: JwtDecoderService
-  ) {}
+  constructor(private http: HttpClient, private cookie: CookieService) {}
 
   createAccount(request: createRequest): Observable<AccountResponse> {
     return this.http.post<AccountResponse>(
-      `${environment.apiBaseUrl}/api/account/create`,
+      `${environment.apiBaseUrl}/api/user/create`,
       request
     );
   }
 
-  login(request: loginRequest): Observable<AccountResponse> {
+  login(request: LoginAccountRequest): Observable<AccountResponse> {
     return this.http.post<AccountResponse>(
-      `${environment.apiBaseUrl}/api/account/login`,
+      `${environment.apiBaseUrl}/api/user/login`,
       request
     );
   }
-
-  // setUser(user: User): void {
-  //   let jwt = jwtDecode(this.cookie.get('token'));
-  //   let aud = jwt.exp! * 1000;
-  //   let time = Date.now();
-
-  //   if (time > aud) {
-  //     return;
-  //   }
-
-  //   // this.$user.next(user);
-  //   this.cookie.set('token', user.token);
-  //   this.cookie.set('email', user.email);
-
-  //   // localStorage.setItem('user-email', user.email);
-  //   // localStorage.setItem(
-  //   //   'jwt1',
-  //   //   this.jwtService.decodeToken(this.cookie.get('token'))
-  //   // );
-  //   // let result = JSON.stringify(jwtDecode(this.cookie.get('token')));
-
-  //   // localStorage.setItem('jwt2', result);
-  //   // localStorage.setItem('time', time.toString());
-  //   // localStorage.setItem('aud', aud.toString());
-  // }
 
   getUser(): User | undefined {
     const token = this.cookie.get('token');
@@ -89,8 +54,6 @@ export class AuthService {
   }
 
   logout(): void {
-    // this.cookie.delete('Authorization', '/');
-
     this.cookie.delete('email');
     this.cookie.delete('token');
 
@@ -99,7 +62,7 @@ export class AuthService {
 
   restore(request: AccountRestoreRequest): Observable<RestoreAccountResponse> {
     return this.http.post<RestoreAccountResponse>(
-      `${environment.apiBaseUrl}/api/account/restore`,
+      `${environment.apiBaseUrl}/api/user/restore`,
       request
     );
   }
@@ -108,7 +71,7 @@ export class AuthService {
     request: AccountChangePassword
   ): Observable<AccountChangePassword> {
     return this.http.post<AccountChangePassword>(
-      `${environment.apiBaseUrl}/api/account/changepassword`,
+      `${environment.apiBaseUrl}/api/user/changepassword`,
       request
     );
   }
@@ -133,7 +96,7 @@ export class AuthService {
     request: LoginWithGoogleRequest
   ): Observable<AccountResponse> {
     return this.http.post<AccountResponse>(
-      `${environment.apiBaseUrl}/api/account/loginWithGoogle`,
+      `${environment.apiBaseUrl}/api/user/loginWithGoogle`,
       request
     );
   }

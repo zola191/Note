@@ -59,10 +59,10 @@ namespace Notebook.Server.Controllers
             try
             {
                 var existingUser = await userService.CheckUser(request);
-                var cookieOptions = new CookieOptions();
+/*              var cookieOptions = new CookieOptions();
                 cookieOptions.Secure = true;
 
-                HttpContext.Response.Cookies.Append("token", existingUser.Token, cookieOptions);
+                HttpContext.Response.Cookies.Append("token", existingUser.Token, cookieOptions);*/
 
                 return Ok(existingUser);
             }
@@ -75,19 +75,16 @@ namespace Notebook.Server.Controllers
         [HttpPost("loginWithGoogle")]
         public async Task<IActionResult> LoginWithGoogle([FromBody] LoginWithGoogleRequest request)
         {
-            var handler = new JwtSecurityTokenHandler();
-            var decodedValue = handler.ReadJwtToken(request.Credential);
-            var userEmail = decodedValue.Claims.ElementAt(4).Value;
-            
-            var existingUserl = await userService.FindByEmail(userEmail);
-            if (existingUserl == null)
+            try
             {
-                var result = await userService.CreateWithGoogleAsync(userEmail);
-                return Ok(result);
+                var existingUser = await userService.CheckGoogleUser(request);
+                return Ok(existingUser);
             }
-
-            return Ok(existingUserl);
-
+            //неизвестная ошибка?????
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
 
         [HttpPost("restore")]

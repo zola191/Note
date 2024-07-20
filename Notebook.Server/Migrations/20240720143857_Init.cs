@@ -6,63 +6,24 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace Notebook.Server.Migrations
 {
     /// <inheritdoc />
-    public partial class init : Migration
+    public partial class Init : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.CreateTable(
-                name: "Accounts",
-                columns: table => new
-                {
-                    Email = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    PasswordHash = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Salt = table.Column<string>(type: "nvarchar(max)", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Accounts", x => x.Email);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "RestoreAccount",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    AccountEmail = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    Token = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Validity = table.Column<DateTime>(type: "datetime2", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_RestoreAccount", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_RestoreAccount_Accounts_AccountEmail",
-                        column: x => x.AccountEmail,
-                        principalTable: "Accounts",
-                        principalColumn: "Email",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
                 name: "Users",
                 columns: table => new
                 {
                     Email = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    Salt = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    PasswordHash = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     FirstName = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    LastName = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    AccountId = table.Column<string>(type: "nvarchar(max)", nullable: false)
+                    LastName = table.Column<string>(type: "nvarchar(max)", nullable: true)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Users", x => x.Email);
-                    table.ForeignKey(
-                        name: "FK_Users_Accounts_Email",
-                        column: x => x.Email,
-                        principalTable: "Accounts",
-                        principalColumn: "Email",
-                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -93,15 +54,36 @@ namespace Notebook.Server.Migrations
                         onDelete: ReferentialAction.Cascade);
                 });
 
+            migrationBuilder.CreateTable(
+                name: "RestoreUserAccount",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    UserEmail = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    Token = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Validity = table.Column<DateTime>(type: "datetime2", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_RestoreUserAccount", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_RestoreUserAccount_Users_UserEmail",
+                        column: x => x.UserEmail,
+                        principalTable: "Users",
+                        principalColumn: "Email",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
             migrationBuilder.CreateIndex(
                 name: "IX_Notebooks_UserId",
                 table: "Notebooks",
                 column: "UserId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_RestoreAccount_AccountEmail",
-                table: "RestoreAccount",
-                column: "AccountEmail");
+                name: "IX_RestoreUserAccount_UserEmail",
+                table: "RestoreUserAccount",
+                column: "UserEmail");
         }
 
         /// <inheritdoc />
@@ -111,13 +93,10 @@ namespace Notebook.Server.Migrations
                 name: "Notebooks");
 
             migrationBuilder.DropTable(
-                name: "RestoreAccount");
+                name: "RestoreUserAccount");
 
             migrationBuilder.DropTable(
                 name: "Users");
-
-            migrationBuilder.DropTable(
-                name: "Accounts");
         }
     }
 }

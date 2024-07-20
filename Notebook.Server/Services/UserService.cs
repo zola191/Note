@@ -14,12 +14,15 @@ namespace Notebook.Server.Services
         private readonly IMapper mapper;
         private readonly IPasswordHasher passwordHasher;
         private readonly IJwtProvider jwtProvider;
+        private readonly IEmailService emailService;
 
-        public UserService(ApplicationDbContext dbContext, IMapper mapper, IPasswordHasher passwordHasher)
+        public UserService(ApplicationDbContext dbContext, IMapper mapper, IPasswordHasher passwordHasher, IEmailService emailService, IJwtProvider jwtProvider)
         {
             this.dbContext = dbContext;
             this.mapper = mapper;
             this.passwordHasher = passwordHasher;
+            this.emailService = emailService;
+            this.jwtProvider = jwtProvider;
         }
 
         public async Task<UserModel> CreateAsync(CreateUserRequest request)
@@ -62,6 +65,20 @@ namespace Notebook.Server.Services
             return response;
         }
 
+        public async Task<GoogleUserModel> FindByGoogleEmail(string email)
+        {
+            var existingUser = await dbContext.ExternalGoogleUsers.Include(f=>f.Notes).FirstOrDefaultAsync(f => f.Email == email);
+
+            if (existingUser == null)
+            {
+                return null;
+            }
+
+            var response = mapper.Map<GoogleUserModel>(existingUser);
+            return response;
+        }
+
+
         public async Task<UserModel> CheckUser(LoginAccountRequest request)
         {
             var existingUser = await dbContext.Users.FirstOrDefaultAsync(f => f.Email == request.Email);
@@ -79,9 +96,32 @@ namespace Notebook.Server.Services
             }
 
             var result = mapper.Map<UserModel>(existingUser);
+
             result.Token = jwtProvider.Generate(result);
 
             return result;
+        }
+
+        public async Task<GoogleUserModel> CheckGoogleUser(LoginWithGoogleRequest request)
+        {
+            //выглядит ужасно.....
+            
+            var handler = new JwtSecurityTokenHandler();
+            var decodedValue = handler.ReadJwtToken(request.Credential);
+            var userEmail = decodedValue.Claims.ElementAt(4).Value;
+
+            var existingUser = await FindByGoogleEmail(userEmail);
+
+            if (existingUser == null)
+            {
+                var result = await CreateWithGoogleAsync(userEmail);
+                var userModel = mapper.Map<UserModel>(result);
+
+                result.Token = jwtProvider.Generate(userModel);
+                return result;
+            }
+            existingUser.Token = jwtProvider.Generate(mapper.Map<UserModel>(existingUser));
+            return existingUser;
         }
 
         public bool IsExpired(string token)
@@ -104,7 +144,7 @@ namespace Notebook.Server.Services
 
         public async Task<User> FindByToken(string token)
         {
-            var existingRestoreAccount = await dbContext.RestoreAccount
+            var existingRestoreAccount = await dbContext.RestoreUserAccount
                 .Include(f => f.User)
                 .FirstOrDefaultAsync(f => f.Token == token);
 
@@ -136,30 +176,41 @@ namespace Notebook.Server.Services
             await dbContext.SaveChangesAsync();
         }
 
-        public Task<UserModel> CreateWithGoogleAsync(string userEmail)
+        public async Task<GoogleUserModel> CreateWithGoogleAsync(string userEmail)
         {
-            return null;
+            var existingUser = await dbContext.ExternalGoogleUsers.FirstOrDefaultAsync(f=>f.Email==userEmail);
+            if (existingUser == null)
+            {
+                var user = new ExternalGoogleUser()
+                {
+                    Email = userEmail
+                };
+
+                dbContext.ExternalGoogleUsers.Add(user);
+                await dbContext.SaveChangesAsync();
+                return mapper.Map<GoogleUserModel>(user);
+            }
+            return mapper.Map<GoogleUserModel>(existingUser);
         }
 
         public async Task<UserModel> RestorePassword(RestoreUserModel model)
         {
-            var existingAccount = await dbContext.Users.FirstOrDefaultAsync(f => f.Email == model.Email);
+            var existingUser = await dbContext.Users.FirstOrDefaultAsync(f => f.Email == model.model.Email);
 
-            if (existingAccount == null)
+            if (existingUser == null)
             {
                 throw new Exception("User does not exist");
             }
 
-            var token = jwtProvider.GenerateRestore(existingAccount);
+            var token = jwtProvider.GenerateRestore(existingUser);
 
-            var restoreAccount = new RestoreAccount()
+            var restoreUser = new RestoreUserModel()
             {
-                Account = existingAccount,
                 Token = token,
                 Validity = DateTime.Now.AddHours(12),
             };
 
-            await dbContext.AddAsync(restoreAccount);
+            await dbContext.AddAsync(restoreUser);
             await dbContext.SaveChangesAsync();
 
             var email = new EmailModel()
@@ -171,8 +222,18 @@ namespace Notebook.Server.Services
 
             emailService.SendEmail(email);
 
-            var response = mapper.Map<RestoreAccountModel>(restoreAccount);
+            var response = mapper.Map<UserModel>(restoreUser);
             return response;
+        }
+
+        public string GetUserEmail(HttpRequest request)
+        {
+            var handler = new JwtSecurityTokenHandler();
+            var jwt = request.Headers.Authorization.ToString().Split().Last();
+            var token = handler.ReadJwtToken(jwt);
+            var email = token.Claims.Select(claim => claim.Value).First();
+
+            return email;
         }
     }
 }

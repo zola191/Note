@@ -1,7 +1,5 @@
-﻿using FluentValidation;
-using Microsoft.AspNetCore.Authorization;
+﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Notebook.Server.Domain;
 using Notebook.Server.Dto;
 using Notebook.Server.Services;
 using Notebook.Server.Validations;
@@ -23,7 +21,7 @@ namespace Notebook.Server.Controllers
             this.userService = userService;
         }
 
-        [HttpPost]
+        [HttpPost("create")]
         public async Task<IActionResult> Create([FromBody] NoteRequest request)
         {
             var validator = new NoteRequestValidator();
