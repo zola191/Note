@@ -1,6 +1,6 @@
 ﻿namespace Notebook.Server.Dto
 {
-    public class ChangePasswordModel
+    public class ChangeUserPasswordModel
     {
         public string Token { get; set; }
         public string Password { get; set; }

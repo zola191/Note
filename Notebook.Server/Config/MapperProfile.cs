@@ -10,9 +10,9 @@ namespace Notebook.Server.Config
         {
             CreateMap<NoteRequest, Note>();
             CreateMap<Note, NoteModel>();
-            CreateMap<CreateAccountRequest, Account>();
-            CreateMap<Account, AccountModel>();
-            CreateMap<RestoreAccount, RestoreAccountModel>();
+/*            CreateMap<CreateAccountRequest, Account>();
+            CreateMap<Account, AccountModel>();*/
+            CreateMap<RestoreUser, RestoreUserModel>();
             CreateMap<User, UserModel>();
         }
     }

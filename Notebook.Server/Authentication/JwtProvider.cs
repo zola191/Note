@@ -16,13 +16,13 @@ namespace Notebook.Server.Authentication
             _config = config;
         }
 
-        public string Generate(AccountModel account)
+        public string Generate(UserModel user)
         {
             var secutiryKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_config["Jwt:Key"]));
             var credentials = new SigningCredentials(secutiryKey, SecurityAlgorithms.HmacSha256);
             var claims = new[]
             {
-                new Claim(ClaimTypes.Email,account.Email),
+                new Claim(ClaimTypes.Email,user.Email),
             };
 
             var token = new JwtSecurityToken(
@@ -36,13 +36,13 @@ namespace Notebook.Server.Authentication
         }
 
 
-        public string GenerateRestore(Account account)
+        public string GenerateRestore(User user)
         {
             var secutiryKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_config["Jwt-restore:Key"]));
             var credentials = new SigningCredentials(secutiryKey, SecurityAlgorithms.HmacSha256);
             var claims = new[]
             {
-                new Claim(ClaimTypes.Email,account.Email),
+                new Claim(ClaimTypes.Email,user.Email),
             };
 
             var token = new JwtSecurityToken(

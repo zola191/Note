@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNetCore.Identity.Data;
+﻿/*using Microsoft.AspNetCore.Identity.Data;
 using Notebook.Server.Domain;
 using Notebook.Server.Dto;
 
@@ -13,8 +13,9 @@ namespace Notebook.Server.Services
         Task<AccountModel> CheckLogin(LoginAccountRequest request);
         bool IsExpired(string token);
         Task ChangePasswordAsync(ChangePasswordModel model);
-        Task<Account> FindByToken(string token);
+        Task<User> FindByToken(string token);
 
         public Task<AccountModel> CreateWithGoogleAsync(string userEmail);
     }
 }
+*/

@@ -15,12 +15,12 @@ namespace Notebook.Server.Controllers
     public class NotebookController : ControllerBase
     {
         private readonly INotebookService notebookService;
-        private readonly IAccountService accountService;
+        private readonly IUserService userService;
 
-        public NotebookController(INotebookService notebookService, IAccountService accountService)
+        public NotebookController(INotebookService notebookService, IUserService userService)
         {
             this.notebookService = notebookService;
-            this.accountService = accountService;
+            this.userService = userService;
         }
 
         [HttpPost]
@@ -34,7 +34,7 @@ namespace Notebook.Server.Controllers
                 return BadRequest(validationResult.Errors);
             }
 
-            var email = accountService.GetUserEmail(Request);
+            var email = userService.GetUserEmail(Request);
             var existingAccount = await notebookService.CreateAsync(request,email);
             if (existingAccount == null)
             {
@@ -47,7 +47,7 @@ namespace Notebook.Server.Controllers
         // обезопасить получение данных
         public async Task<IActionResult> GetById([FromRoute] int id)
         {
-            var email = accountService.GetUserEmail(Request);
+            var email = userService.GetUserEmail(Request);
 
             var response = await notebookService.GetById(id,email);
             if (response == null)
@@ -60,7 +60,7 @@ namespace Notebook.Server.Controllers
         [HttpPut("{id:int}")]
         public async Task<IActionResult> Update([FromRoute] int id, NoteRequest requestDto)
         {
-            var email = accountService.GetUserEmail(Request);
+            var email = userService.GetUserEmail(Request);
             var response = await notebookService.UpdateAsync(id, requestDto, email);
             if (response == null)
             {
@@ -80,7 +80,7 @@ namespace Notebook.Server.Controllers
         [HttpGet("all")]
         public async Task<IActionResult> GetAll()
         {
-            var email = accountService.GetUserEmail(Request);
+            var email = userService.GetUserEmail(Request);
             var notebooks = await notebookService.GetAllAsync(email);
             return Ok(notebooks);
         }

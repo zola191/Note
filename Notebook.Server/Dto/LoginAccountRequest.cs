@@ -1,5 +1,4 @@
-﻿using Microsoft.AspNetCore.Authentication;
-
+﻿
 namespace Notebook.Server.Dto
 {
     public class LoginAccountRequest

@@ -1,4 +1,0 @@
-﻿namespace Notebook.Server.Domain
-{
-
-}

@@ -1,4 +1,4 @@
-﻿using AutoMapper;
+﻿/*using AutoMapper;
 using Microsoft.EntityFrameworkCore;
 using Notebook.Server.Authentication;
 using Notebook.Server.Data;
@@ -189,20 +189,21 @@ namespace Notebook.Server.Services
 
             existingAccount.PasswordHash = passwordHasher.HashPassword(model.Password,existingAccount.Salt);
 
-            dbContext.Accounts.Update(existingAccount);
+            dbContext.Users.Update(existingAccount);
             await dbContext.SaveChangesAsync();
         }
 
-        public async Task<Account> FindByToken(string token)
+        public async Task<User> FindByToken(string token)
         {
             var existingRestoreAccount = await dbContext.RestoreAccount
                 .Include(f => f.Account)
                 .FirstOrDefaultAsync(f => f.Token == token);
 
-            var account = await dbContext.Accounts
+            var account = await dbContext.Users
                 .FirstOrDefaultAsync(f => f.Email == existingRestoreAccount.Account.Email);
 
             return account;
         }
     }
 }
+*/

@@ -1,6 +1,6 @@
 ﻿namespace Notebook.Server.Dto
 {
-    public class CreateAccountRequest
+    public class CreateUserRequest
     {
         public string Email { get; set; }
         public string Password { get; set; }

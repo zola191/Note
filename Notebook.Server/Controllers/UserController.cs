@@ -1,13 +1,9 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Options;
-using Microsoft.Net.Http.Headers;
 using Notebook.Server.Authentication;
 using Notebook.Server.Dto;
 using Notebook.Server.Services;
 using Notebook.Server.Validators;
-using static System.Runtime.InteropServices.JavaScript.JSType;
 using System.IdentityModel.Tokens.Jwt;
-using Google.Apis.Auth;
 
 // передать в cookie token
 // внести правки в модели
@@ -22,21 +18,20 @@ namespace Notebook.Server.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class AccountController : Controller
+    public class UserController : Controller
     {
-
-        private readonly IAccountService accountService;
         private readonly IJwtProvider jwtProvider;
-        public AccountController(IAccountService accountService, IJwtProvider jwtProvider)
+        private readonly IUserService userService;
+        public UserController(IJwtProvider jwtProvider, IUserService userService)
         {
-            this.accountService = accountService;
             this.jwtProvider = jwtProvider;
+            this.userService = userService;
         }
 
         [HttpPost("create")]
-        public async Task<IActionResult> Create([FromBody] CreateAccountRequest request)
+        public async Task<IActionResult> Create([FromBody] CreateUserRequest request)
         {
-            var validator = new AccountRequestValidator();
+            var validator = new UserRequestValidator();
             var validationResult = validator.Validate(request);
 
             if (!validationResult.IsValid)
@@ -46,8 +41,8 @@ namespace Notebook.Server.Controllers
 
             try
             {
-                var existingAccount = await accountService.FindByEmail(request.Email);
-                var response = await accountService.CreateAsync(request);
+                var existingUser = await userService.FindByEmail(request.Email);
+                var response = await userService.CreateAsync(request);
                 return Ok(response);
             }
 
@@ -63,13 +58,13 @@ namespace Notebook.Server.Controllers
         {
             try
             {
-                var existingAccount = await accountService.CheckLogin(request);
+                var existingUser = await userService.CheckUser(request);
                 var cookieOptions = new CookieOptions();
                 cookieOptions.Secure = true;
 
-                HttpContext.Response.Cookies.Append("token", existingAccount.Token, cookieOptions);
+                HttpContext.Response.Cookies.Append("token", existingUser.Token, cookieOptions);
 
-                return Ok(existingAccount);
+                return Ok(existingUser);
             }
             catch (Exception ex)
             {
@@ -84,10 +79,10 @@ namespace Notebook.Server.Controllers
             var decodedValue = handler.ReadJwtToken(request.Credential);
             var userEmail = decodedValue.Claims.ElementAt(4).Value;
             
-            var existingUserl = await accountService.FindByEmail(userEmail);
+            var existingUserl = await userService.FindByEmail(userEmail);
             if (existingUserl == null)
             {
-                var result = await accountService.CreateWithGoogleAsync(userEmail);
+                var result = await userService.CreateWithGoogleAsync(userEmail);
                 return Ok(result);
             }
 
@@ -96,11 +91,11 @@ namespace Notebook.Server.Controllers
         }
 
         [HttpPost("restore")]
-        public async Task<IActionResult> RestorePassword([FromBody] AccountRestoreRequest request)
+        public async Task<IActionResult> RestorePassword([FromBody] RestoreUserModel request)
         {
             try
             {
-                var existingAccount = await accountService.RestorePassword(request);
+                var existingAccount = await userService.RestorePassword(request);
                 return Ok(existingAccount);
             }
 
@@ -111,11 +106,11 @@ namespace Notebook.Server.Controllers
         }
 
         [HttpPost("changepassword")]
-        public async Task<IActionResult> ChangePassword([FromBody] ChangePasswordModel request)
+        public async Task<IActionResult> ChangePassword([FromBody] ChangeUserPasswordModel request)
         {
             try
             {
-                await accountService.ChangePasswordAsync(request);
+                await userService.ChangePasswordAsync(request);
                 return Ok();
             }
 

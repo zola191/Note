@@ -5,7 +5,7 @@ namespace Notebook.Server.Authentication
 {
     public interface IJwtProvider
     {
-        string Generate(AccountModel account);
-        string GenerateRestore(Account account);
+        string Generate(UserModel account);
+        string GenerateRestore(User user);
     }
 }

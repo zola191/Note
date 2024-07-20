@@ -54,7 +54,7 @@ builder.Services.AddScoped<IEmailService, EmailService>();
 builder.Services.AddScoped<IPasswordHasher, PasswordHasher>();
 
 builder.Services.AddScoped<IValidator<NoteRequest>, NoteRequestValidator>();
-builder.Services.AddScoped<IValidator<CreateAccountRequest>, AccountRequestValidator>();
+builder.Services.AddScoped<IValidator<CreateUserRequest>, UserRequestValidator>();
 
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
 {

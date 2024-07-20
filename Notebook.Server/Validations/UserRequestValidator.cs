@@ -4,9 +4,9 @@ using Notebook.Server.Validations.CustomValidators;
 
 namespace Notebook.Server.Validators
 {
-    public class AccountRequestValidator : AbstractValidator<CreateAccountRequest>
+    public class UserRequestValidator : AbstractValidator<CreateUserRequest>
     {
-        public AccountRequestValidator()
+        public UserRequestValidator()
         {
             RuleFor(f => f.Email)
                 .NotNull().NotEmpty().WithMessage("Email is required")
