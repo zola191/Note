@@ -14,5 +14,7 @@ namespace Notebook.Server.Services
         bool IsExpired(string token);
         Task ChangePasswordAsync(ChangePasswordModel model);
         Task<Account> FindByToken(string token);
+
+        public Task<AccountModel> CreateWithGoogleAsync(string userEmail);
     }
 }

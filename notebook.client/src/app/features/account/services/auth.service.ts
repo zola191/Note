@@ -13,6 +13,7 @@ import { loginRequest } from '../models/account-loginRequest.mode';
 import { JwtDecoderService } from '../../../core/jwt/jwt-decoder.service';
 import { jwtDecode } from 'jwt-decode';
 import { CredentialResponse } from 'google-one-tap';
+import { LoginWithGoogleRequest } from '../models/loginWithGoogleRequest';
 
 @Injectable({
   providedIn: 'root',
@@ -128,7 +129,9 @@ export class AuthService {
     return true;
   }
 
-  loginWithGoogle(request: string): Observable<AccountResponse> {
+  loginWithGoogle(
+    request: LoginWithGoogleRequest
+  ): Observable<AccountResponse> {
     return this.http.post<AccountResponse>(
       `${environment.apiBaseUrl}/api/account/loginWithGoogle`,
       request

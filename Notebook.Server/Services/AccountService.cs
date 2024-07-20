@@ -48,6 +48,33 @@ namespace Notebook.Server.Services
             return response;
         }
 
+        public async Task<AccountModel> CreateWithGoogleAsync(string userEmail)
+        {
+            var user = new User()
+            {
+                Email = userEmail,
+                AccountId = userEmail
+            };
+
+            var account = new Account()
+            {
+                Email = user.Email,
+                User = user,
+            };
+
+            user.Account = account;
+
+            await dbContext.AddAsync(user);
+            await dbContext.SaveChangesAsync();
+
+            var response = mapper.Map<AccountModel>(new Account()
+            {
+                Email = user.Email,
+            });
+
+            return response;
+        }
+
         public async Task<AccountModel> FindByEmail(string email)
         {
             var existingAccount = await dbContext.Accounts.FirstOrDefaultAsync(f => f.Email == email);

@@ -7,6 +7,8 @@ import { CookieService } from 'ngx-cookie-service';
 import { loginRequest } from '../models/account-loginRequest.mode';
 import { jwtDecode } from 'jwt-decode';
 import { CredentialResponse, PromptMomentNotification } from 'google-one-tap';
+import { AuthGoogleService } from '../services/auth-google.service';
+import { LoginWithGoogleRequest } from '../models/loginWithGoogleRequest';
 
 @Component({
   selector: 'app-login-account',
@@ -14,9 +16,11 @@ import { CredentialResponse, PromptMomentNotification } from 'google-one-tap';
   styleUrl: './login-account.component.css',
 })
 export class LoginAccountComponent implements OnInit {
+  loginWithGoogleRequest: LoginWithGoogleRequest;
   model: loginRequest;
   private addAccountSubscription?: Subscription;
   constructor(
+    private AuthGoogleService: AuthGoogleService,
     private authService: AuthService,
     private router: Router,
     private snackBar: MatSnackBar,
@@ -25,6 +29,9 @@ export class LoginAccountComponent implements OnInit {
     this.model = {
       email: '',
       password: '',
+    };
+    this.loginWithGoogleRequest = {
+      credential: '',
     };
   }
   ngOnInit(): void {
@@ -54,7 +61,8 @@ export class LoginAccountComponent implements OnInit {
   }
 
   handleCredentialsResponse(response: CredentialResponse) {
-    this.authService.loginWithGoogle(response.credential).subscribe({
+    this.loginWithGoogleRequest.credential = response.credential;
+    this.authService.loginWithGoogle(this.loginWithGoogleRequest).subscribe({
       next: (res) => {
         this.router.navigateByUrl(`/notebook/notebook-list`);
       },
@@ -66,6 +74,10 @@ export class LoginAccountComponent implements OnInit {
       },
     });
   }
+
+  // signInWithGoogle() {
+  //   this.AuthGoogleService.login();
+  // }
 
   onFormSubmit() {
     this.addAccountSubscription = this.authService.login(this.model).subscribe({

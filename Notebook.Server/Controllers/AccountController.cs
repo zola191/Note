@@ -5,6 +5,9 @@ using Notebook.Server.Authentication;
 using Notebook.Server.Dto;
 using Notebook.Server.Services;
 using Notebook.Server.Validators;
+using static System.Runtime.InteropServices.JavaScript.JSType;
+using System.IdentityModel.Tokens.Jwt;
+using Google.Apis.Auth;
 
 // передать в cookie token
 // внести правки в модели
@@ -61,15 +64,6 @@ namespace Notebook.Server.Controllers
             try
             {
                 var existingAccount = await accountService.CheckLogin(request);
-                //if (Request.Cookies.TryGetValue("token", out string err))
-                //{
-
-                //}
-                //var options = new CookieOptions();
-                //options.Secure = true;
-                ////options.Expires = DateTime.Now.AddDays(1);
-                //Response.Cookies.Append("token", existingAccount.Token);
-
                 var cookieOptions = new CookieOptions();
                 cookieOptions.Secure = true;
 
@@ -84,9 +78,21 @@ namespace Notebook.Server.Controllers
         }
 
         [HttpPost("loginWithGoogle")]
-        public async Task<IActionResult> LoginWithGoogle([FromBody] string credential)
+        public async Task<IActionResult> LoginWithGoogle([FromBody] LoginWithGoogleRequest request)
         {
-            return Ok();
+            var handler = new JwtSecurityTokenHandler();
+            var decodedValue = handler.ReadJwtToken(request.Credential);
+            var userEmail = decodedValue.Claims.ElementAt(4).Value;
+            
+            var existingUserl = await accountService.FindByEmail(userEmail);
+            if (existingUserl == null)
+            {
+                var result = await accountService.CreateWithGoogleAsync(userEmail);
+                return Ok(result);
+            }
+
+            return Ok(existingUserl);
+
         }
 
         [HttpPost("restore")]
