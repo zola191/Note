@@ -12,8 +12,8 @@ using Notebook.Server.Data;
 namespace Notebook.Server.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20240720152238_AddExternalGoogleUsers")]
-    partial class AddExternalGoogleUsers
+    [Migration("20240722182855_Init")]
+    partial class Init
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -24,22 +24,6 @@ namespace Notebook.Server.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
-
-            modelBuilder.Entity("Notebook.Server.Domain.ExternalGoogleUser", b =>
-                {
-                    b.Property<string>("Email")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<string>("FirstName")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("LastName")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("Email");
-
-                    b.ToTable("ExternalGoogleUsers");
-                });
 
             modelBuilder.Entity("Notebook.Server.Domain.Note", b =>
                 {
@@ -55,9 +39,6 @@ namespace Notebook.Server.Migrations
                     b.Property<string>("Country")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("ExternalGoogleUserId")
-                        .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("FirstName")
                         .IsRequired()
@@ -87,8 +68,6 @@ namespace Notebook.Server.Migrations
                         .HasColumnType("nvarchar(450)");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("ExternalGoogleUserId");
 
                     b.HasIndex("UserId");
 
@@ -133,11 +112,9 @@ namespace Notebook.Server.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("PasswordHash")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Salt")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Email");
@@ -147,17 +124,10 @@ namespace Notebook.Server.Migrations
 
             modelBuilder.Entity("Notebook.Server.Domain.Note", b =>
                 {
-                    b.HasOne("Notebook.Server.Domain.ExternalGoogleUser", "ExternalGoogleUser")
-                        .WithMany("Notes")
-                        .HasForeignKey("ExternalGoogleUserId")
-                        .OnDelete(DeleteBehavior.Cascade);
-
                     b.HasOne("Notebook.Server.Domain.User", "User")
                         .WithMany("Notes")
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade);
-
-                    b.Navigation("ExternalGoogleUser");
 
                     b.Navigation("User");
                 });
@@ -171,11 +141,6 @@ namespace Notebook.Server.Migrations
                         .IsRequired();
 
                     b.Navigation("User");
-                });
-
-            modelBuilder.Entity("Notebook.Server.Domain.ExternalGoogleUser", b =>
-                {
-                    b.Navigation("Notes");
                 });
 
             modelBuilder.Entity("Notebook.Server.Domain.User", b =>

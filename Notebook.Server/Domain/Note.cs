@@ -17,7 +17,5 @@
         public string? UserId { get; set; } //Foreign Key Property
         public User User { get; set; } // Navigation Property to represent the User
 
-        public string? ExternalGoogleUserId { get; set; }
-        public ExternalGoogleUser ExternalGoogleUser { get; set; }
     }
 }

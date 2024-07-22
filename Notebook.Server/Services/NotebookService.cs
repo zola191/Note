@@ -22,14 +22,14 @@ namespace Notebook.Server.Services
         {
             var notebook = mapper.Map<Note>(request);
 
-            var existingGoogleEmail = dbContext.ExternalGoogleUsers.FirstOrDefault(x => x.Email == email);
+            var existingGoogleEmail = dbContext.Users.FirstOrDefault(x => x.Email == email);
             if (existingGoogleEmail == null)
             {
                 notebook.UserId = email;
             }
             else
             {
-                notebook.ExternalGoogleUserId = email;
+                 notebook.User = new User { Email = email };
             }
 
             await dbContext.AddAsync(notebook);
@@ -41,7 +41,7 @@ namespace Notebook.Server.Services
 
         public async Task<IEnumerable<NoteModel>> GetAllAsync(string email)
         {
-            var existingGoogleEmail = await dbContext.ExternalGoogleUsers.FirstOrDefaultAsync(x => x.Email == email);
+            var existingGoogleEmail = await dbContext.Users.FirstOrDefaultAsync(x => x.Email == email);
             var notebooks = new List<Note>();
             if (existingGoogleEmail == null)
             {
@@ -49,7 +49,7 @@ namespace Notebook.Server.Services
             }
             else
             {
-                notebooks = await dbContext.Notebooks.Where(f => f.ExternalGoogleUserId == email).ToListAsync();
+                notebooks = await dbContext.Notebooks.Where(f => f.User.Email == email).ToListAsync();
             }
             var response = mapper.Map<List<NoteModel>>(notebooks);
             return response;

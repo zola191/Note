@@ -3,13 +3,10 @@
     public class User
     {
         public string Email { get; set; }
-        public string Salt { get; set; }
-        public string PasswordHash { get; set; }
+        public string? Salt { get; set; }
+        public string? PasswordHash { get; set; }
         public string? FirstName { get; set; }
         public string? LastName { get; set; }
-
-/*      public string AccountId { get; set; }
-        public Account Account { get; set; }*/
 
         //one to many relationship with Notes
         public ICollection<Note> Notes { get; set; }

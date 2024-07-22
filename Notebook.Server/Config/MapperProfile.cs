@@ -12,8 +12,6 @@ namespace Notebook.Server.Config
             CreateMap<Note, NoteModel>();
             CreateMap<RestoreUser, RestoreUserModel>();
             CreateMap<User, UserModel>();
-            CreateMap<ExternalGoogleUser, GoogleUserModel>();
-            CreateMap<GoogleUserModel, UserModel> ();
         }
     }
 }

@@ -56,7 +56,7 @@ export class CreateAccountComponent implements OnDestroy {
       .createAccount(this.model)
       .subscribe({
         next: (response) => {
-          this.router.navigateByUrl('/account/login');
+          this.router.navigateByUrl('/user/login');
         },
         error: (error) => {
           this.snackBar.open(
@@ -72,7 +72,7 @@ export class CreateAccountComponent implements OnDestroy {
   }
 
   redirectToLoginPage() {
-    this.router.navigateByUrl('/account/login');
+    this.router.navigateByUrl('/user/login');
   }
 
   ngOnDestroy(): void {

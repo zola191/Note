@@ -11,9 +11,8 @@ namespace Notebook.Server.Services
         public Task<UserModel> FindByEmail(string email);
         public Task ChangePasswordAsync(ChangeUserPasswordModel model);
         public Task<User> FindByToken(string token);
-        public Task<GoogleUserModel> CreateWithGoogleAsync(string userEmail);
         public Task<UserModel> RestorePassword(RestoreUserModel model);
         public string GetUserEmail(HttpRequest request);
-        public Task<GoogleUserModel> CheckGoogleUser(LoginWithGoogleRequest request);
+        public Task<UserModel> CheckGoogleUser(LoginWithGoogleRequest request);
     }
 }

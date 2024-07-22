@@ -65,19 +65,6 @@ namespace Notebook.Server.Services
             return response;
         }
 
-        public async Task<GoogleUserModel> FindByGoogleEmail(string email)
-        {
-            var existingUser = await dbContext.ExternalGoogleUsers.Include(f=>f.Notes).FirstOrDefaultAsync(f => f.Email == email);
-
-            if (existingUser == null)
-            {
-                return null;
-            }
-
-            var response = mapper.Map<GoogleUserModel>(existingUser);
-            return response;
-        }
-
 
         public async Task<UserModel> CheckUser(LoginAccountRequest request)
         {
@@ -102,7 +89,7 @@ namespace Notebook.Server.Services
             return result;
         }
 
-        public async Task<GoogleUserModel> CheckGoogleUser(LoginWithGoogleRequest request)
+        public async Task<UserModel> CheckGoogleUser(LoginWithGoogleRequest request)
         {
             //выглядит ужасно.....
             
@@ -110,7 +97,7 @@ namespace Notebook.Server.Services
             var decodedValue = handler.ReadJwtToken(request.Credential);
             var userEmail = decodedValue.Claims.ElementAt(4).Value;
 
-            var existingUser = await FindByGoogleEmail(userEmail);
+            var existingUser = await FindByEmail(userEmail);
 
             if (existingUser == null)
             {
@@ -176,21 +163,21 @@ namespace Notebook.Server.Services
             await dbContext.SaveChangesAsync();
         }
 
-        public async Task<GoogleUserModel> CreateWithGoogleAsync(string userEmail)
+        public async Task<UserModel> CreateWithGoogleAsync(string userEmail)
         {
-            var existingUser = await dbContext.ExternalGoogleUsers.FirstOrDefaultAsync(f=>f.Email==userEmail);
+            var existingUser = await dbContext.Users.FirstOrDefaultAsync(f=>f.Email==userEmail);
             if (existingUser == null)
             {
-                var user = new ExternalGoogleUser()
+                var user = new User()
                 {
                     Email = userEmail
                 };
 
-                dbContext.ExternalGoogleUsers.Add(user);
+                dbContext.Users.Add(user);
                 await dbContext.SaveChangesAsync();
-                return mapper.Map<GoogleUserModel>(user);
+                return mapper.Map<UserModel>(user);
             }
-            return mapper.Map<GoogleUserModel>(existingUser);
+            return mapper.Map<UserModel>(existingUser);
         }
 
         public async Task<UserModel> RestorePassword(RestoreUserModel model)
