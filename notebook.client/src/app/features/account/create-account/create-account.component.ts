@@ -72,7 +72,7 @@ export class CreateAccountComponent implements OnDestroy {
   }
 
   redirectToLoginPage() {
-    this.router.navigateByUrl('/account/login');
+    this.router.navigateByUrl('/user/login');
   }
 
   ngOnDestroy(): void {
