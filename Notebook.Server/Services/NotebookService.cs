@@ -22,15 +22,7 @@ namespace Notebook.Server.Services
         {
             var notebook = mapper.Map<Note>(request);
 
-            var existingGoogleEmail = dbContext.Users.FirstOrDefault(x => x.Email == email);
-            if (existingGoogleEmail == null)
-            {
-                notebook.UserId = email;
-            }
-            else
-            {
-                 notebook.User = new User { Email = email };
-            }
+            notebook.UserId = email;
 
             await dbContext.AddAsync(notebook);
             await dbContext.SaveChangesAsync();

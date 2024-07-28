@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, inject, Inject, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { AuthService } from '../services/auth.service';
 import { Subscription } from 'rxjs';
@@ -7,6 +7,7 @@ import { CookieService } from 'ngx-cookie-service';
 import { LoginAccountRequest } from '../models/loginRequest.model';
 import { CredentialResponse, PromptMomentNotification } from 'google-one-tap';
 import { LoginWithGoogleRequest } from '../models/loginWithGoogleRequest';
+import { AuthGoogleService } from '../services/auth-google.service';
 
 @Component({
   selector: 'app-login-account',
@@ -17,6 +18,8 @@ export class LoginAccountComponent implements OnInit {
   loginWithGoogleRequest: LoginWithGoogleRequest;
   model: LoginAccountRequest;
   private addAccountSubscription?: Subscription;
+
+  private authGoogleService = inject(AuthGoogleService);
 
   constructor(
     private authService: AuthService,
@@ -59,11 +62,15 @@ export class LoginAccountComponent implements OnInit {
   }
 
   handleCredentialsResponse(response: CredentialResponse) {
+    this.cookie.set('token', response.credential);
+    console.log(response.credential);
+    // this.router.navigateByUrl(`/notebook/notebook-list`);
+
     this.loginWithGoogleRequest.credential = response.credential;
     this.authService.loginWithGoogle(this.loginWithGoogleRequest).subscribe({
       next: (res) => {
         this.cookie.set('email', res.email);
-        this.cookie.set('token', res.token);
+        // this.cookie.set('token', res.token);
         this.router.navigateByUrl(`/notebook/notebook-list`);
       },
       error: (res) => {
@@ -89,6 +96,10 @@ export class LoginAccountComponent implements OnInit {
         });
       },
     });
+  }
+
+  signInWithGoogle() {
+    this.authGoogleService.login();
   }
 
   redirectToRegisterPage() {

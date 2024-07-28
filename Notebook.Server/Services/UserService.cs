@@ -92,23 +92,26 @@ namespace Notebook.Server.Services
         public async Task<UserModel> CheckGoogleUser(LoginWithGoogleRequest request)
         {
             //выглядит ужасно.....
-            
-            var handler = new JwtSecurityTokenHandler();
-            var decodedValue = handler.ReadJwtToken(request.Credential);
-            var userEmail = decodedValue.Claims.ElementAt(4).Value;
 
-            var existingUser = await FindByEmail(userEmail);
+                        var handler = new JwtSecurityTokenHandler();
+                        var decodedValue = handler.ReadJwtToken(request.Credential);
+                        var userEmail = decodedValue.Claims.ElementAt(4).Value;
 
-            if (existingUser == null)
-            {
-                var result = await CreateWithGoogleAsync(userEmail);
-                var userModel = mapper.Map<UserModel>(result);
+                        var existingUser = await FindByEmail(userEmail);
 
-                result.Token = jwtProvider.Generate(userModel);
-                return result;
-            }
-            existingUser.Token = jwtProvider.Generate(mapper.Map<UserModel>(existingUser));
-            return existingUser;
+                        if (existingUser == null)
+                        {
+                            var result = await CreateWithGoogleAsync(userEmail);
+                            var userModel = mapper.Map<UserModel>(result);
+
+                            result.Token = jwtProvider.Generate(userModel);
+                            return result;
+                        }
+                        //передать токен google обратно с backend во фронт
+
+                        existingUser.Token = jwtProvider.Generate(mapper.Map<UserModel>(existingUser));
+                        return existingUser;
+            return null;
         }
 
         public bool IsExpired(string token)
