@@ -5,7 +5,7 @@ import {
   FormGroup,
   Validators,
 } from '@angular/forms';
-import { AuthService } from '../services/auth.service';
+import { UserService } from '../services/user.service';
 import { Subscription } from 'rxjs';
 import { ActivatedRoute, Router } from '@angular/router';
 import { MatSnackBar } from '@angular/material/snack-bar';
@@ -22,7 +22,7 @@ export class ChangePasswordComponent implements OnInit {
   private addAccountSubscription?: Subscription;
 
   constructor(
-    private authService: AuthService,
+    private userService: UserService,
     private router: Router,
     private snackBar: MatSnackBar,
     private activatedRoute: ActivatedRoute,
@@ -65,7 +65,7 @@ export class ChangePasswordComponent implements OnInit {
       console.log(parameters);
     });
 
-    this.addAccountSubscription = this.authService
+    this.addAccountSubscription = this.userService
       .changePassword(this.model)
       .subscribe({
         next: (response) => {

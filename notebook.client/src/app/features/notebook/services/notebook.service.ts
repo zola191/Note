@@ -1,4 +1,4 @@
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpEvent, HttpRequest } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { NotebookRequest } from '../models/notebook-request.model';
 import { Observable } from 'rxjs';
@@ -13,21 +13,17 @@ export class NotebookService {
 
   create(model: NotebookRequest): Observable<void> {
     return this.http.post<void>(
-      `${environment.apiBaseUrl}/api/notebook/create`,
+      `${environment.apiBaseUrl}/api/note/create`,
       model
     );
   }
 
   getAll(): Observable<Notebook[]> {
-    return this.http.get<Notebook[]>(
-      `${environment.apiBaseUrl}/api/notebook/all`
-    );
+    return this.http.get<Notebook[]>(`${environment.apiBaseUrl}/api/note/all`);
   }
 
   getById(id: string): Observable<Notebook> {
-    return this.http.get<Notebook>(
-      `${environment.apiBaseUrl}/api/notebook/${id}`
-    );
+    return this.http.get<Notebook>(`${environment.apiBaseUrl}/api/note/${id}`);
   }
 
   update(
@@ -35,14 +31,39 @@ export class NotebookService {
     updateNotebookRequest: NotebookRequest
   ): Observable<Notebook> {
     return this.http.put<Notebook>(
-      `${environment.apiBaseUrl}/api/notebook/${id}`,
+      `${environment.apiBaseUrl}/api/note/${id}`,
       updateNotebookRequest
     );
   }
 
   delete(id: string): Observable<Notebook> {
     return this.http.delete<Notebook>(
-      `${environment.apiBaseUrl}/api/notebook/${id}`
+      `${environment.apiBaseUrl}/api/note/${id}`
     );
+  }
+
+  upload(file: File): Observable<Notebook[]> {
+    const formData: FormData = new FormData();
+
+    formData.append('file', file);
+    return this.http.post<Notebook[]>(
+      `${environment.apiBaseUrl}/api/fileManager/UploadFromExcel`,
+      formData
+    );
+    // const req = new HttpRequest(
+    //   'POST',
+    //   `${environment.apiBaseUrl}/api/fileManager/UploadFromExcel`,
+    //   formData,
+    //   {
+    //     reportProgress: true,
+    //     responseType: 'json',
+    //   }
+    // );
+
+    // return this.http.request(req);
+  }
+
+  getFiles(): Observable<any> {
+    return this.http.get(`${environment.apiBaseUrl}/api/fileManager/files`);
   }
 }

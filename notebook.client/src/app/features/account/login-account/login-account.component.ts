@@ -1,13 +1,17 @@
-import { Component, inject, Inject, OnInit } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
-import { AuthService } from '../services/auth.service';
-import { Subscription } from 'rxjs';
+import { UserService } from '../services/user.service';
+import { Observable, Subscription } from 'rxjs';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { CookieService } from 'ngx-cookie-service';
-import { LoginAccountRequest } from '../models/loginRequest.model';
-import { CredentialResponse, PromptMomentNotification } from 'google-one-tap';
+import { LoginRequest } from '../models/loginRequest.model';
+import { CredentialResponse } from 'google-one-tap';
 import { LoginWithGoogleRequest } from '../models/loginWithGoogleRequest';
-import { AuthGoogleService } from '../services/auth-google.service';
+import { GoogleAuthService } from '../services/google-auth.service';
+import { AppState } from '../store/store';
+import { Store } from '@ngrx/store';
+import { AccountResponse } from '../models/account-response.model';
+import * as AccountActions from '../store/actions';
 
 @Component({
   selector: 'app-login-account',
@@ -16,16 +20,18 @@ import { AuthGoogleService } from '../services/auth-google.service';
 })
 export class LoginAccountComponent implements OnInit {
   loginWithGoogleRequest: LoginWithGoogleRequest;
-  model: LoginAccountRequest;
+  model: LoginRequest;
+  account$: Observable<AccountResponse>;
+  isLoading$: Observable<boolean>;
   private addAccountSubscription?: Subscription;
 
-  private authGoogleService = inject(AuthGoogleService);
-
   constructor(
-    private authService: AuthService,
+    private authService: UserService,
+    private googleAuthService: GoogleAuthService,
     private router: Router,
     private snackBar: MatSnackBar,
-    private cookie: CookieService
+    private cookie: CookieService,
+    private store: Store<AppState>
   ) {
     this.model = {
       email: '',
@@ -34,6 +40,9 @@ export class LoginAccountComponent implements OnInit {
     this.loginWithGoogleRequest = {
       credential: '',
     };
+    this.account$ = this.store.select((state) => state.account.account);
+    this.isLoading$ = this.store.select((state) => state.account.loading);
+    this.loadAccount();
   }
   ngOnInit(): void {
     //@ts-ignore
@@ -64,13 +73,11 @@ export class LoginAccountComponent implements OnInit {
   handleCredentialsResponse(response: CredentialResponse) {
     this.cookie.set('token', response.credential);
     console.log(response.credential);
-    // this.router.navigateByUrl(`/notebook/notebook-list`);
 
     this.loginWithGoogleRequest.credential = response.credential;
     this.authService.loginWithGoogle(this.loginWithGoogleRequest).subscribe({
       next: (res) => {
         this.cookie.set('email', res.email);
-        // this.cookie.set('token', res.token);
         this.router.navigateByUrl(`/notebook/notebook-list`);
       },
       error: (res) => {
@@ -90,16 +97,13 @@ export class LoginAccountComponent implements OnInit {
         this.router.navigateByUrl(`/notebook/notebook-list`);
       },
       error: (response) => {
-        this.snackBar.open('Неправильный логин или пароль', 'close', {
+        console.log(console.error);
+        this.snackBar.open(response.error, 'close', {
           duration: 3000,
           panelClass: ['snackbar-1'],
         });
       },
     });
-  }
-
-  signInWithGoogle() {
-    this.authGoogleService.login();
   }
 
   redirectToRegisterPage() {
@@ -108,5 +112,20 @@ export class LoginAccountComponent implements OnInit {
 
   ngOnDestroy(): void {
     this.addAccountSubscription?.unsubscribe();
+  }
+
+  externalLogin = () => {
+    this.googleAuthService.signInWithGoogle();
+    this.googleAuthService.extAuthChanged.subscribe((user) => {
+      // const externalAuth: ExternalAuthDto = {
+      //   provider: user.provider,
+      //   idToken: user.idToken,
+      // };
+      // this.validateExternalAuth(externalAuth);
+    });
+  };
+
+  loadAccount() {
+    this.store.dispatch(AccountActions.loadAccount());
   }
 }

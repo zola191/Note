@@ -1,4 +1,4 @@
-import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { createRequest } from '../models/account-createRequest.model';
@@ -9,14 +9,14 @@ import { User } from '../models/user.model';
 import { AccountRestoreRequest } from '../models/account-restore.model';
 import { RestoreAccountResponse } from '../models/account-restore-response.model';
 import { AccountChangePassword } from '../models/account-change-password-request.model';
-import { LoginAccountRequest } from '../models/loginRequest.model';
+import { LoginRequest } from '../models/loginRequest.model';
 import { jwtDecode } from 'jwt-decode';
 import { LoginWithGoogleRequest } from '../models/loginWithGoogleRequest';
 
 @Injectable({
   providedIn: 'root',
 })
-export class AuthService {
+export class UserService {
   $user = new BehaviorSubject<User | undefined>(undefined);
 
   constructor(private http: HttpClient, private cookie: CookieService) {}
@@ -28,7 +28,7 @@ export class AuthService {
     );
   }
 
-  login(request: LoginAccountRequest): Observable<AccountResponse> {
+  login(request: LoginRequest): Observable<AccountResponse> {
     return this.http.post<AccountResponse>(
       `${environment.apiBaseUrl}/api/user/login`,
       request

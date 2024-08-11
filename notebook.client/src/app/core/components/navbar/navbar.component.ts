@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { User } from '../../../features/account/models/user.model';
-import { AuthService } from '../../../features/account/services/auth.service';
+import { UserService } from '../../../features/account/services/user.service';
 import { Router } from '@angular/router';
 
 @Component({
@@ -11,26 +11,33 @@ import { Router } from '@angular/router';
 export class NavbarComponent implements OnInit {
   user?: User;
 
-  constructor(private authService: AuthService, private router: Router) {}
+  constructor(private userService: UserService, private router: Router) {}
 
   ngOnInit(): void {
-    this.authService.user().subscribe({
-      next: (response) => {
-        this.user = response;
-        // this.user = this.authService.getUser();
-      },
-    });
+    // this.authService.user().subscribe({
+    //   next: (response) => {
+    //     this.user = response;
+    //     // this.user = this.authService.getUser();
+    //   },
+    // });
   }
 
   isAuth(): boolean {
-    return (
-      this.authService.getUser() !== null &&
-      this.authService.getUser() !== undefined
-    );
+    let existingUser = this.userService.getUser();
+    if (existingUser !== null && existingUser !== undefined) {
+      this.user = existingUser;
+      return true;
+    }
+    return false;
+
+    // return (
+    //   this.authService.getUser() !== null &&
+    //   this.authService.getUser() !== undefined
+    // );
   }
 
   onLogout(): void {
-    this.authService.logout();
+    this.userService.logout();
     this.router.navigateByUrl('/');
   }
 }

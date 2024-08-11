@@ -10,14 +10,14 @@ namespace Notebook.Server.Controllers
     [ApiController]
     [Route("api/[controller]")]
 
-    public class NotebookController : ControllerBase
+    public class NoteController : ControllerBase
     {
-        private readonly INotebookService notebookService;
+        private readonly INoteService noteService;
         private readonly IUserService userService;
 
-        public NotebookController(INotebookService notebookService, IUserService userService)
+        public NoteController(INoteService noteService, IUserService userService)
         {
-            this.notebookService = notebookService;
+            this.noteService = noteService;
             this.userService = userService;
         }
 
@@ -33,7 +33,7 @@ namespace Notebook.Server.Controllers
             }
 
             var email = userService.GetUserEmail(Request);
-            var existingAccount = await notebookService.CreateAsync(request,email);
+            var existingAccount = await noteService.CreateAsync(request, email);
             if (existingAccount == null)
             {
                 return BadRequest();
@@ -47,7 +47,7 @@ namespace Notebook.Server.Controllers
         {
             var email = userService.GetUserEmail(Request);
 
-            var response = await notebookService.GetById(id,email);
+            var response = await noteService.GetById(id, email);
             if (response == null)
             {
                 return NotFound();
@@ -59,7 +59,7 @@ namespace Notebook.Server.Controllers
         public async Task<IActionResult> Update([FromRoute] int id, NoteRequest requestDto)
         {
             var email = userService.GetUserEmail(Request);
-            var response = await notebookService.UpdateAsync(id, requestDto, email);
+            var response = await noteService.UpdateAsync(id, requestDto, email);
             if (response == null)
             {
                 return NotFound();
@@ -70,7 +70,7 @@ namespace Notebook.Server.Controllers
         [HttpDelete("{id:int}")]
         public async Task<IActionResult> Delete(int id)
         {
-            await notebookService.DeleteAsync(id);
+            await noteService.DeleteAsync(id);
             return Ok();
 
         }
@@ -79,9 +79,8 @@ namespace Notebook.Server.Controllers
         public async Task<IActionResult> GetAll()
         {
             var email = userService.GetUserEmail(Request);
-            var notebooks = await notebookService.GetAllAsync(email);
+            var notebooks = await noteService.GetAllAsync(email);
             return Ok(notebooks);
         }
-
     }
 }

@@ -1,6 +1,4 @@
 using FluentValidation;
-using Microsoft.AspNetCore.Authentication.Cookies;
-using Microsoft.AspNetCore.Authentication.Google;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
@@ -8,6 +6,7 @@ using Microsoft.OpenApi.Models;
 using Notebook.Server.Authentication;
 using Notebook.Server.Data;
 using Notebook.Server.Dto;
+using Notebook.Server.Middleware;
 using Notebook.Server.Services;
 using Notebook.Server.Validations;
 using Notebook.Server.Validators;
@@ -48,75 +47,47 @@ builder.Services.AddSwaggerGen(opt =>
     });
 });
 builder.Services.AddAutoMapper(typeof(Program).Assembly);
-builder.Services.AddScoped<INotebookService, NotebookService>();
+builder.Services.AddSingleton(typeof(FileServiceExceptionHandlerMiddleware));
+builder.Services.AddScoped<INoteService, NoteService>();
 builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<IJwtProvider, JwtProvider>();
 builder.Services.AddScoped<IEmailService, EmailService>();
 builder.Services.AddScoped<IPasswordHasher, PasswordHasher>();
+builder.Services.AddScoped<IFileService, FileService>();
 
 builder.Services.AddScoped<IValidator<NoteRequest>, NoteRequestValidator>();
 builder.Services.AddScoped<IValidator<CreateUserRequest>, UserRequestValidator>();
+
+builder.Configuration.AddJsonFile("appsettings.Local.json", optional: true);
 
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
 {
     options.UseSqlServer(builder.Configuration.GetConnectionString("NotebookConnectionString"));
 });
 
-//builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
-
-/*builder.Services.AddAuthentication(options =>
-{
-    options.DefaultScheme = CookieAuthenticationDefaults.AuthenticationScheme;
-    options.DefaultChallengeScheme = GoogleDefaults.AuthenticationScheme;
-});*/
-
-//builder.Services.AddAuthentication()
-//                //.AddJwtBearer(options =>
-//                //{
-//                //    options.TokenValidationParameters = new TokenValidationParameters
-//                //    {
-//                //        AuthenticationType = "Jwt",
-//                //        ValidateIssuer = true,
-//                //        ValidateAudience = true,
-//                //        ValidateLifetime = true,
-//                //        ValidateIssuerSigningKey = true,
-//                //        ValidIssuer = builder.Configuration["Jwt:Issuer"],
-//                //        ValidAudience = builder.Configuration["Jwt:Audience"],
-//                //        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"]))
-//                //    };
-//                //})
-//                .AddGoogle(options =>
-//                {
-//                    options.ClientId = builder.Configuration["Authentication:Google:ClientId"];
-//                    options.ClientSecret = builder.Configuration["Authentication:Google:ClientSecret"];
-//                });
+//builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme);
 
 builder.Services.AddAuthentication(options =>
 {
-    options.DefaultScheme = CookieAuthenticationDefaults.AuthenticationScheme;
-    options.DefaultChallengeScheme = GoogleDefaults.AuthenticationScheme;
-})
-.AddJwtBearer(options =>
-{
-    options.TokenValidationParameters = new TokenValidationParameters
-    {
-        AuthenticationType = "Jwt",
-        ValidateIssuer = true,
-        ValidateAudience = true,
-        ValidateLifetime = true,
-        ValidateIssuerSigningKey = true,
-        ValidIssuer = builder.Configuration["Jwt:Issuer"],
-        ValidAudience = builder.Configuration["Jwt:Audience"],
-        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"]))
-    };
-})
-.AddGoogle(options =>
-{
-    options.ClientId = builder.Configuration["Authentication:Google:ClientId"];
-    options.ClientSecret = builder.Configuration["Authentication:Google:ClientSecret"];
-    options.Scope.Add("profile");
-    options.Scope.Add("email");
+    options.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
+    options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
 });
+
+builder.Services.AddAuthentication()
+                .AddJwtBearer(options =>
+                {
+                    options.TokenValidationParameters = new TokenValidationParameters
+                    {
+                        AuthenticationType = "Jwt",
+                        ValidateIssuer = true,
+                        ValidateAudience = true,
+                        ValidateLifetime = true,
+                        ValidateIssuerSigningKey = true,
+                        ValidIssuer = builder.Configuration["Jwt:Issuer"],
+                        ValidAudience = builder.Configuration["Jwt:Audience"],
+                        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"]))
+                    };
+                });
 
 // multiissuer
 
@@ -144,6 +115,8 @@ app.UseCors(options =>
     options.AllowAnyOrigin();
     options.AllowAnyMethod();
 });
+
+app.UseMiddleware<FileServiceExceptionHandlerMiddleware>();
 
 app.UseAuthentication();
 app.UseAuthorization();

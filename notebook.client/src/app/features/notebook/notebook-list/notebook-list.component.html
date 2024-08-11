@@ -1,48 +1,132 @@
 <div class="container">
   <h1 class="mt-3">Список Note</h1>
-  <div class="d-flex justify-content-start mt-3">
-    <button class="btn btn-primary" (click)="openDialog()">
-      Добавить Note
-    </button>
-  </div>
-  <ng-container *ngIf="notebooks$ | async as notes">
-    <table class="table table-bordered mt-3">
-      <thead>
-        <tr>
-          <th>Id</th>
-          <th>FirstName</th>
-          <th>MiddleName</th>
-          <th>LastName</th>
-          <th>PhoneNumber</th>
-          <th>Country</th>
-          <th>BirthDay</th>
-          <th>Organization</th>
-          <th>Position</th>
-          <th>Other</th>
-          <th></th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr *ngFor="let note of notes">
-          <td>{{ note.id }}</td>
-          <td>{{ note.firstName }}</td>
-          <td>{{ note.middleName }}</td>
-          <td>{{ note.lastName }}</td>
-          <td>{{ note.phoneNumber }}</td>
-          <td>{{ note.country }}</td>
-          <td>{{ note.birthDay | date : "dd/MM/yyyy" }}</td>
-          <td>{{ note.organization }}</td>
-          <td>{{ note.position }}</td>
-          <td>{{ note.other }}</td>
-          <td>
-            <a
+  <div class="container">
+    <div class="d-flex flex-row bd-highlight mb-3">
+      <div class="bd-highlight">
+        <button class="btn btn-primary" (click)="openCreteNoteDialog()">
+          Добавить Note
+        </button>
+      </div>
+      <div>
+        <div class="input-group mb-3">
+          <div class="ms-3">
+            <input
+              type="file"
+              class="form-control"
+              (change)="selectFile($event)"
+              id="fileInput"
+              name="fileInput"
+            />
+            <button
               class="btn btn-primary"
-              [routerLink]="['/notebook/edit-notebook/', note.id]"
-              >Изменить</a
+              [disabled]="!currentFile"
+              (click)="upload()"
             >
-          </td>
-        </tr>
-      </tbody>
-    </table>
-  </ng-container>
+              Отправить
+            </button>
+          </div>
+        </div>
+        <div class="ms-3">
+          <button class="btn btn-primary" (click)="exportToExcel()">
+            Выгрузить в excel
+          </button>
+        </div>
+        <!-- <input
+          type="file"
+          id="fileInput"
+          (change)="selectFile($event)"
+          name="fileInput"
+        />
+
+        <button
+          class="btn btn-primary"
+          [disabled]="!currentFile"
+          (click)="upload()"
+        >
+          Отправить
+        </button>
+      </div>
+      <div class="ms-3">
+        <button class="btn btn-primary" (click)="exportToExcel()">
+          Выгрузить в excel
+        </button>
+      </div> -->
+        <!-- <div>
+        @if (progress) {
+        <mat-toolbar class="progress-bar">
+          <mat-progress-bar
+            color="accent"
+            [value]="progress"
+          ></mat-progress-bar>
+          <span class="progress">{{ progress }}%</span>
+        </mat-toolbar>
+        }
+
+        <mat-form-field>
+          <div>
+            <mat-toolbar>
+              <input matInput [value]="fileName" />
+
+              <button
+                mat-flat-button
+                color="primary"
+                [disabled]="!currentFile"
+                (click)="upload()"
+              >
+                Upload
+              </button>
+            </mat-toolbar>
+
+            <input
+              type="file"
+              id="fileInput"
+              (change)="selectFile($event)"
+              name="fileInput"
+            />
+          </div>
+        </mat-form-field>
+      </div> -->
+      </div>
+    </div>
+    <ng-container *ngIf="notebooks$ | async as notes">
+      <table class="table table-bordered mt-3">
+        <thead>
+          <tr>
+            <th>Id</th>
+            <th>FirstName</th>
+            <th>MiddleName</th>
+            <th>LastName</th>
+            <th>PhoneNumber</th>
+            <th>Country</th>
+            <th>BirthDay</th>
+            <th>Organization</th>
+            <th>Position</th>
+            <th>Other</th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let note of notes">
+            <td>{{ note.id }}</td>
+            <td>{{ note.firstName }}</td>
+            <td>{{ note.middleName }}</td>
+            <td>{{ note.lastName }}</td>
+            <td>{{ note.phoneNumber }}</td>
+            <td>{{ note.country }}</td>
+            <td>{{ note.birthDay | date : "dd/MM/yyyy" }}</td>
+            <td>{{ note.organization }}</td>
+            <td>{{ note.position }}</td>
+            <td>{{ note.other }}</td>
+            <td>
+              <a
+                class="btn btn-primary"
+                [routerLink]="['/notebook/edit-notebook/', note.id]"
+                >Изменить</a
+              >
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </ng-container>
+  </div>
 </div>

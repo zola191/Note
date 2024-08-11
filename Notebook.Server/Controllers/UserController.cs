@@ -3,7 +3,6 @@ using Notebook.Server.Authentication;
 using Notebook.Server.Dto;
 using Notebook.Server.Services;
 using Notebook.Server.Validators;
-using System.IdentityModel.Tokens.Jwt;
 
 // передать в cookie token
 // внести правки в модели
@@ -120,6 +119,26 @@ namespace Notebook.Server.Controllers
             {
                 await userService.ChangePasswordAsync(request);
                 return Ok();
+            }
+
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
+        [HttpGet("UserInfo")]
+        public async Task<IActionResult> UserInfo(UserInfoModel model)
+        {
+            try
+            {
+                var userModel = await userService.FindByEmail(model.Email);
+                return Ok(new UserInfoModel()
+                {
+                    Email = model.Email,
+                    FirstName = model.FirstName,
+                    LastName = model.LastName,
+                });
             }
 
             catch (Exception ex)

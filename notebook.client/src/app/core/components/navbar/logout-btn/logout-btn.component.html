@@ -1,0 +1,4 @@
+<div class="d-flex align-items-center">
+  <a class="nav-link" [routerLink]="['account/cabinet']">{{ user?.email }}</a>
+  <button class="btn btn-primary ms-3" (click)="onLogout()">Выйти</button>
+</div>

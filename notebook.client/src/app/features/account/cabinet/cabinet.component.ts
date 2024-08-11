@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { AuthService } from '../services/auth.service';
+import { UserService } from '../services/user.service';
 
 @Component({
   selector: 'app-cabinet',
@@ -7,7 +7,7 @@ import { AuthService } from '../services/auth.service';
   styleUrl: './cabinet.component.css',
 })
 export class CabinetComponent implements OnInit {
-  constructor(private readonly autthService: AuthService) {}
+  constructor(private readonly userService: UserService) {}
 
   ngOnInit(): void {
     throw new Error('Method not implemented.');

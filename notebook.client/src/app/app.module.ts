@@ -33,6 +33,17 @@ import { provideNativeDateAdapter } from '@angular/material/core';
 import { WelcomeComponent } from './core/components/welcome/welcome.component';
 import { CabinetComponent } from './features/account/cabinet/cabinet.component';
 import { provideOAuthClient } from 'angular-oauth2-oidc';
+import {
+  GoogleLoginProvider,
+  SocialAuthServiceConfig,
+} from '@abacritt/angularx-social-login';
+import { MatToolbarModule } from '@angular/material/toolbar';
+import { MatProgressBarModule } from '@angular/material/progress-bar';
+import { provideStore, StoreModule } from '@ngrx/store';
+import { EffectsModule } from '@ngrx/effects';
+import { UserService } from './features/account/services/user.service';
+import { AccountReducer } from './features/account/store/reducer';
+import { AlertModalComponent } from './features/notebook/alert-modal/alert-modal.component';
 
 @NgModule({
   declarations: [
@@ -47,6 +58,7 @@ import { provideOAuthClient } from 'angular-oauth2-oidc';
     ChangePasswordComponent,
     WelcomeComponent,
     CabinetComponent,
+    AlertModalComponent,
   ],
   bootstrap: [AppComponent],
   imports: [
@@ -66,6 +78,10 @@ import { provideOAuthClient } from 'angular-oauth2-oidc';
     MatDatepickerModule,
     MatInputModule,
     MatFormFieldModule,
+    MatToolbarModule,
+    MatProgressBarModule,
+    StoreModule.forRoot({ account: AccountReducer }),
+    EffectsModule.forRoot([]),
   ],
   providers: [
     provideAnimations(),
@@ -74,7 +90,22 @@ import { provideOAuthClient } from 'angular-oauth2-oidc';
       useClass: AuthInterceptor,
       multi: true,
     },
-
+    {
+      provide: 'SocialAuthServiceConfig',
+      useValue: {
+        autoLogin: false,
+        lang: 'en',
+        providers: [
+          {
+            id: GoogleLoginProvider.PROVIDER_ID,
+            provider: new GoogleLoginProvider('clientId'),
+          },
+        ],
+        onError: (err) => {
+          console.error(err);
+        },
+      } as SocialAuthServiceConfig,
+    },
     provideAnimationsAsync(),
     provideHttpClient(withInterceptorsFromDi()),
     provideNativeDateAdapter(),

@@ -1,7 +1,7 @@
 import { Component, OnDestroy } from '@angular/core';
 import { Router } from '@angular/router';
 import { Subscription } from 'rxjs';
-import { AuthService } from '../services/auth.service';
+import { UserService } from '../services/user.service';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import {
   AbstractControl,
@@ -22,7 +22,7 @@ export class CreateAccountComponent implements OnDestroy {
   private addAccountSubscription?: Subscription;
 
   constructor(
-    private authService: AuthService,
+    private userService: UserService,
     private router: Router,
     private snackBar: MatSnackBar
   ) {
@@ -52,21 +52,17 @@ export class CreateAccountComponent implements OnDestroy {
   }
 
   onFormSubmit() {
-    this.addAccountSubscription = this.authService
+    this.addAccountSubscription = this.userService
       .createAccount(this.model)
       .subscribe({
         next: (response) => {
           this.router.navigateByUrl('/user/login');
         },
         error: (error) => {
-          this.snackBar.open(
-            'Пользователь с таким логином уже существует',
-            'close',
-            {
-              duration: 3000,
-              panelClass: ['snackbar-1'],
-            }
-          );
+          this.snackBar.open(error.errorMessage, 'close', {
+            duration: 3000,
+            panelClass: ['snackbar-1'],
+          });
         },
       });
   }

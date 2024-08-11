@@ -1,12 +1,11 @@
 ﻿using FluentValidation;
-using Notebook.Server.Dto;
-using Notebook.Server.Validations.CustomValidators;
+using Notebook.Server.Domain;
 
 namespace Notebook.Server.Validations
 {
-    public class NoteRequestValidator : AbstractValidator<NoteRequest>
+    public class NoteFromFileValidator : AbstractValidator<Note>
     {
-        public NoteRequestValidator()
+        public NoteFromFileValidator()
         {
             RuleFor(f => f.FirstName)
                 .NotNull()
@@ -36,9 +35,6 @@ namespace Notebook.Server.Validations
                 .MinimumLength(4).WithMessage("minimum length limited to 4 symbols")
                 .MaximumLength(50).WithMessage("maximum length limited to 25 symbols");
 
-            ////как исправить без указания Value
-            RuleFor(f => f.BirthDay.Value).Adult().WithMessage("only adult");
-
             RuleFor(f => f.Organization)
                 .MinimumLength(2).WithMessage("minimum length limited to 2 symbols")
                 .MaximumLength(25).WithMessage("maximum length limited to 25 symbols");
@@ -50,7 +46,6 @@ namespace Notebook.Server.Validations
             RuleFor(f => f.Other)
                 .MaximumLength(100)
                 .WithMessage("maximum length limited to 100 symbols");
-
         }
     }
 }
