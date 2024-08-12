@@ -10,20 +10,31 @@ namespace Notebook.Server.Middleware
             {
                 await next(context);
             }
-            catch (FileServiceException e)
+            catch (Exception e)
             {
-                context.Response.StatusCode = e.StatusCode;
-                await context.Response.WriteAsync(e.Message);
-            }
-            catch(FileNotFoundException e)
-            {
-                context.Response.StatusCode = 402;
-                await context.Response.WriteAsync(e.Message);
-            }
-            catch(FormatException e)
-            {
-                context.Response.StatusCode = 403;
-                await context.Response.WriteAsync(e.Message);
+                switch (e)
+                {
+                    case FileServiceException fileServiceException:
+                        context.Response.StatusCode = fileServiceException.StatusCode;
+                        await context.Response.WriteAsync(fileServiceException.Message);
+                        break;
+
+                    case FileNotFoundException fileNotFoundException:
+                        context.Response.StatusCode = 402;
+                        await context.Response.WriteAsync(fileNotFoundException.Message);
+                        break;
+
+                    case FormatException formatException:
+                        context.Response.StatusCode = 403;
+                        await context.Response.WriteAsync(formatException.Message);
+                        break;
+
+                    default:
+                        // Обработка других исключений, если необходимо
+                        context.Response.StatusCode = 500;
+                        await context.Response.WriteAsync("An unexpected error occurred.");
+                        break;
+                }
             }
         }
     }

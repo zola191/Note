@@ -7,7 +7,7 @@
           Добавить Note
         </button>
       </div>
-      <div>
+      <div class="d-flex">
         <div class="input-group mb-3">
           <div class="ms-3">
             <input
@@ -17,6 +17,8 @@
               id="fileInput"
               name="fileInput"
             />
+          </div>
+          <div class="ms-3">
             <button
               class="btn btn-primary"
               [disabled]="!currentFile"
@@ -25,67 +27,12 @@
               Отправить
             </button>
           </div>
-        </div>
-        <div class="ms-3">
-          <button class="btn btn-primary" (click)="exportToExcel()">
-            Выгрузить в excel
-          </button>
-        </div>
-        <!-- <input
-          type="file"
-          id="fileInput"
-          (change)="selectFile($event)"
-          name="fileInput"
-        />
-
-        <button
-          class="btn btn-primary"
-          [disabled]="!currentFile"
-          (click)="upload()"
-        >
-          Отправить
-        </button>
-      </div>
-      <div class="ms-3">
-        <button class="btn btn-primary" (click)="exportToExcel()">
-          Выгрузить в excel
-        </button>
-      </div> -->
-        <!-- <div>
-        @if (progress) {
-        <mat-toolbar class="progress-bar">
-          <mat-progress-bar
-            color="accent"
-            [value]="progress"
-          ></mat-progress-bar>
-          <span class="progress">{{ progress }}%</span>
-        </mat-toolbar>
-        }
-
-        <mat-form-field>
-          <div>
-            <mat-toolbar>
-              <input matInput [value]="fileName" />
-
-              <button
-                mat-flat-button
-                color="primary"
-                [disabled]="!currentFile"
-                (click)="upload()"
-              >
-                Upload
-              </button>
-            </mat-toolbar>
-
-            <input
-              type="file"
-              id="fileInput"
-              (change)="selectFile($event)"
-              name="fileInput"
-            />
+          <div class="ms-3">
+            <button class="btn btn-primary" (click)="exportToExcel()">
+              Выгрузить в excel
+            </button>
           </div>
-        </mat-form-field>
-      </div> -->
+        </div>
       </div>
     </div>
     <ng-container *ngIf="notebooks$ | async as notes">
