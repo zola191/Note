@@ -16,6 +16,7 @@
               (change)="selectFile($event)"
               id="fileInput"
               name="fileInput"
+              accept=".xlsx"
             />
           </div>
           <div class="ms-3">
@@ -75,5 +76,8 @@
         </tbody>
       </table>
     </ng-container>
+  </div>
+  <div *ngIf="isLoading" class="spinner-container mx-auto">
+    <mat-spinner class="mx-auto"></mat-spinner>
   </div>
 </div>

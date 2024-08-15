@@ -50,17 +50,6 @@ export class NotebookService {
       `${environment.apiBaseUrl}/api/fileManager/UploadFromExcel`,
       formData
     );
-    // const req = new HttpRequest(
-    //   'POST',
-    //   `${environment.apiBaseUrl}/api/fileManager/UploadFromExcel`,
-    //   formData,
-    //   {
-    //     reportProgress: true,
-    //     responseType: 'json',
-    //   }
-    // );
-
-    // return this.http.request(req);
   }
 
   getFiles(): Observable<any> {

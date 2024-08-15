@@ -97,7 +97,7 @@ export class LoginAccountComponent implements OnInit {
         this.router.navigateByUrl(`/notebook/notebook-list`);
       },
       error: (response) => {
-        console.log(console.error);
+        console.log(response);
         this.snackBar.open(response.error, 'close', {
           duration: 3000,
           panelClass: ['snackbar-1'],
@@ -116,13 +116,7 @@ export class LoginAccountComponent implements OnInit {
 
   externalLogin = () => {
     this.googleAuthService.signInWithGoogle();
-    this.googleAuthService.extAuthChanged.subscribe((user) => {
-      // const externalAuth: ExternalAuthDto = {
-      //   provider: user.provider,
-      //   idToken: user.idToken,
-      // };
-      // this.validateExternalAuth(externalAuth);
-    });
+    this.googleAuthService.extAuthChanged.subscribe((user) => {});
   };
 
   loadAccount() {
