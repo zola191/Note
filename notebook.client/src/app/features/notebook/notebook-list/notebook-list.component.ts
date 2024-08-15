@@ -1,11 +1,12 @@
 import { Component, OnInit } from '@angular/core';
-import { Observable } from 'rxjs';
+import { BehaviorSubject, Observable, of } from 'rxjs';
 import { NotebookService } from '../services/notebook.service';
 import { Notebook } from '../models/notebook.model';
 import { MatDialog } from '@angular/material/dialog';
 import { AddNotebookComponent } from '../add-notebook/add-notebook.component';
 import {
   HttpErrorResponse,
+  HttpEvent,
   HttpEventType,
   HttpResponse,
 } from '@angular/common/http';
@@ -13,17 +14,19 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 import { read, utils, writeFile, writeFileXLSX } from 'xlsx';
 import { AlertModalComponent } from '../alert-modal/alert-modal.component';
 import { ErrorModel } from '../models/notebook-error.model';
+import { ChangeDetectorRef } from '@angular/core';
+import {MatProgressSpinnerModule} from '@angular/material/progress-spinner';
+
 @Component({
   selector: 'app-notebook-list',
   templateUrl: './notebook-list.component.html',
   styleUrl: './notebook-list.component.css',
 })
 export class NotebookListComponent implements OnInit {
+  uploadProgress: number | null = null;
   notebooks$?: Observable<Notebook[]>;
   currentFile?: File;
-  progress = 0;
   message = '';
-
   fileName = 'Select File';
   fileInfos?: Observable<any>;
 
@@ -32,7 +35,8 @@ export class NotebookListComponent implements OnInit {
   constructor(
     private notebookService: NotebookService,
     public dialog: MatDialog,
-    private snackBar: MatSnackBar
+    private snackBar: MatSnackBar,
+    private cd: ChangeDetectorRef
   ) {}
 
   ngOnInit(): void {
@@ -66,26 +70,12 @@ export class NotebookListComponent implements OnInit {
       data: erorrs,
     });
 
-    // dialogRef.componentInstance.errors = erorrs;
-    // [
-    //   {
-    //     message: '1',
-    //   },
-    //   {
-    //     message: '2',
-    //   },
-    //   {
-    //     message: '3',
-    //   },
-    // ];
-
     dialogRef.afterClosed().subscribe((result) => {
       console.log('The dialog was closed');
     });
   }
 
   selectFile(event: any): void {
-    this.progress = 0;
     this.message = '';
 
     if (event.target.files && event.target.files[0]) {
@@ -100,38 +90,42 @@ export class NotebookListComponent implements OnInit {
   upload(): void {
     if (this.currentFile) {
       this.notebookService.upload(this.currentFile).subscribe({
-        // next: (res) => {
-        //   this.snackBar.open('Файл успешно загружен', 'close', {
-        //     duration: 3000,
-        //     panelClass: ['snackbar-1'],
-        //   });
-        // },
+        next: (newNotebooks: Notebook[]) => {
+          if (newNotebooks && newNotebooks.length > 0) {
+            console.log('New notebooks received:', newNotebooks);
+            console.log('old notebooks:', this.notebooks);
 
-        next: (event: any) => {
-          console.log(event);
-          if (event.type === HttpEventType.UploadProgress) {
-            this.progress = Math.round((100 * event.loaded) / event.total);
-          } else if (event instanceof HttpResponse) {
-            this.message = event.body.message;
-            this.fileInfos = this.notebookService.getFiles();
+            this.notebooks$?.subscribe({
+              next: (data: Notebook[]) => {
+                this.notebooks = data;
+              }
+            })
+
+            const updatedNotebooks = [...this.notebooks, ...newNotebooks];
+            this.notebooks$ = of(updatedNotebooks);
+
+            this.cd.detectChanges();
+
+            this.snackBar.open('Файл успешно загружен', 'close', {
+              duration: 3000,
+              panelClass: ['snackbar-1'],
+            });
+          } else {
+            console.error(
+              'В ответе нет блокнотов или список пуст'
+            );
           }
-          this.snackBar.open('Файл успешно загружен', 'close', {
-            duration: 3000,
-            panelClass: ['snackbar-1'],
-          });
+          this.fileInfos = this.notebookService.getFiles();
         },
-
         error: (err: any) => {
           if (err.status === 402) {
             console.log('FileNotFoundException');
           } else if (err.status === 403) {
-            let errors: ErrorModel[] = [
-              {
-                message: 'Можно загрузить только excel',
-              },
-            ];
             console.log('FormatException');
-            this.openImportFromXlDialog(errors);
+            this.snackBar.open('Можно загрузить только excel', 'close', {
+              duration: 3000,
+              panelClass: ['snackbar-1'],
+            });
           } else if (err.status === 400) {
             console.log(err);
             const errors = this.extractErrors(err);
@@ -143,17 +137,8 @@ export class NotebookListComponent implements OnInit {
               panelClass: ['snackbar-1'],
             });
 
-            this.progress = 0;
+            this.currentFile = undefined;
           }
-
-          // console.log('Errors:', err);
-          // this.openImportFromXlDialog(err);
-
-          // if (err.error && err.error.message) {
-          //   this.message = err.error.message;
-          // } else {
-          //   this.message = 'Could not upload the file!';
-          // }
         },
         complete: () => {
           this.currentFile = undefined;
@@ -162,6 +147,7 @@ export class NotebookListComponent implements OnInit {
     }
   }
 
+  
   extractErrors(err: any): ErrorModel[] {
     const errorModels: ErrorModel[] = [];
 
