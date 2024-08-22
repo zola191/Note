@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Notebook.Server.Authentication;
 using Notebook.Server.Dto;
+using Notebook.Server.Exceptions;
 using Notebook.Server.Services;
 using Notebook.Server.Validators;
 
@@ -51,12 +52,11 @@ namespace Notebook.Server.Controllers
 
             try
             {
-                var existingUser = await userService.FindByEmail(request.Email);
                 var response = await userService.CreateAsync(request);
                 return Ok(response);
             }
 
-            catch (Exception ex)
+            catch (UserAlreadyExistException ex)
             {
                 return BadRequest(ex.Message);
             }
@@ -69,11 +69,6 @@ namespace Notebook.Server.Controllers
             try
             {
                 var existingUser = await userService.CheckUser(request);
-/*              var cookieOptions = new CookieOptions();
-                cookieOptions.Secure = true;
-
-                HttpContext.Response.Cookies.Append("token", existingUser.Token, cookieOptions);*/
-
                 return Ok(existingUser);
             }
             catch (Exception ex)

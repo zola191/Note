@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Notebook.Server.Data;
 
@@ -11,9 +12,11 @@ using Notebook.Server.Data;
 namespace Notebook.Server.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240822160343_addRoles")]
+    partial class addRoles
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -102,7 +105,12 @@ namespace Notebook.Server.Migrations
                     b.Property<int>("RoleName")
                         .HasColumnType("int");
 
+                    b.Property<string>("UserId")
+                        .HasColumnType("nvarchar(450)");
+
                     b.HasKey("RoleName");
+
+                    b.HasIndex("UserId");
 
                     b.ToTable("Roles");
 
@@ -139,21 +147,6 @@ namespace Notebook.Server.Migrations
                     b.ToTable("Users");
                 });
 
-            modelBuilder.Entity("RoleUser", b =>
-                {
-                    b.Property<int>("RolesRoleName")
-                        .HasColumnType("int");
-
-                    b.Property<string>("UserEmail")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.HasKey("RolesRoleName", "UserEmail");
-
-                    b.HasIndex("UserEmail");
-
-                    b.ToTable("RoleUser");
-                });
-
             modelBuilder.Entity("Notebook.Server.Domain.Note", b =>
                 {
                     b.HasOne("Notebook.Server.Domain.User", "User")
@@ -175,24 +168,21 @@ namespace Notebook.Server.Migrations
                     b.Navigation("User");
                 });
 
-            modelBuilder.Entity("RoleUser", b =>
+            modelBuilder.Entity("Notebook.Server.Domain.Role", b =>
                 {
-                    b.HasOne("Notebook.Server.Domain.Role", null)
-                        .WithMany()
-                        .HasForeignKey("RolesRoleName")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                    b.HasOne("Notebook.Server.Domain.User", "User")
+                        .WithMany("Roles")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade);
 
-                    b.HasOne("Notebook.Server.Domain.User", null)
-                        .WithMany()
-                        .HasForeignKey("UserEmail")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("Notebook.Server.Domain.User", b =>
                 {
                     b.Navigation("Notes");
+
+                    b.Navigation("Roles");
                 });
 #pragma warning restore 612, 618
         }

@@ -4,13 +4,9 @@ import { NotebookService } from '../services/notebook.service';
 import { Notebook } from '../models/notebook.model';
 import { MatDialog } from '@angular/material/dialog';
 import { AddNotebookComponent } from '../add-notebook/add-notebook.component';
-import {
-  HttpErrorResponse,
-  HttpEventType,
-  HttpResponse,
-} from '@angular/common/http';
+import { HttpEventType, HttpResponse } from '@angular/common/http';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { read, utils, writeFile, writeFileXLSX } from 'xlsx';
+import { utils, writeFile } from 'xlsx';
 import { AlertModalComponent } from '../alert-modal/alert-modal.component';
 import { ErrorModel } from '../models/notebook-error.model';
 @Component({

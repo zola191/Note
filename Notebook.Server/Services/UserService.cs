@@ -4,6 +4,8 @@ using Notebook.Server.Authentication;
 using Notebook.Server.Data;
 using Notebook.Server.Domain;
 using Notebook.Server.Dto;
+using Notebook.Server.Enum;
+using Notebook.Server.Exceptions;
 using System.IdentityModel.Tokens.Jwt;
 
 namespace Notebook.Server.Services
@@ -27,13 +29,23 @@ namespace Notebook.Server.Services
 
         public async Task<UserModel> CreateAsync(CreateUserRequest request)
         {
+            var existingUser = await FindByEmail(request.Email);
+
+            if (existingUser != null)
+            {
+                throw new UserAlreadyExistException("Пользователь уже существует");
+            }
+
             var salt = passwordHasher.CreateSalt();
+
+            var role = dbContext.Roles.FirstOrDefault(f => f.RoleName == RoleName.User);
 
             var newUser = new User()
             {
                 Email = request.Email,
                 Salt = salt,
-                PasswordHash = passwordHasher.HashPassword(request.Password, salt)
+                PasswordHash = passwordHasher.HashPassword(request.Password, salt),
+                Roles = new List<Role>() { role }
             };
 
             await dbContext.AddAsync(newUser);
@@ -68,18 +80,18 @@ namespace Notebook.Server.Services
 
         public async Task<UserModel> CheckUser(LoginAccountRequest request)
         {
-            var existingUser = await dbContext.Users.FirstOrDefaultAsync(f => f.Email == request.Email);
+            var existingUser = await dbContext.Users.Include(f => f.Roles).FirstOrDefaultAsync(f => f.Email == request.Email);
 
             if (existingUser == null)
             {
-                throw new Exception("User does not exist");
+                throw new UserNotFoundException();
             }
 
             var passwordHash = passwordHasher.HashPassword(request.Password, existingUser.Salt);
 
             if (existingUser.PasswordHash != passwordHash)
             {
-                throw new Exception("Bad login or password");
+                throw new BadLoginOrPasswordException("Неправильный логин или пароль");
             }
 
             var result = mapper.Map<UserModel>(existingUser);
@@ -93,24 +105,24 @@ namespace Notebook.Server.Services
         {
             //выглядит ужасно.....
 
-                        var handler = new JwtSecurityTokenHandler();
-                        var decodedValue = handler.ReadJwtToken(request.Credential);
-                        var userEmail = decodedValue.Claims.ElementAt(4).Value;
+            var handler = new JwtSecurityTokenHandler();
+            var decodedValue = handler.ReadJwtToken(request.Credential);
+            var userEmail = decodedValue.Claims.ElementAt(4).Value;
 
-                        var existingUser = await FindByEmail(userEmail);
+            var existingUser = await FindByEmail(userEmail);
 
-                        if (existingUser == null)
-                        {
-                            var result = await CreateWithGoogleAsync(userEmail);
-                            var userModel = mapper.Map<UserModel>(result);
+            if (existingUser == null)
+            {
+                var result = await CreateWithGoogleAsync(userEmail);
+                var userModel = mapper.Map<UserModel>(result);
 
-                            result.Token = jwtProvider.Generate(userModel);
-                            return result;
-                        }
-                        //передать токен google обратно с backend во фронт
+                result.Token = jwtProvider.Generate(userModel);
+                return result;
+            }
+            //передать токен google обратно с backend во фронт
 
-                        existingUser.Token = jwtProvider.Generate(mapper.Map<UserModel>(existingUser));
-                        return existingUser;
+            existingUser.Token = jwtProvider.Generate(mapper.Map<UserModel>(existingUser));
+            return existingUser;
             return null;
         }
 
@@ -168,7 +180,7 @@ namespace Notebook.Server.Services
 
         public async Task<UserModel> CreateWithGoogleAsync(string userEmail)
         {
-            var existingUser = await dbContext.Users.FirstOrDefaultAsync(f=>f.Email==userEmail);
+            var existingUser = await dbContext.Users.FirstOrDefaultAsync(f => f.Email == userEmail);
             if (existingUser == null)
             {
                 var user = new User()
@@ -222,7 +234,6 @@ namespace Notebook.Server.Services
             var jwt = request.Headers.Authorization.ToString().Split().Last();
             var token = handler.ReadJwtToken(jwt);
             var email = token.Claims.Select(claim => claim.Value).First();
-
             return email;
         }
     }

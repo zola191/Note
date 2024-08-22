@@ -9,10 +9,12 @@
         public string? LastName { get; set; }
 
         //one to many relationship with Notes
-        public ICollection<Note> Notes { get; set; }
+        public List<Note> Notes { get; set; }
+        public List<Role> Roles { get; set; }
         public User()
         {
             Notes = new List<Note>();
+            Roles = new List<Role>();
         }
     }
 

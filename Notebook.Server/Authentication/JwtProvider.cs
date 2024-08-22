@@ -20,10 +20,18 @@ namespace Notebook.Server.Authentication
         {
             var secutiryKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_config["Jwt:Key"]));
             var credentials = new SigningCredentials(secutiryKey, SecurityAlgorithms.HmacSha256);
-            var claims = new[]
+            var claims = new List<Claim>()
             {
                 new Claim(ClaimTypes.Email,user.Email),
             };
+
+            if (user.RoleModels != null)
+            {
+                foreach (var role in user.RoleModels)
+                {
+                    claims.Add(new Claim(ClaimTypes.Role, role.RoleName.ToString()));
+                }
+            }
 
             var token = new JwtSecurityToken(
                 _config["Jwt:Issuer"],
