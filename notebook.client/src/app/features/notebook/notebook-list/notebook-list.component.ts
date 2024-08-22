@@ -105,7 +105,6 @@ export class NotebookListComponent implements OnInit {
             panelClass: ['snackbar-1'],
           });
         },
-
         error: (err: any) => {
           if (err.status === 402) {
             console.log('FileNotFoundException');
@@ -136,6 +135,7 @@ export class NotebookListComponent implements OnInit {
     }
   }
 
+  
   extractErrors(err: any): ErrorModel[] {
     const errorModels: ErrorModel[] = [];
 

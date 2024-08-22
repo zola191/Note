@@ -31,16 +31,12 @@ namespace Notebook.Server.Controllers
                 var response = await noteService.CreateNotesAsync(notes, email);
                 return Ok(response);
             }
+
             catch (NoteListFieldException ex)
             {
                 var errorModels = ex.Errors.Select(f => new ErrorModel(f)).ToArray();
                 return BadRequest(errorModels);
             }
-
-            //catch (Exception ex)
-            //{
-            //    return BadRequest(new ErrorModel(ex.Message));
-            //}
 
         }
     }
