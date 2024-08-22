@@ -44,6 +44,8 @@ import { EffectsModule } from '@ngrx/effects';
 import { UserService } from './features/account/services/user.service';
 import { AccountReducer } from './features/account/store/reducer';
 import { AlertModalComponent } from './features/notebook/alert-modal/alert-modal.component';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 
 @NgModule({
   declarations: [
@@ -82,6 +84,8 @@ import { AlertModalComponent } from './features/notebook/alert-modal/alert-modal
     MatProgressBarModule,
     StoreModule.forRoot({ account: AccountReducer }),
     EffectsModule.forRoot([]),
+    BrowserAnimationsModule,
+    MatProgressSpinnerModule,
   ],
   providers: [
     provideAnimations(),
