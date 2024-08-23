@@ -49,6 +49,7 @@ builder.Services.AddSwaggerGen(opt =>
 builder.Services.AddAutoMapper(typeof(Program).Assembly);
 builder.Services.AddSingleton(typeof(FileServiceExceptionHandlerMiddleware));
 builder.Services.AddScoped<INoteService, NoteService>();
+builder.Services.AddScoped<IAdminService, AdminService>();
 builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<IJwtProvider, JwtProvider>();
 builder.Services.AddScoped<IEmailService, EmailService>();

@@ -9,6 +9,9 @@ import { RestoreAccountComponent } from './features/account/restore-account/rest
 import { ChangePasswordComponent } from './features/account/change-password/change-password.component';
 import { WelcomeComponent } from './core/components/welcome/welcome.component';
 import { CabinetComponent } from './features/account/cabinet/cabinet.component';
+import { AdminComponent } from './features/admin/admin/admin.component';
+import { roleGuard } from './features/account/guards/role.guard';
+import { CurrentUserComponent } from './features/admin/current-user/current-user.component';
 
 const routes: Routes = [
   {
@@ -46,6 +49,16 @@ const routes: Routes = [
   {
     path: 'user/cabinet',
     component: CabinetComponent,
+  },
+  {
+    path: 'admin',
+    component: AdminComponent,
+    canActivate: [roleGuard],
+  },
+  {
+    path: 'admin/info/:email',
+    component: CurrentUserComponent,
+    canActivate: [roleGuard],
   },
 ];
 

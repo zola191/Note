@@ -2,6 +2,8 @@ import { Component, OnInit } from '@angular/core';
 import { User } from '../../../features/account/models/user.model';
 import { UserService } from '../../../features/account/services/user.service';
 import { Router } from '@angular/router';
+import { CookieService } from 'ngx-cookie-service';
+import { roleModels } from '../../../features/account/models/roleModels.model';
 
 @Component({
   selector: 'app-navbar',
@@ -11,7 +13,11 @@ import { Router } from '@angular/router';
 export class NavbarComponent implements OnInit {
   user?: User;
 
-  constructor(private userService: UserService, private router: Router) {}
+  constructor(
+    private userService: UserService,
+    private router: Router,
+    private cookieService: CookieService
+  ) {}
 
   ngOnInit(): void {
     // this.authService.user().subscribe({
@@ -34,6 +40,21 @@ export class NavbarComponent implements OnInit {
     //   this.authService.getUser() !== null &&
     //   this.authService.getUser() !== undefined
     // );
+  }
+
+  isAdmin(): boolean {
+    const userRoles = this.cookieService.get('roleModels');
+    if (userRoles) {
+      const userRoleArray = JSON.parse(userRoles) as roleModels[];
+      // console.log(userRoleArray);
+      const isAdmin = userRoleArray.some((f) => f.roleName === 'Admin');
+      if (isAdmin) {
+        return true;
+      } else {
+        return false;
+      }
+    }
+    return false;
   }
 
   onLogout(): void {

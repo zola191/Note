@@ -38,12 +38,15 @@ export class UserService {
   getUser(): User | undefined {
     const token = this.cookie.get('token');
     const email = this.cookie.get('email');
-
+    const roles = this.cookie.get('roleModels');
     if (token) {
+      // const user: User = JSON.parse(atob(token.split('.')[1])) as User;
       const user: User = {
         email: email,
         token: token,
+        roles: JSON.parse(roles),
       };
+      // console.log(user.roles);
       return user;
     }
     return undefined;
@@ -54,9 +57,9 @@ export class UserService {
   }
 
   logout(): void {
-    this.cookie.delete('email');
-    this.cookie.delete('token');
-
+    // this.cookie.delete('email');
+    // this.cookie.delete('token');
+    this.cookie.deleteAll();
     this.$user.next(undefined);
   }
 

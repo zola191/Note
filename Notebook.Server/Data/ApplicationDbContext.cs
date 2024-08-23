@@ -1,11 +1,13 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Notebook.Server.Domain;
 using Notebook.Server.Enum;
+using Notebook.Server.Helper;
 
 namespace Notebook.Server.Data
 {
     public class ApplicationDbContext : DbContext
     {
+
         public DbSet<Note> Notebooks { get; set; }
         public DbSet<User> Users { get; set; }
         public DbSet<RestoreUser> RestoreUserAccount { get; set; }
@@ -21,15 +23,23 @@ namespace Notebook.Server.Data
             {
                 option.HasKey(f => f.Email);
                 option.HasMany(f => f.Notes)
-                .WithOne(f => f.User)
-                .HasForeignKey(f => f.UserId)
-                .OnDelete(DeleteBehavior.Cascade);
-            });
+                      .WithOne(f => f.User)
+                      .HasForeignKey(f => f.UserId)
+                      .OnDelete(DeleteBehavior.Cascade);
 
-            modelBuilder.Entity<User>(option =>
-            {
                 option.HasMany(f => f.Roles)
-                      .WithMany(f => f.User);
+                      .WithMany(f => f.Users)
+                      .UsingEntity<UserRole>(
+                          j => j.HasOne(ur => ur.Role)
+                                .WithMany()
+                                .HasForeignKey(ur => ur.RolesId),
+                          j => j.HasOne(ur => ur.User)
+                                .WithMany()
+                                .HasForeignKey(ur => ur.UsersId),
+                          je =>
+                          {
+                              je.HasKey(ur => new { ur.RolesId, ur.UsersId });
+                          });
             });
 
             modelBuilder.Entity<Note>(option =>
@@ -39,15 +49,45 @@ namespace Notebook.Server.Data
 
             modelBuilder.Entity<Role>(option =>
             {
-                option.HasMany(f => f.User)
-                      .WithMany(f => f.Roles);
-
                 option.HasKey(f => f.RoleName);
             });
-                        
-            modelBuilder.Entity<Role>().HasData(
-                new Role() { RoleName = RoleName.Admin },
-                new Role() { RoleName = RoleName.User });
+
+            // Начальные данные для ролей
+            var roles = new[]
+            {
+                new Role
+                {
+                    RoleName = RoleName.Admin
+                },
+                new Role
+                {
+                    RoleName = RoleName.User
+                }
+            };
+
+            // Создание начального пользователя
+            var user = InitializeUsers.CreateAdmin("admin@notebook.com", "Admin1!");
+
+            var users = new[]
+            {
+                user
+            };
+
+            // Связь пользователя и роли через UserRole
+            var roleUser = new[]
+            {
+            new UserRole
+                {
+                    RolesId = RoleName.Admin,
+                    UsersId = "admin@notebook.com"
+                }
+            };
+
+            // Добавление данных в базы
+            modelBuilder.Entity<Role>().HasData(roles);
+            modelBuilder.Entity<User>().HasData(users);
+            modelBuilder.Entity<UserRole>().HasData(roleUser);
+
         }
     }
 }

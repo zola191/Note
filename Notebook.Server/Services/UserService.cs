@@ -236,5 +236,6 @@ namespace Notebook.Server.Services
             var email = token.Claims.Select(claim => claim.Value).First();
             return email;
         }
+
     }
 }

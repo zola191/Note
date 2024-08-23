@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Notebook.Server.Data;
 
@@ -11,9 +12,11 @@ using Notebook.Server.Data;
 namespace Notebook.Server.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240822175149_seedAdmin_ver2")]
+    partial class seedAdmin_ver2
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -142,31 +145,24 @@ namespace Notebook.Server.Migrations
                         new
                         {
                             Email = "admin@notebook.com",
-                            PasswordHash = "6143B1724B300E6E0E598F1D9014F0DD7B5839F4DE31384EA805E4AF09670F48497108BB060D8862B0AC9DB51BEC04CCB0BE676173717903731EB4743DEC880E",
-                            Salt = "1F815381DDF3CC57CDC54E29E8F22F4FA257C7A15010856B93C4F94AE7E26489DA0794EADF43187FBCA33E2EF5F12DD7A6264C45905BCDAA6E457F49612D5845"
+                            PasswordHash = "A6C1558D933A3F6FF2A0F030591332D8AE4863F3473D4AB4BBF0933FB678157489DEDE17AE3564B5B900AD76E2E56BA980C7B3587E2FD5BE896821A564D9E04D",
+                            Salt = "F630C3DF9BAA8AF920B5FB5344C07014E21B7B545475DACB1CD9847736402DA7AE5A2A73F290B5D3E54B44801219276285E2371D29475BCD8AA95577A893E4BC"
                         });
                 });
 
-            modelBuilder.Entity("Notebook.Server.Domain.UserRole", b =>
+            modelBuilder.Entity("RoleUser", b =>
                 {
-                    b.Property<int>("RolesId")
+                    b.Property<int>("RolesRoleName")
                         .HasColumnType("int");
 
-                    b.Property<string>("UsersId")
+                    b.Property<string>("UserEmail")
                         .HasColumnType("nvarchar(450)");
 
-                    b.HasKey("RolesId", "UsersId");
+                    b.HasKey("RolesRoleName", "UserEmail");
 
-                    b.HasIndex("UsersId");
+                    b.HasIndex("UserEmail");
 
-                    b.ToTable("UserRole");
-
-                    b.HasData(
-                        new
-                        {
-                            RolesId = 0,
-                            UsersId = "admin@notebook.com"
-                        });
+                    b.ToTable("RoleUser");
                 });
 
             modelBuilder.Entity("Notebook.Server.Domain.Note", b =>
@@ -190,23 +186,19 @@ namespace Notebook.Server.Migrations
                     b.Navigation("User");
                 });
 
-            modelBuilder.Entity("Notebook.Server.Domain.UserRole", b =>
+            modelBuilder.Entity("RoleUser", b =>
                 {
-                    b.HasOne("Notebook.Server.Domain.Role", "Role")
+                    b.HasOne("Notebook.Server.Domain.Role", null)
                         .WithMany()
-                        .HasForeignKey("RolesId")
+                        .HasForeignKey("RolesRoleName")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("Notebook.Server.Domain.User", "User")
+                    b.HasOne("Notebook.Server.Domain.User", null)
                         .WithMany()
-                        .HasForeignKey("UsersId")
+                        .HasForeignKey("UserEmail")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-
-                    b.Navigation("Role");
-
-                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("Notebook.Server.Domain.User", b =>

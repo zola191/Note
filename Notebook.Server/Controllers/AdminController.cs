@@ -1,7 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Notebook.Server.Dto;
 using Notebook.Server.Services;
-using Notebook.Server.Validations;
 
 namespace Notebook.Server.Controllers
 {
@@ -10,20 +9,68 @@ namespace Notebook.Server.Controllers
     public class AdminController : Controller
     {
         private readonly INoteService noteService;
-        private readonly IUserService userService;
-
-        public AdminController(INoteService noteService, IUserService userService)
+        private readonly IAdminService adminService;
+        public AdminController(INoteService noteService, IAdminService adminService)
         {
             this.noteService = noteService;
-            this.userService = userService;
+            this.adminService = adminService;
         }
 
         [HttpGet("all")]
         public async Task<IActionResult> GetAll()
         {
-            var email = userService.GetUserEmail(Request);
-            var notebooks = await noteService.GetAllAsync(email);
-            return Ok(notebooks);
+            try
+            {
+                var users = await adminService.GetAllUsers();
+                return Ok(users);
+            }
+            //не знаю какая может быть ошибка из-за чего вопрос стоит ли такое обрабатывать ?
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
+        [HttpGet("{email}")]
+        public async Task<IActionResult> Current([FromRoute] string email)
+        {
+            try
+            {
+                var currentUser = await adminService.GetCurrentUser(email);
+                return Ok(currentUser);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
+        [HttpGet("roles")]
+        public async Task<IActionResult> GetRoles()
+        {
+            try
+            {
+                var roles = await adminService.GetRoles();
+                return Ok(roles);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
+        [HttpPost("updateUser")]
+        public async Task<IActionResult> UpdateUser([FromBody] UserModelRequest userModel)
+        {
+            try
+            {
+                var result = await adminService.UpdateUser(userModel);
+                return Ok(result);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
     }
 }

@@ -46,6 +46,8 @@ import { AccountReducer } from './features/account/store/reducer';
 import { AlertModalComponent } from './features/notebook/alert-modal/alert-modal.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { AdminComponent } from './features/admin/admin/admin.component';
+import { CurrentUserComponent } from './features/admin/current-user/current-user.component';
 
 @NgModule({
   declarations: [
@@ -61,6 +63,8 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
     WelcomeComponent,
     CabinetComponent,
     AlertModalComponent,
+    AdminComponent,
+    CurrentUserComponent,
   ],
   bootstrap: [AppComponent],
   imports: [

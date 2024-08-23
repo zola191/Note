@@ -44,57 +44,30 @@ export class LoginAccountComponent implements OnInit {
     this.isLoading$ = this.store.select((state) => state.account.loading);
     this.loadAccount();
   }
-  ngOnInit(): void {
-    //@ts-ignore
-    window.onGoogleLibraryLoad = () => {
-      //@ts-ignore
-      google.accounts.id.initialize({
-        client_id:
-          '394585500781-b061fjd4rb101nopvi5el26s8vf22s95.apps.googleusercontent.com',
-        callback: this.handleCredentialsResponse.bind(this),
-        auto_select: false,
-        cancel_on_tap_outside: true,
-      });
-      //@ts-ignore
-      google.accounts.id.renderButton(
-        //@ts-ignore
-        document.getElementById('google-btn'),
-        {
-          theme: 'outline',
-          size: 'large',
-          width: '100%',
-        }
-      );
-      //@ts-ignore
-      google.accounts.id.prompt((notification: PromtMomentNotification) => {});
-    };
-  }
-
-  handleCredentialsResponse(response: CredentialResponse) {
-    this.cookie.set('token', response.credential);
-    console.log(response.credential);
-
-    this.loginWithGoogleRequest.credential = response.credential;
-    this.authService.loginWithGoogle(this.loginWithGoogleRequest).subscribe({
-      next: (res) => {
-        this.cookie.set('email', res.email);
-        this.router.navigateByUrl(`/notebook/notebook-list`);
-      },
-      error: (res) => {
-        this.snackBar.open('Неправильный логин или пароль', 'close', {
-          duration: 3000,
-          panelClass: ['snackbar-1'],
-        });
-      },
-    });
-  }
+  ngOnInit(): void {}
 
   onFormSubmit() {
     this.addAccountSubscription = this.authService.login(this.model).subscribe({
       next: (response) => {
+        // console.log(response);
+        // console.log(response.email);
+        // console.log(response.roleModels);
+
         this.cookie.set('email', response.email);
         this.cookie.set('token', response.token);
-        this.router.navigateByUrl(`/notebook/notebook-list`);
+        this.cookie.set('roleModels', JSON.stringify(response.roleModels));
+
+        // const roles = response.roleModels?.map((role) => role.roleName);
+
+        // if (roles && roles.length > 0) {
+        //   this.cookie.set('roleModels', JSON.stringify(roles));
+        // }
+        const isAdmin = response.roleModels.some((f) => f.roleName === 'Admin');
+        if (isAdmin) {
+          this.router.navigateByUrl(`admin`);
+        } else {
+          this.router.navigateByUrl(`/notebook/notebook-list`);
+        }
       },
       error: (response) => {
         console.log(response);
@@ -113,11 +86,6 @@ export class LoginAccountComponent implements OnInit {
   ngOnDestroy(): void {
     this.addAccountSubscription?.unsubscribe();
   }
-
-  externalLogin = () => {
-    this.googleAuthService.signInWithGoogle();
-    this.googleAuthService.extAuthChanged.subscribe((user) => {});
-  };
 
   loadAccount() {
     this.store.dispatch(AccountActions.loadAccount());

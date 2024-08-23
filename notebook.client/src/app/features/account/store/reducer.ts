@@ -16,6 +16,7 @@ export const initialState: AccountState = {
     id: '',
     lastName: '',
     token: '',
+    roleModels: [],
   },
   loading: false,
   error: '',

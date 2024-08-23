@@ -1,0 +1,15 @@
+.table-container {
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+.search-container {
+  display: flex;
+  justify-content: flex-start;
+  margin-bottom: 10px;
+}
+
+.search-input {
+  max-width: 300px;
+  width: 100%;
+}

@@ -12,7 +12,13 @@
     >
       <span class="navbar-toggler-icon"></span>
     </button>
-
+    <div class="me-3 ms-3">
+      <div *ngIf="isAdmin()">
+        <div class="d-flex align-items-center">
+          <a class="nav-link" [routerLink]="['admin']"> Admin </a>
+        </div>
+      </div>
+    </div>
     <div class="collapse navbar-collapse" id="navbarSupportedContent">
       <div *ngIf="!isAuth(); else showNotebookList"></div>
       <ng-template #showNotebookList>

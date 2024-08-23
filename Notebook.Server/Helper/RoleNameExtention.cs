@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace Notebook.Server.Config
+namespace Notebook.Server.Helper
 {
     public static class RoleNameExtention
     {

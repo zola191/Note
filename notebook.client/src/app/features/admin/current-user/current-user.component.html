@@ -1,0 +1,92 @@
+<div class="current-user-container">
+  <ng-container *ngIf="user">
+    <h2>Данные о пользователе {{ user.email }}</h2>
+    <div class="user-info">
+      <div>
+        Имя:
+        <span *ngIf="!isEditing">{{ user.firstName }}</span>
+        <input
+          *ngIf="isEditing"
+          [(ngModel)]="updatedUser.firstName"
+          placeholder="Имя"
+        />
+      </div>
+      <div>
+        Фамилия:
+        <span *ngIf="!isEditing">{{ user.lastName }}</span>
+        <input
+          *ngIf="isEditing"
+          [(ngModel)]="updatedUser.lastName"
+          placeholder="Фамилия"
+        />
+      </div>
+      <div>Количество записей: {{ user.notes.length }}</div>
+      <div class="current-user-role">
+        <div>Список ролей:</div>
+        <div *ngIf="isEditing; else showUserRoles">
+          <select multiple [(ngModel)]="updatedUser.roleModels">
+            <option *ngFor="let role of availableRoles" [ngValue]="role">
+              {{ role.roleName }}
+            </option>
+          </select>
+        </div>
+        <ng-template #showUserRoles>
+          <div *ngFor="let role of user.roleModels">{{ role.roleName }}</div>
+        </ng-template>
+      </div>
+    </div>
+    <div *ngIf="errorMessage" class="error-message">
+      {{ errorMessage }}
+    </div>
+    <div class="current-user-actions">
+      <button *ngIf="!isEditing" (click)="toggleEditMode()">
+        Редактировать
+      </button>
+      <button *ngIf="isEditing" (click)="saveChanges()">Сохранить</button>
+      <button *ngIf="isEditing" (click)="toggleEditMode()">Отмена</button>
+    </div>
+    <div *ngIf="user.notes.length > 0; else showNotebookInfo">
+      <table class="table table-bordered mt-3">
+        <thead>
+          <tr>
+            <th>Id</th>
+            <th>FirstName</th>
+            <th>MiddleName</th>
+            <th>LastName</th>
+            <th>PhoneNumber</th>
+            <th>Country</th>
+            <th>BirthDay</th>
+            <th>Organization</th>
+            <th>Position</th>
+            <th>Other</th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let note of user.notes">
+            <td>{{ note.id }}</td>
+            <td>{{ note.firstName }}</td>
+            <td>{{ note.middleName }}</td>
+            <td>{{ note.lastName }}</td>
+            <td>{{ note.phoneNumber }}</td>
+            <td>{{ note.country }}</td>
+            <td>{{ note.birthDay | date : "dd/MM/yyyy" }}</td>
+            <td>{{ note.organization }}</td>
+            <td>{{ note.position }}</td>
+            <td>{{ note.other }}</td>
+            <td>
+              <a
+                class="btn btn-primary"
+                [routerLink]="['/notebook/edit-notebook/', note.id]"
+                >Изменить</a
+              >
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </ng-container>
+  <ng-template #showNotebookInfo>
+    <h2>Нет записей у пользователя</h2>
+  </ng-template>
+</div>

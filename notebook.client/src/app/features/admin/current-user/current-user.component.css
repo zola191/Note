@@ -1,0 +1,17 @@
+.current-user-container {
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+.user-info {
+  text-align: left;
+  margin-bottom: 10px;
+}
+
+.current-user-role {
+  display: flex;
+}
+
+.current-user-actions {
+  display: flex;
+}

@@ -1,0 +1,44 @@
+<div class="table-container">
+  <ng-container *ngIf="users$ | async as users">
+    <h2>Список пользователей</h2>
+
+    <div class="search-container">
+      <input
+        class="search-input"
+        type="text"
+        placeholder="Поиск по почте"
+        #filter
+        (input)="filterResults(filter.value)"
+      />
+      <!-- <div class="ms-3">
+        <button
+          class="btn btn-secondary"
+          type="button"
+          (click)="filterResults(filter.value)"
+        >
+          Поиск
+        </button>
+      </div> -->
+    </div>
+
+    <table class="table table-bordered mt-3">
+      <!-- <thead>
+        <tr>
+          <th>Почта пользователя</th>
+        </tr>
+      </thead> -->
+      <tbody>
+        <tr *ngFor="let user of filteredUserList">
+          <td>{{ user.email }}</td>
+          <td>
+            <a
+              class="btn btn-primary"
+              [routerLink]="['/admin/info/', user.email]"
+              >Подробнее</a
+            >
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </ng-container>
+</div>

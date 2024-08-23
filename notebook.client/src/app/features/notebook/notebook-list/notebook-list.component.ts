@@ -135,7 +135,6 @@ export class NotebookListComponent implements OnInit {
     }
   }
 
-  
   extractErrors(err: any): ErrorModel[] {
     const errorModels: ErrorModel[] = [];
 

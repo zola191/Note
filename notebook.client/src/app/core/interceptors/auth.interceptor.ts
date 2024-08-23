@@ -4,7 +4,6 @@ import {
   HttpInterceptor,
   HttpHandler,
   HttpRequest,
-  HTTP_INTERCEPTORS,
 } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { CookieService } from 'ngx-cookie-service';
