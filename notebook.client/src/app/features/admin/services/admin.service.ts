@@ -5,6 +5,8 @@ import { environment } from '../../../../environments/environment.development';
 import { UserInfoModel } from '../models/user-info.models';
 import { roleModels } from '../../account/models/roleModels.model';
 import { UserModelRequest } from '../models/update-user-info.model';
+import { NotebookRequest } from '../../notebook/models/notebook-request.model';
+import { Notebook } from '../../notebook/models/notebook.model';
 
 @Injectable({
   providedIn: 'root',
@@ -34,6 +36,28 @@ export class AdminService {
   getAvailableRoles(): Observable<roleModels[]> {
     return this.http.get<roleModels[]>(
       `${environment.apiBaseUrl}/api/Admin/roles`
+    );
+  }
+
+  getCurrentNotebook(id: string): Observable<Notebook> {
+    return this.http.get<Notebook>(
+      `${environment.apiBaseUrl}/api/admin/getCurrentNote/${id}`
+    );
+  }
+
+  updateNotebook(
+    id: string,
+    updateNotebookRequest: NotebookRequest
+  ): Observable<Notebook> {
+    return this.http.put<Notebook>(
+      `${environment.apiBaseUrl}/api/admin/updateCurrentNote/${id}`,
+      updateNotebookRequest
+    );
+  }
+
+  deleteNotebook(id: string): Observable<Notebook> {
+    return this.http.delete<Notebook>(
+      `${environment.apiBaseUrl}/api/admin/deleteCurrentNote/${id}`
     );
   }
 }

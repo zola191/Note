@@ -48,6 +48,7 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { AdminComponent } from './features/admin/admin/admin.component';
 import { CurrentUserComponent } from './features/admin/current-user/current-user.component';
+import { AdminEditNotebookComponent } from './features/admin/admin-edit-notebook/admin-edit-notebook.component';
 
 @NgModule({
   declarations: [
@@ -65,6 +66,7 @@ import { CurrentUserComponent } from './features/admin/current-user/current-user
     AlertModalComponent,
     AdminComponent,
     CurrentUserComponent,
+    AdminEditNotebookComponent,
   ],
   bootstrap: [AppComponent],
   imports: [

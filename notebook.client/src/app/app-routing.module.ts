@@ -12,6 +12,7 @@ import { CabinetComponent } from './features/account/cabinet/cabinet.component';
 import { AdminComponent } from './features/admin/admin/admin.component';
 import { roleGuard } from './features/account/guards/role.guard';
 import { CurrentUserComponent } from './features/admin/current-user/current-user.component';
+import { AdminEditNotebookComponent } from './features/admin/admin-edit-notebook/admin-edit-notebook.component';
 
 const routes: Routes = [
   {
@@ -58,6 +59,11 @@ const routes: Routes = [
   {
     path: 'admin/info/:email',
     component: CurrentUserComponent,
+    canActivate: [roleGuard],
+  },
+  {
+    path: 'admin/edit-notebook/:email/:id',
+    component: AdminEditNotebookComponent,
     canActivate: [roleGuard],
   },
 ];

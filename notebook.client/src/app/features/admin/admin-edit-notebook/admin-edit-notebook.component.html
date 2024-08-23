@@ -1,0 +1,136 @@
+<div class="container">
+  <ng-container *ngIf="notebook; else notFound">
+    <form class="example-form" #form="ngForm" (ngSubmit)="onFormSubmit()">
+      <mat-form-field class="example-full-width">
+        <mat-label>Id</mat-label>
+        <input
+          matInput
+          type="text"
+          disabled
+          id="notebookId"
+          class="form-control"
+          name="notebookId"
+          value="{{ notebook.id }}"
+        />
+      </mat-form-field>
+
+      <mat-form-field class="example-full-width">
+        <mat-label>Имя</mat-label>
+        <input
+          matInput
+          type="text"
+          class="form-control"
+          id="firstName"
+          name="firstName"
+          placeholder="Введите Имя"
+          [(ngModel)]="notebook.firstName"
+        />
+      </mat-form-field>
+
+      <mat-form-field class="example-full-width">
+        <mat-label>Отчество</mat-label>
+        <input
+          matInput
+          type="text"
+          class="form-control"
+          id="middleName"
+          name="middleName"
+          placeholder="Введите Отчество"
+          [(ngModel)]="notebook.middleName"
+        />
+      </mat-form-field>
+
+      <mat-form-field class="example-full-width">
+        <mat-label>Фамилия</mat-label>
+        <input
+          matInput
+          type="text"
+          class="form-control"
+          id="lastName"
+          name="lastName"
+          placeholder="Введите Фамилию"
+          [(ngModel)]="notebook.lastName"
+        />
+      </mat-form-field>
+
+      <mat-form-field class="example-full-width">
+        <mat-label>Телефон</mat-label>
+        <input
+          matInput
+          type="text"
+          class="form-control"
+          id="phoneNumber"
+          name="phoneNumber"
+          placeholder="Введите номер телефона"
+          [(ngModel)]="notebook.phoneNumber"
+        />
+      </mat-form-field>
+
+      <mat-form-field class="example-full-width">
+        <mat-label>Страна</mat-label>
+        <input
+          matInput
+          type="text"
+          class="form-control"
+          id="country"
+          name="country"
+          placeholder="Введите страну"
+          [(ngModel)]="notebook.country"
+        />
+      </mat-form-field>
+
+      <mat-form-field class="example-full-width">
+        <mat-label>День рождения</mat-label>
+        <input
+          matInput
+          type="date"
+          class="form-control"
+          id="birthDay"
+          name="birthDay"
+          placeholder="Введите день рождения"
+          value="{{ notebook.birthDay }}"
+          [ngModel]="notebook.birthDay | date : 'yyyy-MM-dd'"
+          (ngModelChange)="notebook.birthDay = $event"
+        />
+      </mat-form-field>
+
+      <mat-form-field class="example-full-width">
+        <mat-label>Позиция</mat-label>
+        <input
+          matInput
+          type="text"
+          class="form-control"
+          id="position"
+          name="position"
+          placeholder="Введите позицию"
+          [(ngModel)]="notebook.position"
+        />
+      </mat-form-field>
+
+      <mat-form-field class="example-full-width">
+        <mat-label>Прочее</mat-label>
+        <textarea
+          matInput
+          type="text"
+          class="form-control"
+          id="other"
+          name="other"
+          [(ngModel)]="notebook.other"
+        >
+        </textarea>
+      </mat-form-field>
+      <div class="actions">
+        <button type="submit" class="btn btn-primary me-3">Сохранить</button>
+        <button type="button" class="btn btn-danger me-3" (click)="onDelete()">
+          Удалить
+        </button>
+        <button type="button" class="btn btn-secondary" (click)="onCancel()">
+          Отменить
+        </button>
+      </div>
+    </form>
+  </ng-container>
+  <ng-template #notFound>
+    <div class="alert alert-warning" role="alert">Запись не найдена</div>
+  </ng-template>
+</div>

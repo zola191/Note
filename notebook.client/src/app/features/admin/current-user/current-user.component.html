@@ -40,7 +40,7 @@
     </div>
     <div class="current-user-actions">
       <button *ngIf="!isEditing" (click)="toggleEditMode()">
-        Редактировать
+        Редактировать данные пользователя
       </button>
       <button *ngIf="isEditing" (click)="saveChanges()">Сохранить</button>
       <button *ngIf="isEditing" (click)="toggleEditMode()">Отмена</button>
@@ -77,7 +77,7 @@
             <td>
               <a
                 class="btn btn-primary"
-                [routerLink]="['/notebook/edit-notebook/', note.id]"
+                [routerLink]="['/admin/edit-notebook/', user.email, note.id]"
                 >Изменить</a
               >
             </td>
