@@ -17,6 +17,9 @@ import { LoginWithGoogleRequest } from '../models/loginWithGoogleRequest';
   providedIn: 'root',
 })
 export class UserService {
+  getUserEmail() {
+      throw new Error('Method not implemented.');
+  }
   $user = new BehaviorSubject<User | undefined>(undefined);
 
   constructor(private http: HttpClient, private cookie: CookieService) {}

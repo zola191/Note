@@ -32,9 +32,15 @@
     <div class="me-2">
       <div *ngIf="isAuth(); else showLogout">
         <div class="d-flex align-items-center">
-          <a class="nav-link" [routerLink]="['user/cabinet']">{{
+          <!-- <a class="nav-link" [routerLink]="['user/cabinet']">{{
             user?.email
-          }}</a>
+          }}</a> -->
+          <a
+            *ngIf="email$ | async as email"
+            class="nav-link"
+            [routerLink]="['user/cabinet']"
+            >{{ email }}</a
+          >
           <button class="btn btn-primary ms-3" (click)="onLogout()">
             Выйти
           </button>

@@ -2,7 +2,13 @@
   <form class="example-form">
     <mat-form-field class="example-full-width">
       <mat-label>Почта</mat-label>
-      <input matInput placeholder="Почта" value="" />
+
+      <input
+        *ngIf="email$ | async as email"
+        matInput
+        value="{{ email }}"
+        [disabled]="true"
+      />
     </mat-form-field>
     <mat-form-field class="example-full-width">
       <mat-label>Имя</mat-label>

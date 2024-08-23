@@ -4,6 +4,10 @@ import { UserService } from '../../../features/account/services/user.service';
 import { Router } from '@angular/router';
 import { CookieService } from 'ngx-cookie-service';
 import { roleModels } from '../../../features/account/models/roleModels.model';
+import { select, Store } from '@ngrx/store';
+import { Observable } from 'rxjs';
+import { clearUserEmail } from '../../../features/account/userStore/user-actions';
+import { UserState } from '../../../features/account/userStore/user-store';
 
 @Component({
   selector: 'app-navbar',
@@ -12,21 +16,17 @@ import { roleModels } from '../../../features/account/models/roleModels.model';
 })
 export class NavbarComponent implements OnInit {
   user?: User;
-
+  email$: Observable<string | null>;
   constructor(
     private userService: UserService,
     private router: Router,
-    private cookieService: CookieService
-  ) {}
-
-  ngOnInit(): void {
-    // this.authService.user().subscribe({
-    //   next: (response) => {
-    //     this.user = response;
-    //     // this.user = this.authService.getUser();
-    //   },
-    // });
+    private cookieService: CookieService,
+    private store: Store<{ user: UserState }>
+  ) {
+    this.email$ = this.store.pipe(select((state) => state.user.email));
   }
+
+  ngOnInit(): void {}
 
   isAuth(): boolean {
     let existingUser = this.userService.getUser();
@@ -35,11 +35,6 @@ export class NavbarComponent implements OnInit {
       return true;
     }
     return false;
-
-    // return (
-    //   this.authService.getUser() !== null &&
-    //   this.authService.getUser() !== undefined
-    // );
   }
 
   isAdmin(): boolean {
@@ -58,6 +53,7 @@ export class NavbarComponent implements OnInit {
   }
 
   onLogout(): void {
+    this.store.dispatch(clearUserEmail());
     this.userService.logout();
     this.router.navigateByUrl('/');
   }

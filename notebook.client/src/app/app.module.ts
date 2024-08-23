@@ -39,16 +39,14 @@ import {
 } from '@abacritt/angularx-social-login';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
-import { provideStore, StoreModule } from '@ngrx/store';
-import { EffectsModule } from '@ngrx/effects';
-import { UserService } from './features/account/services/user.service';
-import { AccountReducer } from './features/account/store/reducer';
+import { StoreModule } from '@ngrx/store';
 import { AlertModalComponent } from './features/notebook/alert-modal/alert-modal.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { AdminComponent } from './features/admin/admin/admin.component';
 import { CurrentUserComponent } from './features/admin/current-user/current-user.component';
 import { AdminEditNotebookComponent } from './features/admin/admin-edit-notebook/admin-edit-notebook.component';
+import { userReducer } from './features/account/userStore/user-reducer';
 
 @NgModule({
   declarations: [
@@ -88,8 +86,7 @@ import { AdminEditNotebookComponent } from './features/admin/admin-edit-notebook
     MatFormFieldModule,
     MatToolbarModule,
     MatProgressBarModule,
-    StoreModule.forRoot({ account: AccountReducer }),
-    EffectsModule.forRoot([]),
+    StoreModule.forRoot({ user: userReducer }),
     BrowserAnimationsModule,
     MatProgressSpinnerModule,
   ],

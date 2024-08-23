@@ -8,10 +8,9 @@ import { LoginRequest } from '../models/loginRequest.model';
 import { CredentialResponse } from 'google-one-tap';
 import { LoginWithGoogleRequest } from '../models/loginWithGoogleRequest';
 import { GoogleAuthService } from '../services/google-auth.service';
-import { AppState } from '../store/store';
 import { Store } from '@ngrx/store';
 import { AccountResponse } from '../models/account-response.model';
-import * as AccountActions from '../store/actions';
+import { setUserEmail } from '../userStore/user-actions';
 
 @Component({
   selector: 'app-login-account',
@@ -21,8 +20,6 @@ import * as AccountActions from '../store/actions';
 export class LoginAccountComponent implements OnInit {
   loginWithGoogleRequest: LoginWithGoogleRequest;
   model: LoginRequest;
-  account$: Observable<AccountResponse>;
-  isLoading$: Observable<boolean>;
   private addAccountSubscription?: Subscription;
 
   constructor(
@@ -31,7 +28,7 @@ export class LoginAccountComponent implements OnInit {
     private router: Router,
     private snackBar: MatSnackBar,
     private cookie: CookieService,
-    private store: Store<AppState>
+    private userStore: Store
   ) {
     this.model = {
       email: '',
@@ -40,28 +37,18 @@ export class LoginAccountComponent implements OnInit {
     this.loginWithGoogleRequest = {
       credential: '',
     };
-    this.account$ = this.store.select((state) => state.account.account);
-    this.isLoading$ = this.store.select((state) => state.account.loading);
-    this.loadAccount();
   }
   ngOnInit(): void {}
 
   onFormSubmit() {
     this.addAccountSubscription = this.authService.login(this.model).subscribe({
       next: (response) => {
-        // console.log(response);
-        // console.log(response.email);
-        // console.log(response.roleModels);
-
         this.cookie.set('email', response.email);
         this.cookie.set('token', response.token);
         this.cookie.set('roleModels', JSON.stringify(response.roleModels));
+        this.userStore.dispatch(setUserEmail({ email: response.email }));
 
-        // const roles = response.roleModels?.map((role) => role.roleName);
-
-        // if (roles && roles.length > 0) {
-        //   this.cookie.set('roleModels', JSON.stringify(roles));
-        // }
+        console.log(response.email);
         const isAdmin = response.roleModels.some((f) => f.roleName === 'Admin');
         if (isAdmin) {
           this.router.navigateByUrl(`admin`);
@@ -85,9 +72,5 @@ export class LoginAccountComponent implements OnInit {
 
   ngOnDestroy(): void {
     this.addAccountSubscription?.unsubscribe();
-  }
-
-  loadAccount() {
-    this.store.dispatch(AccountActions.loadAccount());
   }
 }
