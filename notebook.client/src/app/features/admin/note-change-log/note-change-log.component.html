@@ -1,0 +1,21 @@
+<div class="container">
+  <h1 class="mt-3">Список Изменений</h1>
+  <ng-container *ngIf="changeLog$ | async as logs">
+    <table class="table table-bordered mt-3">
+      <thead>
+        <tr>
+          <th>Email</th>
+          <th>Дата изменения</th>
+          <th>Log</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let log of logs">
+          <td>{{ log.email }}</td>
+          <td>{{ log.changedAt | date : "dd/MM/yyyy" }}</td>
+          <td>{{ log.log | logFormatter }}</td>
+        </tr>
+      </tbody>
+    </table>
+  </ng-container>
+</div>

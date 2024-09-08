@@ -46,7 +46,7 @@ export class NotebookListComponent implements OnInit {
     });
   }
 
-  openCreteNoteDialog(): void {
+  openCreateNoteDialog(): void {
     const dialogRef = this.dialog.open(AddNotebookComponent, {
       height: '800px',
       width: '600px',

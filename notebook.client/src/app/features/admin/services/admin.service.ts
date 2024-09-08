@@ -7,6 +7,7 @@ import { roleModels } from '../../account/models/roleModels.model';
 import { UserModelRequest } from '../models/update-user-info.model';
 import { NotebookRequest } from '../../notebook/models/notebook-request.model';
 import { Notebook } from '../../notebook/models/notebook.model';
+import { NoteChangeLog } from '../models/note-change-log';
 
 @Injectable({
   providedIn: 'root',
@@ -58,6 +59,12 @@ export class AdminService {
   deleteNotebook(id: string): Observable<Notebook> {
     return this.http.delete<Notebook>(
       `${environment.apiBaseUrl}/api/admin/deleteCurrentNote/${id}`
+    );
+  }
+
+  getChangeLogs(email: string): Observable<NoteChangeLog[]> {
+    return this.http.get<NoteChangeLog[]>(
+      `${environment.apiBaseUrl}/api/admin/getChangeLogs/${email}`
     );
   }
 }

@@ -12,8 +12,8 @@ using Notebook.Server.Data;
 namespace Notebook.Server.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20240722182855_Init")]
-    partial class Init
+    [Migration("20240903155121_NoteChangeLog")]
+    partial class NoteChangeLog
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -74,6 +74,30 @@ namespace Notebook.Server.Migrations
                     b.ToTable("Notebooks");
                 });
 
+            modelBuilder.Entity("Notebook.Server.Domain.NoteChangeLog", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("Id"));
+
+                    b.Property<DateTime>("ChangedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Email")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Log")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("NoteChangeLogs");
+                });
+
             modelBuilder.Entity("Notebook.Server.Domain.RestoreUser", b =>
                 {
                     b.Property<int>("Id")
@@ -100,6 +124,26 @@ namespace Notebook.Server.Migrations
                     b.ToTable("RestoreUserAccount");
                 });
 
+            modelBuilder.Entity("Notebook.Server.Domain.Role", b =>
+                {
+                    b.Property<int>("RoleName")
+                        .HasColumnType("int");
+
+                    b.HasKey("RoleName");
+
+                    b.ToTable("Roles");
+
+                    b.HasData(
+                        new
+                        {
+                            RoleName = 0
+                        },
+                        new
+                        {
+                            RoleName = 1
+                        });
+                });
+
             modelBuilder.Entity("Notebook.Server.Domain.User", b =>
                 {
                     b.Property<string>("Email")
@@ -120,6 +164,36 @@ namespace Notebook.Server.Migrations
                     b.HasKey("Email");
 
                     b.ToTable("Users");
+
+                    b.HasData(
+                        new
+                        {
+                            Email = "admin@notebook.com",
+                            PasswordHash = "02F8A3E28848BA7148645A46BC5C9BD31FD21DBB037964E343637D0DDFCC47EBE395EF303568252419A69CE43E0F70DF558F060B3327EF92200E3D1D6DB210DD",
+                            Salt = "0B336440BCC1966CC50F47BCECAC8CD7A272EE4297BB10EE6E51BBB3E8A3E276A4B1E70BFA74BBB112FF2A3FC8A8E503693091E3F714D0A4117E684D582653FC"
+                        });
+                });
+
+            modelBuilder.Entity("Notebook.Server.Domain.UserRole", b =>
+                {
+                    b.Property<int>("RolesId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("UsersId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.HasKey("RolesId", "UsersId");
+
+                    b.HasIndex("UsersId");
+
+                    b.ToTable("UserRole");
+
+                    b.HasData(
+                        new
+                        {
+                            RolesId = 0,
+                            UsersId = "admin@notebook.com"
+                        });
                 });
 
             modelBuilder.Entity("Notebook.Server.Domain.Note", b =>
@@ -139,6 +213,25 @@ namespace Notebook.Server.Migrations
                         .HasForeignKey("UserEmail")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.Navigation("User");
+                });
+
+            modelBuilder.Entity("Notebook.Server.Domain.UserRole", b =>
+                {
+                    b.HasOne("Notebook.Server.Domain.Role", "Role")
+                        .WithMany()
+                        .HasForeignKey("RolesId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Notebook.Server.Domain.User", "User")
+                        .WithMany()
+                        .HasForeignKey("UsersId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Role");
 
                     b.Navigation("User");
                 });

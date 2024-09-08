@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using Microsoft.EntityFrameworkCore;
 using Notebook.Server.Data;
+using Notebook.Server.Domain;
 using Notebook.Server.Dto;
 using Notebook.Server.Enum;
 
@@ -42,6 +43,13 @@ namespace Notebook.Server.Services
             var existingUsers = await dbContext.Users.Include(f => f.Roles).Include(f => f.Notes).ToListAsync();
             var userModels = mapper.Map<List<UserModel>>(existingUsers);
             return userModels;
+        }
+
+        public async Task<List<NoteChangeLogModel>> GetChangeLogsAsync(string email)
+        {
+            var noteChangeLogs = await dbContext.NoteChangeLogs.Where(f=>f.Email == email).ToListAsync();
+            var noteChangeLogsModel = mapper.Map<List<NoteChangeLogModel>>(noteChangeLogs);
+            return noteChangeLogsModel;
         }
 
         public async Task<NoteModel> GetCurrenNoteAsync(int id)

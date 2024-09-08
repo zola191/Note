@@ -39,11 +39,29 @@
       {{ errorMessage }}
     </div>
     <div class="current-user-actions">
-      <button *ngIf="!isEditing" (click)="toggleEditMode()">
+      <button
+        class="btn btn-primary"
+        *ngIf="!isEditing"
+        (click)="toggleEditMode()"
+      >
         Редактировать данные пользователя
       </button>
-      <button *ngIf="isEditing" (click)="saveChanges()">Сохранить</button>
-      <button *ngIf="isEditing" (click)="toggleEditMode()">Отмена</button>
+
+      <button *ngIf="isEditing" class="btn btn-primary" (click)="saveChanges()">
+        Сохранить
+      </button>
+      <button
+        *ngIf="isEditing"
+        class="btn btn-secondary"
+        (click)="toggleEditMode()"
+      >
+        Отмена
+      </button>
+    </div>
+    <div class="d-flex mt-3">
+      <button class="btn btn-secondary" (click)="openNoteChangeLogDialog()">
+        Показать историю изменений
+      </button>
     </div>
     <div *ngIf="user.notes.length > 0; else showNotebookInfo">
       <table class="table table-bordered mt-3">

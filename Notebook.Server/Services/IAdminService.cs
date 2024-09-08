@@ -12,6 +12,6 @@ namespace Notebook.Server.Services
         public Task<bool> UpdateNoteAsync(int id, NoteRequest request);
         public Task<NoteModel> GetCurrenNoteAsync(int id);
         public Task DeleteNoteAsync(int id);
-
+        public Task<List<NoteChangeLogModel>> GetChangeLogsAsync(string email);
     }
 }

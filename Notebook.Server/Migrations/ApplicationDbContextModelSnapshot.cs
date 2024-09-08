@@ -71,6 +71,30 @@ namespace Notebook.Server.Migrations
                     b.ToTable("Notebooks");
                 });
 
+            modelBuilder.Entity("Notebook.Server.Domain.NoteChangeLog", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("Id"));
+
+                    b.Property<DateTime>("ChangedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Email")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Log")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("NoteChangeLogs");
+                });
+
             modelBuilder.Entity("Notebook.Server.Domain.RestoreUser", b =>
                 {
                     b.Property<int>("Id")
@@ -142,8 +166,8 @@ namespace Notebook.Server.Migrations
                         new
                         {
                             Email = "admin@notebook.com",
-                            PasswordHash = "6143B1724B300E6E0E598F1D9014F0DD7B5839F4DE31384EA805E4AF09670F48497108BB060D8862B0AC9DB51BEC04CCB0BE676173717903731EB4743DEC880E",
-                            Salt = "1F815381DDF3CC57CDC54E29E8F22F4FA257C7A15010856B93C4F94AE7E26489DA0794EADF43187FBCA33E2EF5F12DD7A6264C45905BCDAA6E457F49612D5845"
+                            PasswordHash = "02F8A3E28848BA7148645A46BC5C9BD31FD21DBB037964E343637D0DDFCC47EBE395EF303568252419A69CE43E0F70DF558F060B3327EF92200E3D1D6DB210DD",
+                            Salt = "0B336440BCC1966CC50F47BCECAC8CD7A272EE4297BB10EE6E51BBB3E8A3E276A4B1E70BFA74BBB112FF2A3FC8A8E503693091E3F714D0A4117E684D582653FC"
                         });
                 });
 

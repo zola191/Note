@@ -7,11 +7,11 @@ namespace Notebook.Server.Data
 {
     public class ApplicationDbContext : DbContext
     {
-
         public DbSet<Note> Notebooks { get; set; }
         public DbSet<User> Users { get; set; }
         public DbSet<RestoreUser> RestoreUserAccount { get; set; }
         public DbSet<Role> Roles { get; set; }
+        public DbSet<NoteChangeLog> NoteChangeLogs { get; set; }
         public ApplicationDbContext(DbContextOptions options) : base(options)
         {
 

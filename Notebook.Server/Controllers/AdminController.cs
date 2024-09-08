@@ -117,5 +117,19 @@ namespace Notebook.Server.Controllers
                 return BadRequest(ex.Message);
             }
         }
+
+        [HttpGet("GetChangeLogs/{email}")]
+        public async Task<IActionResult> GetChangeLogs([FromRoute] string email)
+        {
+            try
+            {
+                var logs = await adminService.GetChangeLogsAsync(email);
+                return Ok(logs);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
     }
 }

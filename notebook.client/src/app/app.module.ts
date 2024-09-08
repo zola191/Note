@@ -47,6 +47,8 @@ import { AdminComponent } from './features/admin/admin/admin.component';
 import { CurrentUserComponent } from './features/admin/current-user/current-user.component';
 import { AdminEditNotebookComponent } from './features/admin/admin-edit-notebook/admin-edit-notebook.component';
 import { userReducer } from './features/account/userStore/user-reducer';
+import { NoteChangeLogComponent } from './features/admin/note-change-log/note-change-log.component';
+import { LogFormatterPipe } from './features/admin/pipes/logFormatterPipe';
 
 @NgModule({
   declarations: [
@@ -65,6 +67,8 @@ import { userReducer } from './features/account/userStore/user-reducer';
     AdminComponent,
     CurrentUserComponent,
     AdminEditNotebookComponent,
+    NoteChangeLogComponent,
+    LogFormatterPipe,
   ],
   bootstrap: [AppComponent],
   imports: [

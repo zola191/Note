@@ -18,8 +18,9 @@ namespace Notebook.Server.Config
             CreateMap<RestoreUser, RestoreUserModel>();
             CreateMap<User, UserModel>()
             .ForMember(dest => dest.RoleModels, opt => opt.MapFrom(src => src.Roles))
-            .ForMember(dest => dest.Notes, opt => opt.MapFrom(src => src.Notes)); ;
+            .ForMember(dest => dest.Notes, opt => opt.MapFrom(src => src.Notes));
 
+            CreateMap<NoteChangeLog, NoteChangeLogModel>();
         }
     }
 }

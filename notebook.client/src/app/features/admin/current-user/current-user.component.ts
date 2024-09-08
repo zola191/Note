@@ -5,6 +5,8 @@ import { Subscription } from 'rxjs';
 import { ActivatedRoute } from '@angular/router';
 import { roleModels } from '../../account/models/roleModels.model';
 import { UserModelRequest } from '../models/update-user-info.model';
+import { MatDialog } from '@angular/material/dialog';
+import { NoteChangeLogComponent } from '../note-change-log/note-change-log.component';
 
 @Component({
   selector: 'app-current-user',
@@ -28,7 +30,8 @@ export class CurrentUserComponent implements OnInit {
 
   constructor(
     private adminService: AdminService,
-    private route: ActivatedRoute
+    private route: ActivatedRoute,
+    private dialog: MatDialog
   ) {}
 
   ngOnInit(): void {
@@ -99,5 +102,16 @@ export class CurrentUserComponent implements OnInit {
     //   console.log('Данные пользователя успешно обновлены', response);
     //   this.isEditing = false;
     // });
+  }
+
+  openNoteChangeLogDialog(): void {
+    const dialogRef = this.dialog.open(NoteChangeLogComponent, {
+      height: '800px',
+      width: '1200px',
+      data: this.email,
+    });
+    dialogRef.afterClosed().subscribe((result) => {
+      console.log('The dialog was closed');
+    });
   }
 }

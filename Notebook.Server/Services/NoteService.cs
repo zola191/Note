@@ -4,6 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using Notebook.Server.Data;
 using Notebook.Server.Domain;
 using Notebook.Server.Dto;
+using System.Reflection;
 
 namespace Notebook.Server.Services
 {
@@ -60,20 +61,52 @@ namespace Notebook.Server.Services
 
         public async Task<NoteModel> UpdateAsync(int id, NoteRequest request, string email)
         {
-            var note = mapper.Map<Note>(request);
+            var newNote = mapper.Map<Note>(request);
 
-            note.Id = id;
-            note.UserId = email;
+            newNote.Id = id;
+            newNote.UserId = email;
 
             var existingNote = await dbContext.Notebooks.FirstOrDefaultAsync(f => f.Id == id);
+
             if (existingNote == null)
             {
                 return null;
             }
 
-            dbContext.Entry(existingNote).CurrentValues.SetValues(note);
+            var existingNotetype = existingNote.GetType();
+            var newNotetype = newNote.GetType();
+            var existingNoteProps = existingNotetype.GetProperties();
+
+            var changesFields = existingNoteProps
+                .Where(field => !Equals(field.GetValue(existingNote), field.GetValue(newNote)));
+
+            if (changesFields.Count() > 0)
+            {
+
+
+                var logResult = new Dictionary<string, (string,string) >();
+
+                foreach (var field in changesFields)
+                {
+                    logResult[field.Name] = (field.GetValue(existingNote).ToString(), field.GetValue(newNote).ToString());
+                }
+
+                var noteChangeLog = new NoteChangeLog()
+                {
+                    ChangedAt = DateTime.UtcNow,
+                    Email = email,
+                    Log = $"Пользователь {email} изменил Note: \n" + string.Join(", ", logResult.Select((f,g) =>
+                    {
+                        return $"{g+1}. Поле {f.Key} было значение {f.Value.Item1}, стало {f.Value.Item2} \n";
+                    }))
+                };
+                dbContext.NoteChangeLogs.Add(noteChangeLog);
+            }
+
+            dbContext.Entry(existingNote).CurrentValues.SetValues(newNote);
+
             await dbContext.SaveChangesAsync();
-            var response = mapper.Map<NoteModel>(note);
+            var response = mapper.Map<NoteModel>(newNote);
 
             return response;
         }

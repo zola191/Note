@@ -6,11 +6,37 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace Notebook.Server.Migrations
 {
     /// <inheritdoc />
-    public partial class Init : Migration
+    public partial class NoteChangeLog : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
+            migrationBuilder.CreateTable(
+                name: "NoteChangeLogs",
+                columns: table => new
+                {
+                    Id = table.Column<long>(type: "bigint", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    ChangedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    Log = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Email = table.Column<string>(type: "nvarchar(max)", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_NoteChangeLogs", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Roles",
+                columns: table => new
+                {
+                    RoleName = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Roles", x => x.RoleName);
+                });
+
             migrationBuilder.CreateTable(
                 name: "Users",
                 columns: table => new
@@ -75,6 +101,49 @@ namespace Notebook.Server.Migrations
                         onDelete: ReferentialAction.Cascade);
                 });
 
+            migrationBuilder.CreateTable(
+                name: "UserRole",
+                columns: table => new
+                {
+                    RolesId = table.Column<int>(type: "int", nullable: false),
+                    UsersId = table.Column<string>(type: "nvarchar(450)", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_UserRole", x => new { x.RolesId, x.UsersId });
+                    table.ForeignKey(
+                        name: "FK_UserRole_Roles_RolesId",
+                        column: x => x.RolesId,
+                        principalTable: "Roles",
+                        principalColumn: "RoleName",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_UserRole_Users_UsersId",
+                        column: x => x.UsersId,
+                        principalTable: "Users",
+                        principalColumn: "Email",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.InsertData(
+                table: "Roles",
+                column: "RoleName",
+                values: new object[]
+                {
+                    0,
+                    1
+                });
+
+            migrationBuilder.InsertData(
+                table: "Users",
+                columns: new[] { "Email", "FirstName", "LastName", "PasswordHash", "Salt" },
+                values: new object[] { "admin@notebook.com", null, null, "02F8A3E28848BA7148645A46BC5C9BD31FD21DBB037964E343637D0DDFCC47EBE395EF303568252419A69CE43E0F70DF558F060B3327EF92200E3D1D6DB210DD", "0B336440BCC1966CC50F47BCECAC8CD7A272EE4297BB10EE6E51BBB3E8A3E276A4B1E70BFA74BBB112FF2A3FC8A8E503693091E3F714D0A4117E684D582653FC" });
+
+            migrationBuilder.InsertData(
+                table: "UserRole",
+                columns: new[] { "RolesId", "UsersId" },
+                values: new object[] { 0, "admin@notebook.com" });
+
             migrationBuilder.CreateIndex(
                 name: "IX_Notebooks_UserId",
                 table: "Notebooks",
@@ -84,6 +153,11 @@ namespace Notebook.Server.Migrations
                 name: "IX_RestoreUserAccount_UserEmail",
                 table: "RestoreUserAccount",
                 column: "UserEmail");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_UserRole_UsersId",
+                table: "UserRole",
+                column: "UsersId");
         }
 
         /// <inheritdoc />
@@ -93,7 +167,16 @@ namespace Notebook.Server.Migrations
                 name: "Notebooks");
 
             migrationBuilder.DropTable(
+                name: "NoteChangeLogs");
+
+            migrationBuilder.DropTable(
                 name: "RestoreUserAccount");
+
+            migrationBuilder.DropTable(
+                name: "UserRole");
+
+            migrationBuilder.DropTable(
+                name: "Roles");
 
             migrationBuilder.DropTable(
                 name: "Users");
