@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Notebook.Server.Dto;
 using Notebook.Server.Services;
+using System.Globalization;
 
 namespace Notebook.Server.Controllers
 {
@@ -130,6 +131,27 @@ namespace Notebook.Server.Controllers
             {
                 return BadRequest(ex.Message);
             }
+        }
+
+        [HttpPost("GetExcelFileLogs")]
+        public async Task<IActionResult> GetExcelFileLogs([FromBody] LogFileByPeriodRequest request)
+        {
+            try
+            {
+                var fileBytes = await adminService.GetExcelFileLogsAsync(request);
+
+                if (fileBytes == null)
+                {
+                    return NotFound();
+                }
+
+                return File(fileBytes, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "changeLog.xlsx");
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+
         }
     }
 }

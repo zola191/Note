@@ -68,7 +68,7 @@ namespace Notebook.Server.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("Notebooks");
+                    b.ToTable("Notebooks", (string)null);
                 });
 
             modelBuilder.Entity("Notebook.Server.Domain.NoteChangeLog", b =>
@@ -92,7 +92,7 @@ namespace Notebook.Server.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("NoteChangeLogs");
+                    b.ToTable("NoteChangeLogs", (string)null);
                 });
 
             modelBuilder.Entity("Notebook.Server.Domain.RestoreUser", b =>
@@ -118,7 +118,7 @@ namespace Notebook.Server.Migrations
 
                     b.HasIndex("UserEmail");
 
-                    b.ToTable("RestoreUserAccount");
+                    b.ToTable("RestoreUserAccount", (string)null);
                 });
 
             modelBuilder.Entity("Notebook.Server.Domain.Role", b =>
@@ -128,7 +128,7 @@ namespace Notebook.Server.Migrations
 
                     b.HasKey("RoleName");
 
-                    b.ToTable("Roles");
+                    b.ToTable("Roles", (string)null);
 
                     b.HasData(
                         new
@@ -160,7 +160,7 @@ namespace Notebook.Server.Migrations
 
                     b.HasKey("Email");
 
-                    b.ToTable("Users");
+                    b.ToTable("Users", (string)null);
 
                     b.HasData(
                         new
@@ -183,7 +183,7 @@ namespace Notebook.Server.Migrations
 
                     b.HasIndex("UsersId");
 
-                    b.ToTable("UserRole");
+                    b.ToTable("UserRole", (string)null);
 
                     b.HasData(
                         new

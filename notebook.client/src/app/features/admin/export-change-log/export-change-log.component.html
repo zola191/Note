@@ -1,0 +1,27 @@
+<ng-container>
+  <div class="center-content">
+    <form class="p-3" [formGroup]="dateRangeForm">
+      <h2>Выберите период</h2>
+      <mat-form-field>
+        <mat-label>Введите диапазон дат</mat-label>
+        <mat-date-range-input [rangePicker]="picker" formGroupName="dateRange">
+          <input
+            matStartDate
+            placeholder="Start date"
+            formControlName="start"
+          />
+          <input matEndDate placeholder="End date" formControlName="end" />
+        </mat-date-range-input>
+        <mat-hint>MM/DD/YYYY – MM/DD/YYYY</mat-hint>
+        <mat-datepicker-toggle
+          matIconSuffix
+          [for]="picker"
+        ></mat-datepicker-toggle>
+        <mat-date-range-picker #picker></mat-date-range-picker>
+      </mat-form-field>
+    </form>
+    <div class="p-2">
+      <button class="btn btn-primary" (click)="export()">Получить</button>
+    </div>
+  </div>
+</ng-container>

@@ -49,6 +49,13 @@ import { AdminEditNotebookComponent } from './features/admin/admin-edit-notebook
 import { userReducer } from './features/account/userStore/user-reducer';
 import { NoteChangeLogComponent } from './features/admin/note-change-log/note-change-log.component';
 import { LogFormatterPipe } from './features/admin/pipes/logFormatterPipe';
+import { ExportChangeLogComponent } from './features/admin/export-change-log/export-change-log.component';
+import { MAT_MOMENT_DATE_ADAPTER_OPTIONS, MomentDateAdapter } from '@angular/material-moment-adapter';
+import {
+  DateAdapter,
+  MAT_DATE_FORMATS,
+  MAT_DATE_LOCALE,
+} from '@angular/material/core';
 
 @NgModule({
   declarations: [
@@ -69,6 +76,7 @@ import { LogFormatterPipe } from './features/admin/pipes/logFormatterPipe';
     AdminEditNotebookComponent,
     NoteChangeLogComponent,
     LogFormatterPipe,
+    ExportChangeLogComponent,
   ],
   bootstrap: [AppComponent],
   imports: [
@@ -95,6 +103,12 @@ import { LogFormatterPipe } from './features/admin/pipes/logFormatterPipe';
     MatProgressSpinnerModule,
   ],
   providers: [
+    {
+      provide: DateAdapter,
+      useClass: MomentDateAdapter,
+      deps: [MAT_DATE_LOCALE],
+    },
+    { provide: MAT_MOMENT_DATE_ADAPTER_OPTIONS, useValue: { useUtc: true } },
     provideAnimations(),
     {
       provide: HTTP_INTERCEPTORS,

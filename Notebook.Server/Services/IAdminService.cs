@@ -13,5 +13,6 @@ namespace Notebook.Server.Services
         public Task<NoteModel> GetCurrenNoteAsync(int id);
         public Task DeleteNoteAsync(int id);
         public Task<List<NoteChangeLogModel>> GetChangeLogsAsync(string email);
+        public Task<byte[]> GetExcelFileLogsAsync(LogFileByPeriodRequest request);
     }
 }

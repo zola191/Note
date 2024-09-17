@@ -4,7 +4,6 @@ using Microsoft.EntityFrameworkCore;
 using Notebook.Server.Data;
 using Notebook.Server.Domain;
 using Notebook.Server.Dto;
-using System.Reflection;
 
 namespace Notebook.Server.Services
 {
@@ -82,8 +81,6 @@ namespace Notebook.Server.Services
 
             if (changesFields.Count() > 0)
             {
-
-
                 var logResult = new Dictionary<string, (string,string) >();
 
                 foreach (var field in changesFields)
@@ -95,9 +92,9 @@ namespace Notebook.Server.Services
                 {
                     ChangedAt = DateTime.UtcNow,
                     Email = email,
-                    Log = $"Пользователь {email} изменил Note: \n" + string.Join(", ", logResult.Select((f,g) =>
+                    Log = $"Пользователь {email} изменил Note:\n" + string.Join("\n", logResult.Select((f, g) =>
                     {
-                        return $"{g+1}. Поле {f.Key} было значение {f.Value.Item1}, стало {f.Value.Item2} \n";
+                        return $"{g + 1}. Поле {f.Key} было значение {f.Value.Item1}, стало {f.Value.Item2}";
                     }))
                 };
                 dbContext.NoteChangeLogs.Add(noteChangeLog);

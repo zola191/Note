@@ -10,16 +10,20 @@ import { MAT_DIALOG_DATA } from '@angular/material/dialog';
   styleUrl: './note-change-log.component.css',
 })
 export class NoteChangeLogComponent implements OnInit {
-  changeLog: NoteChangeLog[];
   changeLog$?: Observable<NoteChangeLog[]>;
+  changelog: NoteChangeLog[] = [];
   constructor(
     private adminService: AdminService,
     @Inject(MAT_DIALOG_DATA) public email: string
-  ) {
-    this.changeLog = [];
-  }
+  ) {}
 
   ngOnInit(): void {
     this.changeLog$ = this.adminService.getChangeLogs(this.email);
+    this.changeLog$.subscribe({
+      next: (data) => {
+        this.changelog = data;
+        console.log(this.changelog);
+      },
+    });
   }
 }

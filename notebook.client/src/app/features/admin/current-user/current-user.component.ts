@@ -7,6 +7,7 @@ import { roleModels } from '../../account/models/roleModels.model';
 import { UserModelRequest } from '../models/update-user-info.model';
 import { MatDialog } from '@angular/material/dialog';
 import { NoteChangeLogComponent } from '../note-change-log/note-change-log.component';
+import { ExportChangeLogComponent } from '../export-change-log/export-change-log.component';
 
 @Component({
   selector: 'app-current-user',
@@ -43,9 +44,6 @@ export class CurrentUserComponent implements OnInit {
             next: (response) => {
               this.user = response;
               this.initializeUpdatedUser();
-              // console.log(this.user);
-              // console.log(this.user.roleModels);
-              // console.log(this.updatedUser.roleModels);
             },
           });
         }
@@ -66,7 +64,6 @@ export class CurrentUserComponent implements OnInit {
         roleModels: this.user.roleModels.map((role) => ({ ...role })),
       };
     }
-    // console.log(this.updatedUser.roleModels);
   }
 
   toggleEditMode() {
@@ -96,12 +93,6 @@ export class CurrentUserComponent implements OnInit {
         console.log('Данные пользователя успешно обновлены', response);
       },
     });
-
-    // this.adminService.updateUser(this.updatedUser).subscribe((response) => {
-    //   this.user = response;
-    //   console.log('Данные пользователя успешно обновлены', response);
-    //   this.isEditing = false;
-    // });
   }
 
   openNoteChangeLogDialog(): void {
@@ -110,8 +101,15 @@ export class CurrentUserComponent implements OnInit {
       width: '1200px',
       data: this.email,
     });
-    dialogRef.afterClosed().subscribe((result) => {
-      console.log('The dialog was closed');
+    dialogRef.afterClosed().subscribe((result) => {});
+  }
+
+  openExportChangeLogDialog(): void {
+    const dialogRef = this.dialog.open(ExportChangeLogComponent, {
+      height: '400px',
+      width: '400px',
+      data: this.email,
     });
+    // dialogRef.afterClosed().subscribe((result) => {});
   }
 }

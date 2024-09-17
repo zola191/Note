@@ -41,7 +41,7 @@ export class NotebookListComponent implements OnInit {
         this.notebooks = data;
       },
       error: (err) => {
-        console.error('Failed to load notebooks', err);
+        console.error('Ошибка закгрузки note', err);
       },
     });
   }

@@ -8,6 +8,7 @@ import { UserModelRequest } from '../models/update-user-info.model';
 import { NotebookRequest } from '../../notebook/models/notebook-request.model';
 import { Notebook } from '../../notebook/models/notebook.model';
 import { NoteChangeLog } from '../models/note-change-log';
+import { LogFileByPeriod } from '../models/log-file-by-period';
 
 @Injectable({
   providedIn: 'root',
@@ -65,6 +66,16 @@ export class AdminService {
   getChangeLogs(email: string): Observable<NoteChangeLog[]> {
     return this.http.get<NoteChangeLog[]>(
       `${environment.apiBaseUrl}/api/admin/getChangeLogs/${email}`
+    );
+  }
+
+  getExcelFileLogs(data: LogFileByPeriod): Observable<Blob> {
+    return this.http.post(
+      `${environment.apiBaseUrl}/api/admin/getExcelFileLogs`,
+      data,
+      {
+        responseType: 'blob',
+      }
     );
   }
 }

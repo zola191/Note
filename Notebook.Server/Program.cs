@@ -55,6 +55,7 @@ builder.Services.AddScoped<IJwtProvider, JwtProvider>();
 builder.Services.AddScoped<IEmailService, EmailService>();
 builder.Services.AddScoped<IPasswordHasher, PasswordHasher>();
 builder.Services.AddScoped<IFileService, FileService>();
+builder.Services.AddScoped<IExcelGeneratorService, ExcelGeneratorService>();
 
 builder.Services.AddScoped<IValidator<NoteRequest>, NoteRequestValidator>();
 builder.Services.AddScoped<IValidator<CreateUserRequest>, UserRequestValidator>();
